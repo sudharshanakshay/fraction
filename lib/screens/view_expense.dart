@@ -136,7 +136,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
       abcWidget(),
       ListView.builder(
           shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           padding: const EdgeInsets.all(8),
           itemCount: entries.length,
           itemBuilder: (BuildContext context, int index) {
@@ -145,8 +145,10 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                 child: Container(
                   decoration: BoxDecoration(
                     border: Border.all(
+                      //eft: BorderSide(
                       width: 2,
                       color: getRandomColor(),
+                      //)
                     ),
                     borderRadius: BorderRadius.circular(12),
                   ),

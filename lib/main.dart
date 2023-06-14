@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/AddExpense.dart';
-import 'package:fraction/screens/Profile.dart';
-import 'package:fraction/screens/ViewExpense.dart';
+import 'package:fraction/screens/add_expense.dart';
+import 'package:fraction/screens/profile.dart';
+import 'package:fraction/screens/view_expense.dart';
 
 void main() {
   runApp(const MyApp());
