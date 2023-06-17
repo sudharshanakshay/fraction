@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>602053818051-o0sg9s2v75thdf12cpmjo4aq2vtrsl6v.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.602053818051-o0sg9s2v75thdf12cpmjo4aq2vtrsl6v</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>602053818051-crf6ps5k3gri5ih2r8jjpn4nlde96e6l.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBD2Oc1s-CR2vdW8sQLY1i8nHmkcIoQzjQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>602053818051</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.fraction.RunnerTests</string>
+	<key>PROJECT_ID</key>
+	<string>fraction-c7e1e</string>
+	<key>STORAGE_BUCKET</key>
+	<string>fraction-c7e1e.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:602053818051:ios:d29202d648f175a9f25476</string>
+</dict>
+</plist>

@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/app_state.dart';
 
 class AddExpensePage extends StatelessWidget {
   const AddExpensePage({super.key});
@@ -17,8 +19,8 @@ class AddExpenseLayout extends StatefulWidget {
 }
 
 class _AddExpenseLayoutState extends State<AddExpenseLayout> {
-  final itemNameController = TextEditingController();
-  final itemCostController = TextEditingController();
+  final descriptionController = TextEditingController();
+  final costController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
           widthFactor: 0.7,
           //heightFactor: 0.2,
           child: TextField(
-              controller: itemNameController,
+              controller: descriptionController,
               decoration: const InputDecoration(
                 label: Text('Item Name'),
               ))),
@@ -36,19 +38,31 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
           widthFactor: 0.7,
           //heightFactor: 0.2,
           child: TextField(
-              controller: itemCostController,
+              controller: costController,
               decoration: const InputDecoration(
                 label: Text('Item Cost'),
               ))),
       const SizedBox(height: 10),
-      FilledButton(onPressed: () {}, child: const Text('Save')),
+      FilledButton(
+          onPressed: () {
+            print('------------------------------------');
+            print(descriptionController.text);
+            FirebaseFirestore.instance
+                .collection('expense')
+                .add(<String, dynamic>{
+              'description': descriptionController.text,
+              'cost': costController.text,
+              'time_stamp': DateTime.now()
+            });
+          },
+          child: const Text('Save')),
     ]);
   }
 
   @override
   dispose() {
-    itemNameController.dispose();
-    itemCostController.dispose();
+    descriptionController.dispose();
+    costController.dispose();
     super.dispose();
   }
 }

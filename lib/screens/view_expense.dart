@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -81,28 +82,28 @@ class ViewExpenseLayout extends StatefulWidget {
 }
 
 class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
-  final List<Map<dynamic, dynamic>> entries = [
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'item_desc': 'name_1', 'item_cost': 'cost_1', 'time_stamp': '2023-06-01'},
+  List<Map<String, dynamic>> expenses = [
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
+    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
   ];
 
-  //final List<String> entries = <String>['A', 'B', 'C'];
+  //final List<String> expenses = <String>['A', 'B', 'C'];
   final List<int> colorCodes = <int>[600, 500, 100];
 
   Widget abcWidget() {
@@ -131,43 +132,64 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Column(children: <Widget>[
-      abcWidget(),
-      ListView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(8),
-          itemCount: entries.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('expense').snapshots(),
+        builder: (context, snapshot) {
+          print(snapshot.data?.docs[0]);
+          if (!snapshot.hasData) {
+            return const Center(child: Text('Loading ...'));
+          }
+          return SingleChildScrollView(
+              child: Column(children: <Widget>[
+            abcWidget(),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(8),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      //eft: BorderSide(
-                      width: 2,
-                      color: getRandomColor(),
-                      //)
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  height: 50,
-                  //color: Colors.amber[colorCodes[index % 3]],
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        const Flexible(
-                            child: FractionallySizedBox(widthFactor: 0.01)),
-                        Center(child: Text('${entries[index]['item_desc']}')),
-                        Center(child: Text('${entries[index]['item_cost']}')),
-                        Center(child: Text('${entries[index]['time_stamp']}')),
-                        const Flexible(
-                            child: FractionallySizedBox(widthFactor: 0.01)),
-                      ]),
-                ));
-          })
-    ]));
+                itemCount: snapshot.data?.docs.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onLongPress: () =>
+                        snapshot.data?.docs[index].reference.delete(),
+                    child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              //eft: BorderSide(
+                              width: 2,
+                              color: getRandomColor(),
+                              //)
+                            ),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          height: 50,
+                          //color: Colors.amber[colorCodes[index % 3]],
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                const Icon(Icons.person_2_outlined),
+                                // const Flexible(
+                                //     child: FractionallySizedBox(widthFactor: 0.01)),
+                                Center(
+                                    child: Text(
+                                        '${snapshot.data?.docs[index]['description']}')),
+                                Center(
+                                    child: Text(
+                                        '${snapshot.data?.docs[index]['cost']}')),
+                                Center(
+                                    child: Text(
+                                        '${snapshot.data?.docs[index]['time_stamp'].toDate()}')),
+                                // const Flexible(
+                                //     child: FractionallySizedBox(widthFactor: 0.01)),
+                              ]),
+                        )),
+                  );
+                })
+          ]));
+        });
+    //});
   }
 }
 

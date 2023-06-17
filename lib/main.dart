@@ -1,10 +1,28 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/add_expense.dart';
 import 'package:fraction/screens/profile.dart';
 import 'package:fraction/screens/view_expense.dart';
+import 'package:provider/provider.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'app_state.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  //WidgetsFlutterBinding.ensureInitialized();
+
+  // This is the last thing you need to add.
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(ChangeNotifierProvider(
+    create: (context) => ApplicationState(),
+    builder: ((context, child) => const MyApp()),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -67,6 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
+    //SignInScreen(),
     ViewExpenseLayout(),
     AddExpenseLayout(),
     Profile(),
