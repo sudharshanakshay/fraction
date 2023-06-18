@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Fraction'),
     );
   }
 }
@@ -115,6 +115,10 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
         body: Center(
           child: _widgetOptions.elementAt(_selectedIndex),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          child: const Icon(Icons.add),
         ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[

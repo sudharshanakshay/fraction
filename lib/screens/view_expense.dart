@@ -1,78 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-
-/// Flutter code sample for [BottomNavigationBar].
-
-// void main() => runApp(const BottomNavigationBarExampleApp());
-
-// class BottomNavigationBarExampleApp extends StatelessWidget {
-//   const BottomNavigationBarExampleApp({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return const MaterialApp(
-//       home: BottomNavigationBarExample(),
-//     );
-//   }
-// }
-
-// class BottomNavigationBarExample extends StatefulWidget {
-//   const BottomNavigationBarExample({super.key});
-
-//   @override
-//   State<BottomNavigationBarExample> createState() =>
-//       _BottomNavigationBarExampleState();
-// }
-
-// class _BottomNavigationBarExampleState
-//     extends State<BottomNavigationBarExample> {
-//   int _selectedIndex = 0;
-//   static const TextStyle optionStyle =
-//       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-//   static const List<Widget> _widgetOptions = <Widget>[
-//     ViewExpenseLayout(),
-//     AddExpenseLayout(),
-//     Profile(),
-//   ];
-
-//   void _onItemTapped(int index) {
-//     setState(() {
-//       _selectedIndex = index;
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('BottomNavigationBar Sample'),
-//       ),
-//       body: Center(
-//         child: _widgetOptions.elementAt(_selectedIndex),
-//       ),
-//       bottomNavigationBar: BottomNavigationBar(
-//         items: const <BottomNavigationBarItem>[
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.menu_rounded),
-//             label: 'Expense',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.add),
-//             label: 'Add Expense',
-//           ),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.person_outline_rounded),
-//             label: 'Profile',
-//           ),
-//         ],
-//         currentIndex: _selectedIndex,
-//         selectedItemColor: Colors.amber[800],
-//         onTap: _onItemTapped,
-//       ),
-//     );
-//   }
-// }
+import 'package:intl/intl.dart';
 
 class ViewExpenseLayout extends StatefulWidget {
   const ViewExpenseLayout({Key? key}) : super(key: key);
@@ -165,26 +94,22 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                             ),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          height: 50,
+                          //height: 50,
                           //color: Colors.amber[colorCodes[index % 3]],
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                const Icon(Icons.person_2_outlined),
-                                // const Flexible(
-                                //     child: FractionallySizedBox(widthFactor: 0.01)),
-                                Center(
-                                    child: Text(
-                                        '${snapshot.data?.docs[index]['description']}')),
-                                Center(
-                                    child: Text(
-                                        '${snapshot.data?.docs[index]['cost']}')),
-                                Center(
-                                    child: Text(
-                                        '${snapshot.data?.docs[index]['time_stamp'].toDate()}')),
-                                // const Flexible(
-                                //     child: FractionallySizedBox(widthFactor: 0.01)),
-                              ]),
+                          child: ListTile(
+                            leading: Icon(Icons.person),
+                            title: Text(
+                                '${snapshot.data?.docs[index]['description']}'),
+                            //isThreeLine: true,
+                            subtitle: Text(DateFormat.yMMMd().format(snapshot
+                                .data?.docs[index]['time_stamp']
+                                .toDate())),
+
+                            trailing: Text(
+                              '${snapshot.data?.docs[index]['cost']}/-',
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          ),
                         )),
                   );
                 })

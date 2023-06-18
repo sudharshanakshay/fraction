@@ -45,15 +45,17 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
       const SizedBox(height: 10),
       FilledButton(
           onPressed: () {
-            print('------------------------------------');
-            print(descriptionController.text);
-            FirebaseFirestore.instance
+            //print('------------------------------------');
+            //print(descriptionController.text);
+            var data = FirebaseFirestore.instance
                 .collection('expense')
                 .add(<String, dynamic>{
               'description': descriptionController.text,
               'cost': costController.text,
               'time_stamp': DateTime.now()
             });
+
+            //print("return data : $data");
           },
           child: const Text('Save')),
     ]);
