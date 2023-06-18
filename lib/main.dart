@@ -10,14 +10,18 @@ import 'app_state.dart';
 import 'firebase_options.dart';
 
 void main() async {
-  //WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   // This is the last thing you need to add.
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   WidgetsFlutterBinding.ensureInitialized();
+  try {} catch (e) {
+    print(e);
+  }
 
   runApp(ChangeNotifierProvider(
     create: (context) => ApplicationState(),
