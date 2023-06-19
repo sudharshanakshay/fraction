@@ -1,12 +1,16 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/add_expense.dart';
 import 'package:fraction/screens/profile.dart';
+import 'package:fraction/screens/authorise.dart';
 import 'package:fraction/screens/view_expense.dart';
+import 'package:fraction/services/sign_in_services.dart';
+import 'package:fraction/utils/fraction_app_color.dart';
 import 'package:provider/provider.dart';
 
-import 'app_state.dart';
+import 'services/app_state.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -19,9 +23,6 @@ void main() async {
   );
 
   WidgetsFlutterBinding.ensureInitialized();
-  try {} catch (e) {
-    print(e);
-  }
 
   runApp(ChangeNotifierProvider(
     create: (context) => ApplicationState(),
@@ -53,7 +54,7 @@ class MyApp extends StatelessWidget {
         //
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Fraction'),
@@ -92,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
     //SignInScreen(),
     ViewExpenseLayout(),
     AddExpenseLayout(),
-    Profile(),
+    //Profile(),
   ];
 
   @override
@@ -103,41 +104,58 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
-    return Scaffold(
-        appBar: AppBar(
-          // TRY THIS: Try changing the color here to a specific color (to
-          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-          // change color while the other colors stay the same.
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          child: const Icon(Icons.add),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu_rounded),
-              label: 'Expense',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: 'Add Expense',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline_rounded),
-              label: 'Profile',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          //selectedItemColor: Colors.amber[800],
-        ));
+    return Consumer<ApplicationState>(
+        builder: (context, appState, _) => !appState.loggedIn
+            ? SignInPage(
+                title: widget.title,
+              )
+            : Scaffold(
+                appBar: AppBar(
+                  // TRY THIS: Try changing the color here to a specific color (to
+                  // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+                  // change color while the other colors stay the same.
+                  backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                  // Here we take the value from the MyHomePage object that was created by
+                  // the App.build method, and use it to set our appbar title.
+                  title: Text(widget.title),
+                  actions: [
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const Profile(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.person_outline_rounded)),
+                  ],
+                ),
+                body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+                //body: SignInPage(),
+                // floatingActionButton: FloatingActionButton(
+                //   onPressed: () {},
+                //   child: const Icon(Icons.add),
+                // ),
+                bottomNavigationBar: BottomNavigationBar(
+                  items: const <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.menu_rounded),
+                      label: 'Expense',
+                    ),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.add),
+                      label: 'Add Expense',
+                    ),
+                    // BottomNavigationBarItem(
+                    //   icon: Icon(Icons.person_outline_rounded),
+                    //   label: 'Profile',
+                    // ),
+                  ],
+                  currentIndex: _selectedIndex,
+                  onTap: _onItemTapped,
+                  //selectedItemColor: Colors.amber[800],
+                )));
+
+    /**/
   }
 }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/app_state.dart';
 
 class AddExpensePage extends StatelessWidget {
   const AddExpensePage({super.key});

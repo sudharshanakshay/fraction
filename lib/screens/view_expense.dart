@@ -78,40 +78,36 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                 padding: const EdgeInsets.all(8),
                 itemCount: snapshot.data?.docs.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    onLongPress: () =>
-                        snapshot.data?.docs[index].reference.delete(),
-                    child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              //eft: BorderSide(
-                              width: 2,
-                              color: getRandomColor(),
-                              //)
-                            ),
-                            borderRadius: BorderRadius.circular(12),
+                  return Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            //eft: BorderSide(
+                            width: 2,
+                            color: getRandomColor(),
+                            //)
                           ),
-                          //height: 50,
-                          //color: Colors.amber[colorCodes[index % 3]],
-                          child: ListTile(
-                            leading: Icon(Icons.person),
-                            title: Text(
-                                '${snapshot.data?.docs[index]['description']}'),
-                            //isThreeLine: true,
-                            subtitle: Text(DateFormat.yMMMd().format(snapshot
-                                .data?.docs[index]['time_stamp']
-                                .toDate())),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        //height: 50,
+                        //color: Colors.amber[colorCodes[index % 3]],
+                        child: ListTile(
+                          leading: Icon(Icons.person),
+                          title: Text(
+                              '${snapshot.data?.docs[index]['description']}'),
+                          //isThreeLine: true,
+                          subtitle: Text(DateFormat.yMMMd().format(snapshot
+                              .data?.docs[index]['time_stamp']
+                              .toDate())),
 
-                            trailing: Text(
-                              '${snapshot.data?.docs[index]['cost']}/-',
-                              style: const TextStyle(fontSize: 20),
-                            ),
+                          trailing: Text(
+                            '${snapshot.data?.docs[index]['cost']}/-',
+                            style: const TextStyle(fontSize: 20),
                           ),
-                        )),
-                  );
+                        ),
+                      ));
                 })
           ]));
         });
