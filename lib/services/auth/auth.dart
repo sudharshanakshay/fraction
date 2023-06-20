@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fraction/services/auth/profile.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 // ------------- option, sign-in / register with google federated  -------------
@@ -23,15 +24,18 @@ Future<UserCredential> signInWithGoogle() async {
 
 // ------------- option, register with email & password -------------
 
-Future<UserCredential> emailRegisterUser(
-    String emailAddress, String password) async {
-  var credential;
+Future<void> emailRegisterUser(
+    String name, String emailAddress, String password) async {
+  //var credential;
 
   try {
-    credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    print('register');
+
+    await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: emailAddress,
       password: password,
     );
+    addProfile(name, emailAddress, name);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       print('The password provided is too weak.');
@@ -42,17 +46,14 @@ Future<UserCredential> emailRegisterUser(
     print(e);
   }
 
-  return credential;
+  //return credential;
 }
 
 // ------------- option, sign-in with email & password -------------
 
-Future<UserCredential> emailSignInUser(
-    String emailAddress, String password) async {
-  var credential;
-
+Future<void> emailSignInUser(String emailAddress, String password) async {
   try {
-    credential = await FirebaseAuth.instance
+    final credential = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: emailAddress, password: password);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
@@ -61,8 +62,6 @@ Future<UserCredential> emailSignInUser(
       print('Wrong password provided for that user.');
     }
   }
-
-  return credential;
 }
 
 // ------------- option, sign-out -------------

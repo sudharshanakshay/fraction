@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/screens/register.dart';
 
-import '../services/sign_in_services.dart';
+import '../services/auth/auth.dart';
 import '../widgets/input_text_field.dart';
 
 class SignInPage extends StatefulWidget {
@@ -36,7 +37,7 @@ class SignInPageState extends State<SignInPage> {
               'Welcome to Fraction',
               style: TextStyle(fontSize: 20),
             ),
-            inputTextField(_emailStringController, 'Username, remail'),
+            inputTextField(_emailStringController, 'Username, email'),
             inputTextField(_passwordStringController, 'Password',
                 obsecure: true),
             FractionallySizedBox(
@@ -48,6 +49,19 @@ class SignInPageState extends State<SignInPage> {
                   },
                   child: const Text('Log in')),
             ),
+            const Text('or'),
+            TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement<void, void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => RegisterPage(
+                        title: widget.title,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Register')),
             // TextButton(
             //     onPressed: () {
             //       try {

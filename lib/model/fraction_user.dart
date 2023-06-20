@@ -1,5 +1,5 @@
 class FractionUser {
-  String userName = '';
-  String emailId = '';
+  String name = '';
+  String email = '';
   String profilePicture = '';
 }

@@ -5,7 +5,7 @@ import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../services/app_state.dart';
-import '../services/sign_in_services.dart';
+import '../services/auth/auth.dart';
 
 class Profile extends StatefulWidget {
   const Profile({Key? key}) : super(key: key);

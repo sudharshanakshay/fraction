@@ -4,9 +4,9 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/add_expense.dart';
 import 'package:fraction/screens/profile.dart';
-import 'package:fraction/screens/authorise.dart';
+import 'package:fraction/screens/sign_in.dart';
 import 'package:fraction/screens/view_expense.dart';
-import 'package:fraction/services/sign_in_services.dart';
+import 'package:fraction/services/auth/auth.dart';
 import 'package:fraction/utils/fraction_app_color.dart';
 import 'package:provider/provider.dart';
 
