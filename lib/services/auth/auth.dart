@@ -35,7 +35,7 @@ Future<void> emailRegisterUser(
       email: emailAddress,
       password: password,
     );
-    addProfile(name, emailAddress, name);
+    createUserProfile(name, emailAddress, name);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       print('The password provided is too weak.');

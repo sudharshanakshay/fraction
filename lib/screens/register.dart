@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/sign_in.dart';
+import 'package:fraction/services/app_state.dart';
+import 'package:provider/provider.dart';
 
+import '../main.dart';
 import '../services/auth/auth.dart';
 import '../widgets/input_text_field.dart';
 
@@ -20,44 +23,47 @@ class RegisterPageState extends State<RegisterPage> {
 
   @override
   build(context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'Welcome to Fraction',
-              style: TextStyle(fontSize: 20),
-            ),
-            inputTextField(_nameStringController, 'Name'),
-            inputTextField(_emailStringController, 'Username, email'),
-            inputTextField(_passwordStringController, 'Password',
-                obsecure: true),
-            FractionallySizedBox(
-              widthFactor: 0.8,
-              child: FilledButton(
+    return Consumer<ApplicationState>(
+      builder: (context, appState, child) => appState.loggedIn ? const MyHomePage(title: 'Fraction',) :
+      Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Welcome to Fraction',
+                style: TextStyle(fontSize: 20),
+              ),
+              CustomInputFormField(controller:_nameStringController, label: 'Name'),
+              CustomInputFormField(controller: _emailStringController, label: 'Username, email'),
+              CustomInputFormField(controller: _passwordStringController, label: 'Password',
+                  obsecure: true),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: FilledButton(
+                    onPressed: () {
+                      emailRegisterUser(
+                          _nameStringController.text,
+                          _emailStringController.text,
+                          _passwordStringController.text);
+                    },
+                    child: const Text('Register')),
+              ),
+              const Text('or'),
+              TextButton(
                   onPressed: () {
-                    emailRegisterUser(
-                        _nameStringController.text,
-                        _emailStringController.text,
-                        _passwordStringController.text);
-                  },
-                  child: const Text('Register')),
-            ),
-            const Text('or'),
-            TextButton(
-                onPressed: () {
-                  Navigator.pushReplacement<void, void>(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => SignInPage(
-                        title: widget.title,
+                    Navigator.pushReplacement<void, void>(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => SignInPage(
+                          title: widget.title,
+                        ),
                       ),
-                    ),
-                  );
-                },
-                child: const Text('Log in')),
-          ],
+                    );
+                  },
+                  child: const Text('Log in')),
+            ],
+          ),
         ),
       ),
     );

@@ -64,8 +64,6 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
     return StreamBuilder(
         stream: FirebaseFirestore.instance.collection('expense').snapshots(),
         builder: (context, snapshot) {
-          print('------------------------------------------------------');
-          print(snapshot.data?.docs);
           if (!snapshot.hasData) {
             return const Center(child: Text('Loading ...'));
           }
