@@ -26,3 +26,12 @@ Future getCurrentUserProfile(email) async {
       if(data!=null) return data; 
     });
 }
+
+Future updateGroupIds(currentUserEmail, email) async{
+
+  final data = {
+    'email_ids': [email,],
+  };
+
+  FirebaseFirestore.instance.collection('profile').doc(currentUserEmail).set(data, SetOptions(merge: true));
+}
