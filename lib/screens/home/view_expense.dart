@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/services/app_state.dart';
+import 'package:fraction/app_state.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -66,55 +66,57 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(
-      builder: (context, appState, child) => appState.groupIds.isEmpty ? const CreateGroup() :
-       StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('expense').snapshots(),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: Text('Loading ...'));
-            }
-            return SingleChildScrollView(
-                child: Column(children: <Widget>[
-              abcWidget(),
-              ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(8),
-                  itemCount: snapshot.data?.docs.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              //eft: BorderSide(
-                              width: 2,
-                              color: getRandomColor(),
-                              //)
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          //height: 50,
-                          //color: Colors.amber[colorCodes[index % 3]],
-                          child: ListTile(
-                            leading: const Icon(Icons.person),
-                            title: Text(
-                                '${snapshot.data?.docs[index]['description']}'),
-                            //isThreeLine: true,
-                            subtitle: Text(DateFormat.yMMMd().format(snapshot
-                                .data?.docs[index]['time_stamp']
-                                .toDate())),
-    
-                            trailing: Text(
-                              '${snapshot.data?.docs[index]['cost']}/-',
-                              style: const TextStyle(fontSize: 20),
-                            ),
-                          ),
-                        ));
-                  })
-            ]));
-          }),
+      builder: (context, appState, child) => !appState.groupIds.isEmpty
+          ? const CreateGroup()
+          : StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection('expense').snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: Text('Loading ...'));
+                }
+                return SingleChildScrollView(
+                    child: Column(children: <Widget>[
+                  abcWidget(),
+                  ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(8),
+                      itemCount: snapshot.data?.docs.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  //eft: BorderSide(
+                                  width: 2,
+                                  color: getRandomColor(),
+                                  //)
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              //height: 50,
+                              //color: Colors.amber[colorCodes[index % 3]],
+                              child: ListTile(
+                                leading: const Icon(Icons.person),
+                                title: Text(
+                                    '${snapshot.data?.docs[index]['description']}'),
+                                //isThreeLine: true,
+                                subtitle: Text(DateFormat.yMMMd().format(
+                                    snapshot.data?.docs[index]['time_stamp']
+                                        .toDate())),
+
+                                trailing: Text(
+                                  '${snapshot.data?.docs[index]['cost']}/-',
+                                  style: const TextStyle(fontSize: 20),
+                                ),
+                              ),
+                            ));
+                      })
+                ]));
+              }),
     );
     //});
   }

@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fraction/services/auth/profile.dart';
+import 'package:fraction/services/profile/profile.services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 // ------------- option, sign-in / register with google federated  -------------
@@ -50,19 +50,6 @@ Future<void> emailRegisterUser(
 }
 
 // ------------- option, sign-in with email & password -------------
-
-Future<void> emailSignInUser(String emailAddress, String password) async {
-  try {
-    final credential = await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: emailAddress, password: password);
-  } on FirebaseAuthException catch (e) {
-    if (e.code == 'user-not-found') {
-      print('No user found for that email.');
-    } else if (e.code == 'wrong-password') {
-      print('Wrong password provided for that user.');
-    }
-  }
-}
 
 // ------------- option, sign-out -------------
 

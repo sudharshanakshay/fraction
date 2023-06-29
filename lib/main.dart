@@ -2,16 +2,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/add_expense.dart';
-import 'package:fraction/screens/app_drawer.dart';
-import 'package:fraction/screens/profile.dart';
-import 'package:fraction/screens/sign_in.dart';
-import 'package:fraction/screens/view_expense.dart';
-import 'package:fraction/services/auth/auth.dart';
+import 'package:fraction/screens/home/add_expense.dart';
+import 'package:fraction/screens/home/app_drawer.dart';
+import 'package:fraction/screens/profile/profile.dart';
+import 'package:fraction/screens/auth/sign_in.dart';
+import 'package:fraction/screens/home/view_expense.dart';
 import 'package:fraction/utils/fraction_app_color.dart';
 import 'package:provider/provider.dart';
 
-import 'services/app_state.dart';
+import 'app_state.dart';
 import 'firebase_options.dart';
 
 void main() async {

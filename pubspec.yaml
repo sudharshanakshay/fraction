@@ -41,6 +41,9 @@ dependencies:
   firebase_ui_auth: ^1.4.3
   firebase_auth: ^4.6.3
   google_sign_in: ^6.1.4
+  sqflite: ^2.2.8+4
+  path: ^1.8.3
+  shared_preferences: ^2.1.2
 
 dev_dependencies:
   flutter_test:

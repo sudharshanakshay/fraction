@@ -1,9 +1,9 @@
-
 import 'package:flutter/material.dart';
-import 'package:fraction/services/app_state.dart';
+import 'package:fraction/app_state.dart';
+import 'package:fraction/model/group.dart';
 import 'package:provider/provider.dart';
-import '../services/group.dart';
-import '../widgets/input_text_field.dart';
+import '../../services/profile/profile.services.dart';
+import '../../widgets/input_text_field.dart';
 
 class CreateGroup extends StatefulWidget {
   const CreateGroup({super.key});
@@ -25,12 +25,18 @@ class CreateGroupState extends State<CreateGroup> {
           CustomInputFormField(
               controller: _groupNameController, label: 'Group id'),
           FilledButton(onPressed: () {}, child: const Text('Join group')),
-          const Flexible(child: FractionallySizedBox(heightFactor: 0.1,)),
+          const Flexible(
+              child: FractionallySizedBox(
+            heightFactor: 0.1,
+          )),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text('Create group'),
-              const Flexible(child: FractionallySizedBox(widthFactor: 0.1,)),
+              const Flexible(
+                  child: FractionallySizedBox(
+                widthFactor: 0.1,
+              )),
               FilledButton(
                 child: const Icon(Icons.add),
                 onPressed: () {
@@ -46,9 +52,11 @@ class CreateGroupState extends State<CreateGroup> {
                                   CustomInputFormField(
                                       controller: _groupNameController,
                                       label: 'Group name'),
-                                  FilledButton(onPressed: (){
-                                    createGroup(_groupNameController.text, appState.currentUserEmail);
-                                  }, child: const Text('Create'))
+                                  FilledButton(
+                                      onPressed: () {
+                                        createGroup(_groupNameController.text);
+                                      },
+                                      child: const Text('Create'))
                                 ],
                               ),
                             ),
