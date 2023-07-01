@@ -84,4 +84,7 @@ Future<void> emailSignInUser(String currentUserEmail, String password) async {
 
 // ------------- option, sign-out -------------
 
-Future<void> signOut() async => await FirebaseAuth.instance.signOut();
+void signOut() async {
+  FirebaseAuth.instance.signOut();
+  clearProfileDetailsFromLocalStorage();
+}
