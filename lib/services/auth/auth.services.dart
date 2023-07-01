@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/profile.dart';
+import 'package:fraction/screens/profile/profile.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -57,22 +58,26 @@ Future<void> emailSignInUser(String currentUserEmail, String password) async {
   const bool kDebugMode = true;
 
   try {
-    final currentUserDetails = await FirebaseAuth.instance
+    await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: currentUserEmail, password: password)
-        .then((credentials) {
-      return getProfileDetailFromCloud(currentUserEmail);
+        .whenComplete(() async {
+      await getProfileDetailsFromCloud(currentUserEmail).then((data) {
+        // ProfileModel profile =
+        insertCurrentProfileToLocalDatabase(ProfileModel(
+            currentUserName: data['name'], currentUserEmail: currentUserEmail));
+      });
     });
 
     if (kDebugMode) {
       print('------------ printing current user details ------------');
-      print(currentUserDetails);
+      print(getProfileDetailsFromLocalDatabase());
     }
 
-    ProfileModel profile = ProfileModel(
-        currentUserName: currentUserDetails['name'],
-        currentUserEmail: currentUserEmail);
+    // ProfileModel profile = ProfileModel(
+    //     currentUserName: currentUserDetails['name'],
+    //     currentUserEmail: currentUserEmail);
 
-    await insertCurrentProfileToLocalDatabase(profile);
+    // await insertCurrentProfileToLocalDatabase(profile);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('No user found for that email.');

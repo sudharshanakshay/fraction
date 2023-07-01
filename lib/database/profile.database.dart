@@ -61,12 +61,17 @@ Future<ProfileModel> getProfileDetailsFromLocalDatabase() async {
     final List<Map<String, dynamic>> map =
         await db.query('profile').whenComplete(() => db.close());
 
+    if (kDebugMode) {
+      print('-------- printing retrieved values from local Database --------');
+      print(map);
+    }
+
     return ProfileModel(
         currentUserName: map[0]['currentUserName'],
         currentUserEmail: map[0]['currentUserEmail']);
   } catch (e) {
     if (kDebugMode) {
-      print('-------- error inserting profile --------');
+      print('-------- error retrieving profile data --------');
       print('-------- $e --------');
     }
   }
@@ -98,7 +103,7 @@ Future<void> clearProfileDetailsFromLocalStorage() async {
     });
   } catch (e) {
     if (kDebugMode) {
-      print('-------- error inserting profile --------');
+      print('-------- error clearing profile datac --------');
       print('-------- $e --------');
     }
   }

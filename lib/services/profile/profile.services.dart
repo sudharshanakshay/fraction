@@ -7,7 +7,7 @@ void createUserProfile(name, email, color) {
       .set(<String, dynamic>{'name': name, 'color': color, 'groupNames': []});
 }
 
-Future getProfileDetailFromCloud(email) async {
+Future getProfileDetailsFromCloud(email) async {
   bool kDebugMode = true;
 
   return FirebaseFirestore.instance
