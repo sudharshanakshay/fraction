@@ -75,7 +75,7 @@ Future<ProfileModel> getProfileDetailsFromLocalDatabase() async {
       currentUserName: "currentUserName", currentUserEmail: "currentUserEmail");
 }
 
-void clearProfileDetailsFromLocalStorage() async {
+Future<void> clearProfileDetailsFromLocalStorage() async {
   const bool kDebugMode = true;
   try {
     final database = openDatabase(
@@ -94,6 +94,7 @@ void clearProfileDetailsFromLocalStorage() async {
 
     db.delete('profile').whenComplete(() {
       print('-------- cleared profile data --------');
+      db.close();
     });
   } catch (e) {
     if (kDebugMode) {
