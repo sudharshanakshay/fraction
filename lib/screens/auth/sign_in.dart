@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/auth/register.dart';
+import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 import '../../app_state.dart';
 import '../../main.dart';
@@ -20,63 +21,56 @@ class SignInPageState extends State<SignInPage> {
 
   @override
   build(context) {
-    return Consumer<ApplicationState>(
-      builder: (context, appState, _) => appState.loggedIn
-          ? const MyHomePage(
-              title: 'Fraction',
-            )
-          : Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      'Welcome to Fraction',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    CustomInputFormField(
-                      controller: _emailStringController,
-                      label: 'Username, email',
-                    ),
-                    CustomInputFormField(
-                      controller: _passwordStringController,
-                      label: 'Password',
-                      obsecure: true,
-                    ),
-                    FractionallySizedBox(
-                      widthFactor: 0.8,
-                      child: FilledButton(
-                          onPressed: () {
-                            appState.emailSignInUser(
-                                _emailStringController.text,
-                                _passwordStringController.text);
-                          },
-                          child: const Text('Log in')),
-                    ),
-                    const Text('or'),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement<void, void>(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) => RegisterPage(
-                                title: widget.title,
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Text('Register')),
-                    // TextButton(
-                    //     onPressed: () {
-                    //       try {
-                    //         //signInWithGoogle();
-                    //       } catch (e) {}
-                    //     },
-                    //     child: Text('Button Google Sign In')),
-                  ],
-                ),
-              ),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Welcome to Fraction',
+              style: TextStyle(fontSize: 20),
             ),
+            CustomInputFormField(
+              controller: _emailStringController,
+              label: 'Username, email',
+            ),
+            CustomInputFormField(
+              controller: _passwordStringController,
+              label: 'Password',
+              obsecure: true,
+            ),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: FilledButton(
+                  onPressed: () {
+                    emailSignInUser(_emailStringController.text,
+                        _passwordStringController.text);
+                  },
+                  child: const Text('Log in')),
+            ),
+            const Text('or'),
+            TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement<void, void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => RegisterPage(
+                        title: widget.title,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Register')),
+            // TextButton(
+            //     onPressed: () {
+            //       try {
+            //         //signInWithGoogle();
+            //       } catch (e) {}
+            //     },
+            //     child: Text('Button Google Sign In')),
+          ],
+        ),
+      ),
     );
   }
 }

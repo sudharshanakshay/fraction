@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/model/profile.dart';
 import 'package:fraction/screens/auth/sign_in.dart';
+import 'package:fraction/services/auth/auth.services.dart';
 import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../app_state.dart';
-import '../../services/auth/auth.services.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({super.key, required this.profile});
+
+  final ProfileModel profile;
 
   @override
   createState() => _ProfileState();
@@ -62,14 +64,14 @@ class _ProfileState extends State<Profile> {
                         ),
                         const Flexible(
                             child: FractionallySizedBox(heightFactor: 0.05)),
-                        Consumer<ApplicationState>(
-                          builder: (context, appState, _) => const TextField(
-                              decoration: InputDecoration(label: Text("name"))),
-                        ),
-                        Consumer<ApplicationState>(
-                          builder: (context, appState, _) => TextField(
-                              decoration: InputDecoration(label: Text("name"))),
-                        ),
+                        TextField(
+                            decoration: InputDecoration(
+                                label: Text(widget.profile.currentUserName))),
+
+                        TextField(
+                            decoration: InputDecoration(
+                                label: Text(widget.profile.currentUserEmail))),
+
                         //const TextField(decoration: InputDecoration(label: Text('Name'))),
                         const Flexible(
                             child: FractionallySizedBox(heightFactor: 0.05)),
@@ -79,14 +81,11 @@ class _ProfileState extends State<Profile> {
 
                         const Flexible(
                             child: FractionallySizedBox(heightFactor: 0.05)),
-                        Consumer<ApplicationState>(
-                            builder: (context, appState, _) => FilledButton(
-                                onPressed: () {
-                                  //appState.signOut();
-                                  signOut();
-                                },
-                                child: const IconAndDetail(
-                                    Icons.logout, 'logout')))
+                        FilledButton(
+                            onPressed: () {
+                              signOut();
+                            },
+                            child: const IconAndDetail(Icons.logout, 'logout'))
                       ]),
                 ),
               ),

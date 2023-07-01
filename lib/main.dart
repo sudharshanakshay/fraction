@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/database/profile.database.dart';
+import 'package:fraction/model/profile.dart';
 import 'package:fraction/screens/home/add_expense.dart';
 import 'package:fraction/screens/home/app_drawer.dart';
 import 'package:fraction/screens/profile/profile.dart';
@@ -24,51 +26,67 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
+  final ProfileModel profile = await getProfileDetails();
+
   runApp(ChangeNotifierProvider(
     create: (context) => ApplicationState(),
-    builder: ((context, child) => const MyApp()),
+    builder: ((context, child) => MyApp(
+          profile: profile,
+        )),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.profile});
+
+  final ProfileModel profile;
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // TRY THIS: Try running your application with "flutter run". You'll see
-          // the application has a blue toolbar. Then, without quitting the app,
-          // try changing the seedColor in the colorScheme below to Colors.green
-          // and then invoke "hot reload" (save your changes or press the "hot
-          // reload" button in a Flutter-supported IDE, or press "r" if you used
-          // the command line to start the app).
-          //
-          // Notice that the counter didn't reset back to zero; the application
-          // state is not lost during the reload. To reset the state, use hot
-          // restart instead.
-          //
-          // This works for code too, not just values: Most code changes can be
-          // tested with just a hot reload.
-          colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
-          useMaterial3: true,
-        ),
-        //home: const MyHomePage(title: 'Fraction'),
-        home: Consumer<ApplicationState>(
-            builder: (context, appState, _) => !appState.loggedIn
-                ? const SignInPage(
-                    title: 'Fraction',
-                  )
-                : const MyHomePage(title: 'Fraction')));
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        // This is the theme of your application.
+        //
+        // TRY THIS: Try running your application with "flutter run". You'll see
+        // the application has a blue toolbar. Then, without quitting the app,
+        // try changing the seedColor in the colorScheme below to Colors.green
+        // and then invoke "hot reload" (save your changes or press the "hot
+        // reload" button in a Flutter-supported IDE, or press "r" if you used
+        // the command line to start the app).
+        //
+        // Notice that the counter didn't reset back to zero; the application
+        // state is not lost during the reload. To reset the state, use hot
+        // restart instead.
+        //
+        // This works for code too, not just values: Most code changes can be
+        // tested with just a hot reload.
+        colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
+        useMaterial3: true,
+      ),
+      //home: const MyHomePage(title: 'Fraction'),
+      home: Consumer<ApplicationState>(
+          builder: (context, appState, _) => !appState.loggedIn
+              ? const SignInPage(
+                  title: 'Fraction',
+                )
+              : MyHomePage(
+                  title: 'Fraction',
+                  profile: profile,
+                )),
+
+      routes: {
+        // '/': (context) => MyHomePage(profile: profile, title: 'Fraction'),
+        '/home': (context) => MyHomePage(profile: profile, title: 'Fraction'),
+        '/profile': (context) => Profile(profile: profile),
+      },
+    );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title, required this.profile});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -80,6 +98,7 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
+  final ProfileModel profile;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -123,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const Profile(),
+                      builder: (context) => Profile(profile: widget.profile),
                     ),
                   );
                 },

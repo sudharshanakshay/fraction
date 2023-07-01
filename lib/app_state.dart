@@ -54,21 +54,21 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  Future<void> emailSignInUser(String emailAddress, String password) async {
-    try {
-      final currentUserDetails = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: emailAddress, password: password)
-          .then((credentials) {
-        return getCurrentUserProfile(credentials.user?.email);
-      });
+  // Future<void> emailSignInUser(String emailAddress, String password) async {
+  //   try {
+  //     final currentUserDetails = await FirebaseAuth.instance
+  //         .signInWithEmailAndPassword(email: emailAddress, password: password)
+  //         .then((credentials) {
+  //       return getCurrentUserProfile(credentials.user?.email);
+  //     });
 
-      _groupIds = currentUserDetails['group_id'];
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    }
-  }
+  //     _groupIds = currentUserDetails['group_id'];
+  //   } on FirebaseAuthException catch (e) {
+  //     if (e.code == 'user-not-found') {
+  //       print('No user found for that email.');
+  //     } else if (e.code == 'wrong-password') {
+  //       print('Wrong password provided for that user.');
+  //     }
+  //   }
+  // }
 }

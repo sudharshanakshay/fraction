@@ -1,8 +1,8 @@
-class Profile {
-  String? currentUserName;
-  String? currentUserEmail;
+class ProfileModel {
+  String currentUserName;
+  String currentUserEmail;
 
-  Profile({required this.currentUserName, required this.currentUserEmail});
+  ProfileModel({required this.currentUserName, required this.currentUserEmail});
 
   Map<String, dynamic> toMap() {
     return {

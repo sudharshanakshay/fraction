@@ -23,57 +23,50 @@ class RegisterPageState extends State<RegisterPage> {
 
   @override
   build(context) {
-    return Consumer<ApplicationState>(
-      builder: (context, appState, child) => appState.loggedIn
-          ? const MyHomePage(
-              title: 'Fraction',
-            )
-          : Scaffold(
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const Text(
-                      'Welcome to Fraction',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    CustomInputFormField(
-                        controller: _nameStringController, label: 'Name'),
-                    CustomInputFormField(
-                        controller: _emailStringController,
-                        label: 'Username, email'),
-                    CustomInputFormField(
-                        controller: _passwordStringController,
-                        label: 'Password',
-                        obsecure: true),
-                    FractionallySizedBox(
-                      widthFactor: 0.8,
-                      child: FilledButton(
-                          onPressed: () {
-                            emailRegisterUser(
-                                _nameStringController.text,
-                                _emailStringController.text,
-                                _passwordStringController.text);
-                          },
-                          child: const Text('Register')),
-                    ),
-                    const Text('or'),
-                    TextButton(
-                        onPressed: () {
-                          Navigator.pushReplacement<void, void>(
-                            context,
-                            MaterialPageRoute<void>(
-                              builder: (BuildContext context) => SignInPage(
-                                title: widget.title,
-                              ),
-                            ),
-                          );
-                        },
-                        child: const Text('Log in')),
-                  ],
-                ),
-              ),
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'Welcome to Fraction',
+              style: TextStyle(fontSize: 20),
             ),
+            CustomInputFormField(
+                controller: _nameStringController, label: 'Name'),
+            CustomInputFormField(
+                controller: _emailStringController, label: 'Username, email'),
+            CustomInputFormField(
+                controller: _passwordStringController,
+                label: 'Password',
+                obsecure: true),
+            FractionallySizedBox(
+              widthFactor: 0.8,
+              child: FilledButton(
+                  onPressed: () {
+                    emailRegisterUser(
+                        _nameStringController.text,
+                        _emailStringController.text,
+                        _passwordStringController.text);
+                  },
+                  child: const Text('Register')),
+            ),
+            const Text('or'),
+            TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement<void, void>(
+                    context,
+                    MaterialPageRoute<void>(
+                      builder: (BuildContext context) => SignInPage(
+                        title: widget.title,
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Log in')),
+          ],
+        ),
+      ),
     );
   }
 }
