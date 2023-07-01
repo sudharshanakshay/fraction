@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/auth/register.dart';
 import 'package:fraction/services/auth/auth.services.dart';
-import 'package:provider/provider.dart';
-import '../../app_state.dart';
-import '../../main.dart';
 import '../../widgets/input_text_field.dart';
 
 class SignInPage extends StatefulWidget {

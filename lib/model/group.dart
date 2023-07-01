@@ -1,6 +1,14 @@
 class Group {
   String? groupName;
-  String? currentUserEmail;
 
-  Group({required this.groupName, required this.currentUserEmail});
+  Group({required this.groupName});
+
+  Map<String, dynamic> toMap() {
+    return {'groupName': groupName};
+  }
+
+  @override
+  String toString() {
+    return 'Group{groupName: $groupName}';
+  }
 }

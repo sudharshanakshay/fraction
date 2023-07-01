@@ -30,8 +30,6 @@ Future<void> emailRegisterUser(
     String name, String emailAddress, String password) async {
   //var credential;
 
-  List? _groupIds = [];
-
   try {
     print('register');
 
@@ -58,6 +56,8 @@ Future<void> emailRegisterUser(
 Future<void> emailSignInUser(String currentUserEmail, String password) async {
   List? _groupIds = [];
 
+  const bool kDebugMode = true;
+
   try {
     final currentUserDetails = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: currentUserEmail, password: password)
@@ -65,8 +65,10 @@ Future<void> emailSignInUser(String currentUserEmail, String password) async {
       return getCurrentUserProfile(currentUserEmail);
     });
 
-    print('------------ printing current user details ------------');
-    print(currentUserDetails);
+    if (kDebugMode) {
+      print('------------ printing current user details ------------');
+      print(currentUserDetails);
+    }
 
     ProfileModel profile = ProfileModel(
         currentUserName: currentUserDetails['name'],

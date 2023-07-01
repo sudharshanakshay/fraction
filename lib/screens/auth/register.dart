@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/auth/sign_in.dart';
-import 'package:fraction/app_state.dart';
-import 'package:provider/provider.dart';
-
-import '../../main.dart';
 import '../../services/auth/auth.services.dart';
 import '../../widgets/input_text_field.dart';
 

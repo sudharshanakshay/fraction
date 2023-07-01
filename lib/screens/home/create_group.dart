@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/model/group.dart';
+import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import '../../services/profile/profile.services.dart';
+import '../../services/group/group.services.dart';
 import '../../widgets/input_text_field.dart';
 
 class CreateGroup extends StatefulWidget {
@@ -54,9 +54,11 @@ class CreateGroupState extends State<CreateGroup> {
                                       label: 'Group name'),
                                   FilledButton(
                                       onPressed: () {
-                                        createGroup(_groupNameController.text);
+                                        updateCloudGroupNames(
+                                            _groupNameController.text);
                                       },
-                                      child: const Text('Create'))
+                                      child: const DetailAndIcon(
+                                          Icons.navigate_next, "Next")),
                                 ],
                               ),
                             ),

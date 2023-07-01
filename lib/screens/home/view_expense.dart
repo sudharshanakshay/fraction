@@ -66,7 +66,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(
-      builder: (context, appState, child) => !appState.groupIds.isEmpty
+      builder: (context, appState, child) => appState.groupIds.isEmpty
           ? const CreateGroup()
           : StreamBuilder(
               stream:

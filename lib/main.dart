@@ -26,7 +26,7 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  final ProfileModel profile = await getProfileDetails();
+  final ProfileModel profile = await getProfileDetailsFromLocalDatabase();
 
   runApp(ChangeNotifierProvider(
     create: (context) => ApplicationState(),

@@ -41,7 +41,7 @@ Future<void> insertProfile(ProfileModel profile) async {
   }
 }
 
-Future<ProfileModel> getProfileDetails() async {
+Future<ProfileModel> getProfileDetailsFromLocalDatabase() async {
   const bool kDebugMode = true;
   try {
     final database = openDatabase(
