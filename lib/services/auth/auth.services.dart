@@ -31,8 +31,6 @@ Future<void> emailRegisterUser(
   //var credential;
 
   try {
-    print('register');
-
     await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: emailAddress,
       password: password,
@@ -62,7 +60,7 @@ Future<void> emailSignInUser(String currentUserEmail, String password) async {
     final currentUserDetails = await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: currentUserEmail, password: password)
         .then((credentials) {
-      return getCurrentUserProfile(currentUserEmail);
+      return getProfileDetailFromCloud(currentUserEmail);
     });
 
     if (kDebugMode) {
@@ -74,7 +72,7 @@ Future<void> emailSignInUser(String currentUserEmail, String password) async {
         currentUserName: currentUserDetails['name'],
         currentUserEmail: currentUserEmail);
 
-    await insertProfile(profile);
+    await insertCurrentProfileToLocalDatabase(profile);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('No user found for that email.');

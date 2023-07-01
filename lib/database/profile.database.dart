@@ -3,7 +3,7 @@ import 'package:sqflite/sqflite.dart';
 
 import '../model/profile.dart';
 
-Future<void> insertProfile(ProfileModel profile) async {
+Future<void> insertCurrentProfileToLocalDatabase(ProfileModel profile) async {
   const bool kDebugMode = true;
 
   try {
@@ -73,4 +73,32 @@ Future<ProfileModel> getProfileDetailsFromLocalDatabase() async {
 
   return ProfileModel(
       currentUserName: "currentUserName", currentUserEmail: "currentUserEmail");
+}
+
+void clearProfileDetailsFromLocalStorage() async {
+  const bool kDebugMode = true;
+  try {
+    final database = openDatabase(
+      join(await getDatabasesPath(), 'profile'),
+      onCreate: (db, version) {
+        return db.execute('''  
+            CREATE TABLE IF NOT EXISTS profile(
+              currentUserName TEXT,
+              currentUserEmail TEXT
+            )
+        ''');
+      },
+      version: 1,
+    );
+    final db = await database;
+
+    db.delete('profile').whenComplete(() {
+      print('-------- cleared profile data --------');
+    });
+  } catch (e) {
+    if (kDebugMode) {
+      print('-------- error inserting profile --------');
+      print('-------- $e --------');
+    }
+  }
 }
