@@ -2,7 +2,7 @@ import 'package:fraction/model/group.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-void getGroup() async {
+void getGroupNamesFromLocalDatabase() async {
   final database = await openDatabase(join(await getDatabasesPath(), 'group'),
       onCreate: (db, version) {
     return db.execute('''

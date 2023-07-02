@@ -1,9 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/database/profile.database.dart';
-import 'package:fraction/model/profile.dart';
+import 'package:fraction/profile_state.dart';
+import 'package:fraction/screens/auth/register.dart';
 import 'package:fraction/screens/home/add_expense.dart';
 import 'package:fraction/screens/home/app_drawer.dart';
 import 'package:fraction/screens/profile/profile.dart';
@@ -26,20 +24,14 @@ void main() async {
 
   WidgetsFlutterBinding.ensureInitialized();
 
-  final ProfileModel profile = await getProfileDetailsFromLocalDatabase();
-
-  runApp(ChangeNotifierProvider(
-    create: (context) => ApplicationState(),
-    builder: ((context, child) => MyApp(
-          profile: profile,
-        )),
-  ));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => ProfileState()),
+    ChangeNotifierProvider(create: (context) => ApplicationState()),
+  ], child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key, required this.profile});
-
-  final ProfileModel profile;
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
@@ -65,28 +57,39 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
         useMaterial3: true,
       ),
-      //home: const MyHomePage(title: 'Fraction'),
+      // home: const MyHomePage(title: 'Fraction'),
       home: Consumer<ApplicationState>(
           builder: (context, appState, _) => !appState.loggedIn
-              ? const SignInPage(
+              ? const SignInPage()
+              : const MyHomePage(
                   title: 'Fraction',
-                )
-              : MyHomePage(
-                  title: 'Fraction',
-                  profile: profile,
                 )),
 
       routes: {
-        // '/': (context) => MyHomePage(profile: profile, title: 'Fraction'),
-        '/home': (context) => MyHomePage(profile: profile, title: 'Fraction'),
-        '/profile': (context) => Profile(profile: profile),
+        '/home': (context) => Consumer<ApplicationState>(
+            builder: (context, appState, _) => appState.loggedIn
+                ? const MyHomePage(title: 'Fraction')
+                : const SignInPage()),
+        '/profile': (context) => Consumer<ApplicationState>(
+            builder: (context, appState, _) =>
+                appState.loggedIn ? const Profile() : const SignInPage()),
+        '/logIn': (context) => Consumer<ApplicationState>(
+              builder: (context, value, child) => value.loggedIn
+                  ? const MyHomePage(title: 'Fraction')
+                  : const SignInPage(),
+            ),
+        '/register': (context) => Consumer<ApplicationState>(
+              builder: (context, value, child) => value.loggedIn
+                  ? const MyHomePage(title: 'Fraction')
+                  : const RegisterPage(),
+            )
       },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.profile});
+  const MyHomePage({super.key, required this.title});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -98,7 +101,6 @@ class MyHomePage extends StatefulWidget {
   // always marked "final".
 
   final String title;
-  final ProfileModel profile;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -114,10 +116,8 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
-    //SignInScreen(),
     ViewExpenseLayout(),
     AddExpenseLayout(),
-    //Profile(),
   ];
 
   @override
@@ -140,22 +140,13 @@ class _MyHomePageState extends State<MyHomePage> {
           actions: [
             IconButton(
                 onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => Profile(profile: widget.profile),
-                    ),
-                  );
+                  Navigator.pushNamed(context, '/profile');
                 },
                 icon: const Icon(Icons.person_outline_rounded)),
           ],
         ),
-        drawer: FractionAppDrawer(),
+        drawer: const FractionAppDrawer(),
         body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-        //body: SignInPage(),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {},
-        //   child: const Icon(Icons.add),
-        // ),
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -166,16 +157,9 @@ class _MyHomePageState extends State<MyHomePage> {
               icon: Icon(Icons.add),
               label: 'Add Expense',
             ),
-            // BottomNavigationBarItem(
-            //   icon: Icon(Icons.person_outline_rounded),
-            //   label: 'Profile',
-            // ),
           ],
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          //selectedItemColor: Colors.amber[800],
         ));
-
-    /**/
   }
 }

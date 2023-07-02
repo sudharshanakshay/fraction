@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/auth/register.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import '../../widgets/input_text_field.dart';
 
 class SignInPage extends StatefulWidget {
-  const SignInPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => SignInPageState();
@@ -48,14 +45,7 @@ class SignInPageState extends State<SignInPage> {
             const Text('or'),
             TextButton(
                 onPressed: () {
-                  Navigator.pushReplacement<void, void>(
-                    context,
-                    MaterialPageRoute<void>(
-                      builder: (BuildContext context) => RegisterPage(
-                        title: widget.title,
-                      ),
-                    ),
-                  );
+                  Navigator.pushReplacementNamed(context, '/register');
                 },
                 child: const Text('Register')),
             // TextButton(

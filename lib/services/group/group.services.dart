@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,7 +27,6 @@ void getCloudGroupNames() async {
         .then((DocumentSnapshot doc) {
       final docMap = doc.data() as Map<String, dynamic>;
       final cloudGroupNames = docMap['groupNames'];
-      // insertGroupIntoLocalDatabase();
       return cloudGroupNames;
     }, onError: (e) => print("Error getting the data"));
   });
@@ -63,7 +64,8 @@ Future updateCloudGroupNames(groupNameToAdd) async {
           .set(data, SetOptions(merge: true))
           .whenComplete(() {
         if (kDebugMode) {
-          print('-------- groupName $groupNameToAdd added successfuly');
+          print(
+              '-------- groupName $groupNameToAdd added successfuly --------');
         }
       });
     });

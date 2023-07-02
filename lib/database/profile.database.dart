@@ -31,6 +31,7 @@ Future<void> insertCurrentProfileToLocalDatabase(ProfileModel profile) async {
       db.close();
       if (kDebugMode) {
         print('-------- insert successful --------');
+        getProfileDetailsFromLocalDatabase();
       }
     });
   } catch (e) {
@@ -99,6 +100,7 @@ Future<void> clearProfileDetailsFromLocalStorage() async {
 
     db.delete('profile').whenComplete(() {
       print('-------- cleared profile data --------');
+      getProfileDetailsFromLocalDatabase();
       db.close();
     });
   } catch (e) {

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/profile.dart';
-import 'package:fraction/screens/profile/profile.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -27,16 +26,21 @@ Future<UserCredential> signInWithGoogle() async {
 
 // ------------- option, register with email & password -------------
 
-Future<void> emailRegisterUser(
-    String name, String emailAddress, String password) async {
-  //var credential;
-
+Future<void> emailRegisterUser(String inputValueUserName,
+    String inputValueUserEmail, String inputValueUserPassword) async {
   try {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: emailAddress,
-      password: password,
-    );
-    createUserProfile(name, emailAddress, name);
+    await FirebaseAuth.instance
+        .createUserWithEmailAndPassword(
+      email: inputValueUserEmail,
+      password: inputValueUserPassword,
+    )
+        .whenComplete(() async {
+      insertCurrentProfileToLocalDatabase(ProfileModel(
+          currentUserName: inputValueUserName,
+          currentUserEmail: inputValueUserEmail));
+    });
+    createUserProfile(
+        inputValueUserName, inputValueUserEmail, inputValueUserName);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       print('The password provided is too weak.');
@@ -52,19 +56,22 @@ Future<void> emailRegisterUser(
 
 // ------------- option, sign-in with email & password -------------
 
-Future<void> emailSignInUser(String currentUserEmail, String password) async {
+Future<void> emailSignInUser(
+    String inputValueUserEmail, String inputValueUserPassword) async {
   List? _groupIds = [];
 
   const bool kDebugMode = true;
 
   try {
     await FirebaseAuth.instance
-        .signInWithEmailAndPassword(email: currentUserEmail, password: password)
+        .signInWithEmailAndPassword(
+            email: inputValueUserEmail, password: inputValueUserPassword)
         .whenComplete(() async {
-      await getProfileDetailsFromCloud(currentUserEmail).then((data) {
+      await getProfileDetailsFromCloud(inputValueUserEmail).then((data) {
         // ProfileModel profile =
         insertCurrentProfileToLocalDatabase(ProfileModel(
-            currentUserName: data['name'], currentUserEmail: currentUserEmail));
+            currentUserName: data['name'],
+            currentUserEmail: inputValueUserEmail));
       });
     });
 
@@ -72,12 +79,6 @@ Future<void> emailSignInUser(String currentUserEmail, String password) async {
       print('------------ printing current user details ------------');
       print(getProfileDetailsFromLocalDatabase());
     }
-
-    // ProfileModel profile = ProfileModel(
-    //     currentUserName: currentUserDetails['name'],
-    //     currentUserEmail: currentUserEmail);
-
-    // await insertCurrentProfileToLocalDatabase(profile);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('No user found for that email.');
