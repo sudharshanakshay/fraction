@@ -4,22 +4,14 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fraction/database/profile.database.dart';
+import 'package:fraction/model/group.dart';
 import 'package:fraction/model/profile.dart';
 
-// void createGroup(groupName) async {
-//   await getProfileDetailsFromLocalDatabase().then((ProfileModel profile) {
-//     FirebaseFirestore.instance
-//     .collection('profile')
-//     .doc(profile.currentUserEmail)
-//     .set(data)
-//   });
-// }
-
-void getCloudGroupNames() async {
+Future<GroupModel> getCloudGroupNames() async {
   bool kDebugMode = true;
 
-  final cloudProfile =
-      await getProfileDetailsFromLocalDatabase().then((ProfileModel profile) {
+  return await getProfileDetailsFromLocalDatabase()
+      .then((ProfileModel profile) {
     FirebaseFirestore.instance
         .collection('profile')
         .doc(profile.currentUserEmail)
@@ -27,14 +19,14 @@ void getCloudGroupNames() async {
         .then((DocumentSnapshot doc) {
       final docMap = doc.data() as Map<String, dynamic>;
       final cloudGroupNames = docMap['groupNames'];
-      return cloudGroupNames;
+      if (kDebugMode) {
+        print('-------- geting group Ids from cloud --------');
+        print('Debug: $cloudGroupNames');
+      }
+      return GroupModel(groupName: cloudGroupNames);
     }, onError: (e) => print("Error getting the data"));
+    return GroupModel(groupName: []);
   });
-
-  if (kDebugMode) {
-    print('-------- geting group Ids from cloud --------');
-    print('Debug: $cloudProfile');
-  }
 }
 
 Future updateCloudGroupNames(groupNameToAdd) async {

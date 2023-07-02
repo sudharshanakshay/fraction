@@ -2,7 +2,7 @@ import 'package:fraction/model/group.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-void getGroupNamesFromLocalDatabase() async {
+Future<void> getGroupNamesFromLocalDatabase() async {
   final database = await openDatabase(join(await getDatabasesPath(), 'group'),
       onCreate: (db, version) {
     return db.execute('''
@@ -14,10 +14,12 @@ void getGroupNamesFromLocalDatabase() async {
 
   final db = await database;
 
-  Map group = await db.query('group') as Map<String, dynamic>;
+  Map groupTable = await db.query('group') as Map<String, dynamic>;
+  print(groupTable);
+  // return GroupModel(groupName: groupTable['groupNames']);
 }
 
-void insertGroupIntoLocalDatabase(Group group) async {
+void insertGroupIntoLocalDatabase(GroupModel listGroupNames) async {
   final database = await openDatabase(join(await getDatabasesPath(), 'group'),
       onCreate: (db, version) {
     return db.execute('''
@@ -29,7 +31,9 @@ void insertGroupIntoLocalDatabase(Group group) async {
 
   final db = await database;
 
-  await db.insert('group', group.toMap()).onError((error, stackTrace) {
-    throw {'error': error};
-  });
+  for (String group in listGroupNames.toMap()['groupNames']) {
+    await db.insert('group', {'groupName': group}).onError((error, stackTrace) {
+      throw {'error': error};
+    });
+  }
 }

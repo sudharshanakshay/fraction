@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fraction/database/group.database.dart';
 import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/profile.dart';
+import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -72,13 +74,16 @@ Future<void> emailSignInUser(
         insertCurrentProfileToLocalDatabase(ProfileModel(
             currentUserName: data['name'],
             currentUserEmail: inputValueUserEmail));
+        insertGroupIntoLocalDatabase(data['groupNames']);
+      }).whenComplete(() {
+        if (kDebugMode) {
+          print('------------ printing current user details ------------');
+          print(getProfileDetailsFromLocalDatabase());
+          print('------------ priting current user groupNames ------------');
+          print(getGroupNamesFromLocalDatabase());
+        }
       });
     });
-
-    if (kDebugMode) {
-      print('------------ printing current user details ------------');
-      print(getProfileDetailsFromLocalDatabase());
-    }
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
       print('No user found for that email.');

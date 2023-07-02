@@ -1,7 +1,7 @@
-class Group {
-  String? groupName;
+class GroupModel {
+  List<String> groupName;
 
-  Group({required this.groupName});
+  GroupModel({required this.groupName});
 
   Map<String, dynamic> toMap() {
     return {'groupName': groupName};
