@@ -31,7 +31,6 @@ Future<void> insertCurrentProfileToLocalDatabase(ProfileModel profile) async {
       db.close();
       if (kDebugMode) {
         print('-------- insert successful --------');
-        getProfileDetailsFromLocalDatabase();
       }
     });
   } catch (e) {

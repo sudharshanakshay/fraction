@@ -23,9 +23,9 @@ Future<GroupModel> getCloudGroupNames() async {
         print('-------- geting group Ids from cloud --------');
         print('Debug: $cloudGroupNames');
       }
-      return GroupModel(groupName: cloudGroupNames);
+      return GroupModel(groupNames: cloudGroupNames);
     }, onError: (e) => print("Error getting the data"));
-    return GroupModel(groupName: []);
+    return GroupModel(groupNames: []);
   });
 }
 

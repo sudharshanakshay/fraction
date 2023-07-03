@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fraction/database/group.database.dart';
 import 'package:fraction/database/profile.database.dart';
+import 'package:fraction/model/group.dart';
 import 'package:fraction/model/profile.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
@@ -71,10 +72,12 @@ Future<void> emailSignInUser(
         .whenComplete(() async {
       await getProfileDetailsFromCloud(inputValueUserEmail).then((data) {
         // ProfileModel profile =
+        print(data);
         insertCurrentProfileToLocalDatabase(ProfileModel(
             currentUserName: data['name'],
             currentUserEmail: inputValueUserEmail));
-        insertGroupIntoLocalDatabase(data['groupNames']);
+        insertGroupIntoLocalDatabase(
+            GroupModel(groupNames: data['groupNames']));
       }).whenComplete(() {
         if (kDebugMode) {
           print('------------ printing current user details ------------');

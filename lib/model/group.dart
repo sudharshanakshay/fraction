@@ -1,14 +1,14 @@
 class GroupModel {
-  List<String> groupName;
+  List<dynamic> groupNames;
 
-  GroupModel({required this.groupName});
+  GroupModel({required this.groupNames});
 
   Map<String, dynamic> toMap() {
-    return {'groupName': groupName};
+    return {'groupName': groupNames};
   }
 
   @override
   String toString() {
-    return 'Group{groupName: $groupName}';
+    return 'Group{groupName: $groupNames}';
   }
 }

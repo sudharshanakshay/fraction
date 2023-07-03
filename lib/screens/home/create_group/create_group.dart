@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/database/group.database.dart';
 import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
-import '../../services/group/group.services.dart';
-import '../../widgets/input_text_field.dart';
+import '../../../services/group/group.services.dart';
+import '../../../widgets/input_text_field.dart';
 
 class CreateGroup extends StatefulWidget {
   const CreateGroup({super.key});
@@ -24,7 +25,11 @@ class CreateGroupState extends State<CreateGroup> {
           // const Text('Join group'),
           CustomInputFormField(
               controller: _groupNameController, label: 'Group id'),
-          FilledButton(onPressed: () {}, child: const Text('Join group')),
+          FilledButton(
+              onPressed: () {
+                getGroupNamesFromLocalDatabase();
+              },
+              child: const Text('Join group')),
           const Flexible(
               child: FractionallySizedBox(
             heightFactor: 0.1,

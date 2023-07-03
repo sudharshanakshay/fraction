@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/group_state.dart';
+import 'package:fraction/model/group.dart';
 import 'package:fraction/profile_state.dart';
 import 'package:fraction/screens/auth/register.dart';
 import 'package:fraction/screens/home/add_expense.dart';
@@ -8,13 +10,17 @@ import 'package:fraction/screens/profile/profile.dart';
 import 'package:fraction/screens/auth/sign_in.dart';
 import 'package:fraction/screens/home/view_expense.dart';
 import 'package:fraction/utils/fraction_app_color.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
+import 'database/group.database.dart';
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  insertGroupIntoLocalDatabase(GroupModel(groupNames: ['hello']));
 
   // This is the last thing you need to add.
 
@@ -25,6 +31,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => GroupState()),
     ChangeNotifierProvider(create: (context) => ProfileState()),
     ChangeNotifierProvider(create: (context) => ApplicationState()),
   ], child: const MyApp()));

@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-import 'create_group.dart';
+import 'create_group/create_group.dart';
 
 class ViewExpenseLayout extends StatefulWidget {
   const ViewExpenseLayout({Key? key}) : super(key: key);
