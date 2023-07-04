@@ -3,7 +3,6 @@ import 'package:fraction/database/group.database.dart';
 import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/group.dart';
 import 'package:fraction/model/profile.dart';
-import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -63,7 +62,7 @@ Future<void> emailSignInUser(
     String inputValueUserEmail, String inputValueUserPassword) async {
   List? _groupIds = [];
 
-  const bool kDebugMode = true;
+  const bool kDebugMode = false;
 
   try {
     await FirebaseAuth.instance
@@ -72,7 +71,9 @@ Future<void> emailSignInUser(
         .whenComplete(() async {
       await getProfileDetailsFromCloud(inputValueUserEmail).then((data) {
         // ProfileModel profile =
-        print(data);
+        if (kDebugMode) {
+          print(data);
+        }
         insertCurrentProfileToLocalDatabase(ProfileModel(
             currentUserName: data['name'],
             currentUserEmail: inputValueUserEmail));
@@ -80,9 +81,9 @@ Future<void> emailSignInUser(
             GroupModel(groupNames: data['groupNames']));
       }).whenComplete(() {
         if (kDebugMode) {
-          print('------------ printing current user details ------------');
+          print('---- printing current user details (auth.services) ----');
           print(getProfileDetailsFromLocalDatabase());
-          print('------------ priting current user groupNames ------------');
+          print('---- priting current user groupNames (auth.services) ----');
           print(getGroupNamesFromLocalDatabase());
         }
       });

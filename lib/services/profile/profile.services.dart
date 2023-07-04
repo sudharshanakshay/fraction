@@ -17,7 +17,7 @@ Future getProfileDetailsFromCloud(email) async {
       .then((DocumentSnapshot doc) {
     final data = doc.data();
     if (kDebugMode) {
-      print('debug: $data');
+      print('---- Debug:Cloud $data (profile.services) ----');
     }
     if (data != null) {
       return data;

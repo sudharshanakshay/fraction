@@ -11,18 +11,18 @@ Future<GroupModel> getGroupNamesFromLocalDatabase() async {
 }
 
 void insertGroupIntoLocalDatabase(GroupModel listGroupNames) async {
-  print('---- insertGroupTolocalDatabase func, $listGroupNames ----');
-  final database = await openDatabase(join(await getDatabasesPath(), 'group'),
-      onCreate: (db, version) {
-    return db.execute('CREATE TABLE IF NOT EXISTS group (groupName TEXT)');
-  }, version: 1);
+  // print('---- insertGroupTolocalDatabase func, $listGroupNames ----');
+  // final database = await openDatabase(join(await getDatabasesPath(), 'group'),
+  //     onCreate: (db, version) {
+  //   return db.execute('CREATE TABLE IF NOT EXISTS group (groupName TEXT)');
+  // }, version: 1);
 
-  final db = database;
+  // final db = database;
 
-  for (String group in listGroupNames.toMap()['groupNames']) {
-    print(' ---- inserting $group into group table ----');
-    await db.insert('group', {'groupName': group}).onError((error, stackTrace) {
-      throw {'error': error};
-    });
-  }
+  // for (String group in listGroupNames.toMap()['groupNames']) {
+  //   print(' ---- inserting $group into group table ----');
+  //   await db.insert('group', {'groupName': group}).onError((error, stackTrace) {
+  //     throw {'error': error};
+  //   });
+  // }
 }

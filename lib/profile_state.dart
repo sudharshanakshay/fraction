@@ -16,6 +16,10 @@ class ProfileState extends ChangeNotifier {
         .then((ProfileModel profileModel) {
       _currentUserName = profileModel.currentUserName;
       _currentUserEmail = profileModel.currentUserEmail;
+      print('---- printing data from profile state ---');
+      print(profileModel.currentUserEmail);
+
+      notifyListeners();
     });
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/widgets/widgets.dart';
 import '../../services/auth/auth.services.dart';
 import '../../widgets/input_text_field.dart';
 
@@ -28,7 +29,7 @@ class RegisterPageState extends State<RegisterPage> {
             CustomInputFormField(
                 controller: _nameStringController, label: 'Name'),
             CustomInputFormField(
-                controller: _emailStringController, label: 'Username, email'),
+                controller: _emailStringController, label: 'Email'),
             CustomInputFormField(
                 controller: _passwordStringController,
                 label: 'Password',
@@ -42,7 +43,7 @@ class RegisterPageState extends State<RegisterPage> {
                         _emailStringController.text,
                         _passwordStringController.text);
                   },
-                  child: const Text('Register')),
+                  child: const DetailAndIcon(Icons.navigate_next, 'Register')),
             ),
             const Text('or'),
             TextButton(

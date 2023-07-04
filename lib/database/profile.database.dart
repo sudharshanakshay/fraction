@@ -1,6 +1,5 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
 import '../model/profile.dart';
 
 Future<void> insertCurrentProfileToLocalDatabase(ProfileModel profile) async {
@@ -30,13 +29,13 @@ Future<void> insertCurrentProfileToLocalDatabase(ProfileModel profile) async {
         .whenComplete(() {
       db.close();
       if (kDebugMode) {
-        print('-------- insert successful --------');
+        print('---- insert successful ----');
       }
     });
   } catch (e) {
     if (kDebugMode) {
-      print('-------- error inserting profile --------');
-      print('-------- $e --------');
+      print('---- error inserting profile ----');
+      print('---- $e ----');
     }
   }
 }
@@ -62,7 +61,8 @@ Future<ProfileModel> getProfileDetailsFromLocalDatabase() async {
         await db.query('profile').whenComplete(() => db.close());
 
     if (kDebugMode) {
-      print('-------- printing retrieved values from local Database --------');
+      print(
+          '---- printing retrieved values from local Database (profile.database) ----');
       print(map);
     }
 
@@ -71,8 +71,8 @@ Future<ProfileModel> getProfileDetailsFromLocalDatabase() async {
         currentUserEmail: map[0]['currentUserEmail']);
   } catch (e) {
     if (kDebugMode) {
-      print('-------- error retrieving profile data --------');
-      print('-------- $e --------');
+      print('---- error retrieving profile data (profile.database) ----');
+      print('---- $e ----');
     }
   }
 
@@ -98,14 +98,15 @@ Future<void> clearProfileDetailsFromLocalStorage() async {
     final db = await database;
 
     db.delete('profile').whenComplete(() {
-      print('-------- cleared profile data --------');
-      getProfileDetailsFromLocalDatabase();
+      if (kDebugMode) {
+        print('---- cleared profile data (profile.database) ----');
+      }
       db.close();
     });
   } catch (e) {
     if (kDebugMode) {
-      print('-------- error clearing profile datac --------');
-      print('-------- $e --------');
+      print('---- error clearing profile data (profile.database)  ----');
+      print('---- $e ----');
     }
   }
 }

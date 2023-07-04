@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/app_state.dart';
+import 'package:fraction/group_state.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -65,9 +65,10 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApplicationState>(
-      builder: (context, appState, child) => appState.groupIds.isEmpty
+    return Consumer<GroupState>(
+      builder: (context, groupState, child) => groupState.groupNames.isEmpty
           ? const CreateGroup()
+          // ? Text(groupState.groupNames[0])
           : StreamBuilder(
               stream:
                   FirebaseFirestore.instance.collection('expense').snapshots(),
