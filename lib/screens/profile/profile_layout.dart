@@ -4,7 +4,6 @@ import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../services/expense/expense.services.dart';
-import '../../services/profile/profile.services.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});

@@ -10,6 +10,16 @@ void deleteExpense(docId) {
       );
 }
 
+Stream<QuerySnapshot> getCurrentUserExpenseCollection(
+    {required currentUserEmail}) {
+  return FirebaseFirestore.instance
+      .collection('expense')
+      .where('groupName', isEqualTo: 'akshaya')
+      .where('emailAddress', whereIn: [currentUserEmail])
+      .orderBy('timeStamp', descending: true)
+      .snapshots();
+}
+
 Future addExpenseToCloud({required String description, required cost}) async {
   await getProfileDetailsFromLocalDatabase().then((ProfileModel profileModel) {
     return FirebaseFirestore.instance
@@ -17,6 +27,7 @@ Future addExpenseToCloud({required String description, required cost}) async {
         .add(<String, dynamic>{
       'description': description,
       'cost': cost,
+      'userName': profileModel.currentUserName,
       'emailAddress': profileModel.currentUserEmail,
       'groupName': 'akshaya',
       'timeStamp': DateTime.now()

@@ -83,9 +83,22 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                 title: Text(
                                     '${snapshot.data?.docs[index]['description']}'),
                                 //isThreeLine: true,
-                                subtitle: Text(DateFormat.yMMMd().format(
-                                    snapshot.data?.docs[index]['timeStamp']
+                                subtitle: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    Text(
+                                        snapshot.data?.docs[index]['userName']),
+                                    const Text(','),
+                                    const Flexible(
+                                      child: FractionallySizedBox(
+                                        widthFactor: 0.01,
+                                      ),
+                                    ),
+                                    Text(DateFormat.yMMMd().format(snapshot
+                                        .data?.docs[index]['timeStamp']
                                         .toDate())),
+                                  ],
+                                ),
 
                                 trailing: Text(
                                   '${snapshot.data?.docs[index]['cost']}/-',
