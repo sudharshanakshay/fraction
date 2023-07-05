@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/expense/expense.services.dart';
+
 class AddExpensePage extends StatelessWidget {
   const AddExpensePage({super.key});
 
@@ -18,8 +20,8 @@ class AddExpenseLayout extends StatefulWidget {
 }
 
 class _AddExpenseLayoutState extends State<AddExpenseLayout> {
-  final descriptionController = TextEditingController();
-  final costController = TextEditingController();
+  final _descriptionTextController = TextEditingController();
+  final _costTextController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,7 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
           widthFactor: 0.7,
           //heightFactor: 0.2,
           child: TextField(
-              controller: descriptionController,
+              controller: _descriptionTextController,
               decoration: const InputDecoration(
                 label: Text('Item Name'),
               ))),
@@ -37,22 +39,25 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
           widthFactor: 0.7,
           //heightFactor: 0.2,
           child: TextField(
-              controller: costController,
+              controller: _costTextController,
               decoration: const InputDecoration(
                 label: Text('Item Cost'),
               ))),
       const SizedBox(height: 10),
       FilledButton(
           onPressed: () {
+            addExpenseToCloud(
+                description: _descriptionTextController.text,
+                cost: _costTextController.text);
             //print('------------------------------------');
             //print(descriptionController.text);
-            var data = FirebaseFirestore.instance
-                .collection('expense')
-                .add(<String, dynamic>{
-              'description': descriptionController.text,
-              'cost': costController.text,
-              'time_stamp': DateTime.now()
-            });
+            // var data = FirebaseFirestore.instance
+            //     .collection('expense')
+            //     .add(<String, dynamic>{
+            //   'description': descriptionController.text,
+            //   'cost': costController.text,
+            //   'time_stamp': DateTime.now()
+            // });
 
             //print("return data : $data");
           },
@@ -62,8 +67,8 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
 
   @override
   dispose() {
-    descriptionController.dispose();
-    costController.dispose();
+    _descriptionTextController.dispose();
+    _costTextController.dispose();
     super.dispose();
   }
 }
