@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/app_state.dart';
 import 'package:fraction/group_state.dart';
 import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';

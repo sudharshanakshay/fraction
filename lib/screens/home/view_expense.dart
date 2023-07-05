@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/group_state.dart';
 import 'dart:math';
@@ -16,28 +15,6 @@ class ViewExpenseLayout extends StatefulWidget {
 }
 
 class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
-  List<Map<String, dynamic>> expenses = [
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-    {'description': 'name_1', 'cost': 'cost_1', 'time_stamp': '2023-06-01'},
-  ];
-
-  //final List<String> expenses = <String>['A', 'B', 'C'];
   final List<int> colorCodes = <int>[600, 500, 100];
 
   Widget abcWidget() {
@@ -95,7 +72,8 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                 border: Border.all(
                                   //eft: BorderSide(
                                   width: 2,
-                                  color: getRandomColor(),
+                                  // color: getRandomColor(),
+                                  color: Colors.blue.shade100,
                                   //)
                                 ),
                                 borderRadius: BorderRadius.circular(12),

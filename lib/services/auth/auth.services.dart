@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:fraction/database/group.database.dart';
 import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/group.dart';
@@ -45,12 +46,12 @@ Future<void> emailRegisterUser(String inputValueUserName,
         inputValueUserName, inputValueUserEmail, inputValueUserName);
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
-      print('The password provided is too weak.');
+      debugPrint('The password provided is too weak.');
     } else if (e.code == 'email-already-in-use') {
-      print('The account already exists for that email.');
+      debugPrint('The account already exists for that email.');
     }
   } catch (e) {
-    print(e);
+    rethrow;
   }
 
   //return credential;
@@ -60,9 +61,7 @@ Future<void> emailRegisterUser(String inputValueUserName,
 
 Future<void> emailSignInUser(
     String inputValueUserEmail, String inputValueUserPassword) async {
-  List? _groupIds = [];
-
-  const bool kDebugMode = false;
+  const bool kDebugMode = true;
 
   try {
     await FirebaseAuth.instance
@@ -72,27 +71,20 @@ Future<void> emailSignInUser(
       await getProfileDetailsFromCloud(inputValueUserEmail).then((data) {
         // ProfileModel profile =
         if (kDebugMode) {
-          print(data);
+          debugPrint(data);
         }
         insertCurrentProfileToLocalDatabase(ProfileModel(
             currentUserName: data['name'],
             currentUserEmail: inputValueUserEmail));
         insertGroupIntoLocalDatabase(
             GroupModel(groupMembers: data['groupNames']));
-      }).whenComplete(() {
-        if (kDebugMode) {
-          print('---- printing current user details (auth.services) ----');
-          print(getProfileDetailsFromLocalDatabase());
-          print('---- priting current user groupNames (auth.services) ----');
-          print(getGroupNamesFromLocalDatabase());
-        }
       });
     });
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found') {
-      print('No user found for that email.');
+      debugPrint('No user found for that email.');
     } else if (e.code == 'wrong-password') {
-      print('Wrong password provided for that user.');
+      debugPrint('Wrong password provided for that user.');
     }
   }
 }

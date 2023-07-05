@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/group.dart';
@@ -32,10 +30,7 @@ Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
         .collection('expense')
         .where('groupName', isEqualTo: 'akshaya')
         .where('emailAddress', whereIn: groupMembers)
-        .orderBy('timeStamp')
+        .orderBy('timeStamp', descending: true)
         .snapshots();
   });
-  //     .then((doc) {
-
-  // });
 }

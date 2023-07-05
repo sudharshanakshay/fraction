@@ -69,13 +69,6 @@ class MyApp extends StatelessWidget {
                 )),
 
       routes: {
-        '/home': (context) => Consumer<ApplicationState>(
-            builder: (context, appState, _) => appState.loggedIn
-                ? const MyHomePage(title: 'Fraction')
-                : const SignInPage()),
-        '/profile': (context) => Consumer<ApplicationState>(
-            builder: (context, appState, _) =>
-                appState.loggedIn ? const Profile() : const SignInPage()),
         '/logIn': (context) => Consumer<ApplicationState>(
               builder: (context, value, child) => value.loggedIn
                   ? const MyHomePage(title: 'Fraction')
@@ -85,7 +78,18 @@ class MyApp extends StatelessWidget {
               builder: (context, value, child) => value.loggedIn
                   ? const MyHomePage(title: 'Fraction')
                   : const RegisterPage(),
-            )
+            ),
+        '/home': (context) => Consumer<ApplicationState>(
+            builder: (context, appState, _) => appState.loggedIn
+                ? const MyHomePage(title: 'Fraction')
+                : const SignInPage()),
+        '/profile': (context) => Consumer<ApplicationState>(
+            builder: (context, appState, _) =>
+                appState.loggedIn ? const Profile() : const SignInPage()),
+        '/addExpense': (context) => Consumer<ApplicationState>(
+            builder: (context, appState, _) => appState.loggedIn
+                ? const AddExpenseLayout()
+                : const SignInPage())
       },
     );
   }
@@ -110,18 +114,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0;
+  // int _selectedIndex = 0;
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  // void _onItemTapped(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //   });
+  // }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    ViewExpenseLayout(),
-    AddExpenseLayout(),
-  ];
+  // static const List<Widget> _widgetOptions = <Widget>[
+  //   ViewExpenseLayout(),
+  //   AddExpenseLayout(),
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -132,40 +136,48 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          // TRY THIS: Try changing the color here to a specific color (to
-          // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-          // change color while the other colors stay the same.
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/profile');
-                },
-                icon: const Icon(Icons.person_outline_rounded)),
-          ],
-        ),
-        // drawer: const FractionAppDrawer(),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: () {},
-        // ),
-        body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.menu_rounded),
-              label: 'Expense',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add),
-              label: 'Add Expense',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-        ));
+      appBar: AppBar(
+        // TRY THIS: Try changing the color here to a specific color (to
+        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
+        // change color while the other colors stay the same.
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/profile');
+              },
+              icon: const Icon(Icons.person_outline_rounded)),
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+          Navigator.pushNamed(context, '/addExpense');
+        },
+      ),
+      // drawer: const FractionAppDrawer(),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {},
+      // ),
+      body: const Center(child: ViewExpenseLayout()),
+      // body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.menu_rounded),
+      //       label: 'Expense',
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.add),
+      //       label: 'Add Expense',
+      //     ),
+      //   ],
+      //   currentIndex: _selectedIndex,
+      //   onTap: _onItemTapped,
+      // )
+    );
   }
 }
