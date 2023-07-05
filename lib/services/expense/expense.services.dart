@@ -3,6 +3,13 @@ import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/group.dart';
 import 'package:fraction/model/profile.dart';
 
+void deleteExpense(docId) {
+  FirebaseFirestore.instance.collection('expense').doc(docId).delete().then(
+        (doc) => print("Document deleted"),
+        onError: (e) => print("Error updating document $e"),
+      );
+}
+
 Future addExpenseToCloud({required String description, required cost}) async {
   await getProfileDetailsFromLocalDatabase().then((ProfileModel profileModel) {
     return FirebaseFirestore.instance

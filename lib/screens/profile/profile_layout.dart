@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/profile_state.dart';
 import 'package:fraction/services/auth/auth.services.dart';
-import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../../services/expense/expense.services.dart';
 import '../../services/profile/profile.services.dart';
 
 class Profile extends StatefulWidget {
@@ -32,6 +32,25 @@ class _ProfileState extends State<Profile> {
         ],
       ),
     );
+  }
+
+  Future<String?> confirmDeleteExpense() {
+    return showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Delete Alert'),
+              content: const Text('do you want to delete expense ?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text('OK'),
+                ),
+              ],
+            ));
   }
 
   @override
@@ -127,19 +146,33 @@ class _ProfileState extends State<Profile> {
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            // leading: const Icon(Icons.person),
-                            title: Text(
-                                '${snapshot.data?.docs[index]['description']}'),
-                            //isThreeLine: true,
-                            subtitle: Text(DateFormat.yMMMd().format(snapshot
-                                .data?.docs[index]['timeStamp']
-                                .toDate())),
-
-                            trailing: Text(
-                              '${snapshot.data?.docs[index]['cost']}/-',
-                              style: const TextStyle(fontSize: 20),
-                            ),
-                          );
+                              // leading: const Icon(Icons.person),
+                              title: Text(
+                                  '${snapshot.data?.docs[index]['description']}'),
+                              //isThreeLine: true,
+                              subtitle: Text(DateFormat.yMMMd().format(snapshot
+                                  .data?.docs[index]['timeStamp']
+                                  .toDate())),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(
+                                    '${snapshot.data?.docs[index]['cost']}/-',
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  IconButton(
+                                      onPressed: () async {
+                                        await confirmDeleteExpense()
+                                            .then((msg) {
+                                          if (msg == 'OK') {
+                                            deleteExpense(
+                                                snapshot.data?.docs[index].id);
+                                          }
+                                        });
+                                      },
+                                      icon: const Icon(Icons.delete))
+                                ],
+                              ));
                         },
                       )
                     ]),
