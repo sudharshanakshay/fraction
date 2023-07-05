@@ -73,11 +73,15 @@ Future<void> emailSignInUser(
         if (kDebugMode) {
           debugPrint(data);
         }
-        insertCurrentProfileToLocalDatabase(ProfileModel(
-            currentUserName: data['name'],
-            currentUserEmail: inputValueUserEmail));
-        insertGroupIntoLocalDatabase(
-            GroupModel(groupMembers: data['groupNames']));
+        try {
+          insertCurrentProfileToLocalDatabase(ProfileModel(
+              currentUserName: data['name'],
+              currentUserEmail: inputValueUserEmail));
+          insertGroupIntoLocalDatabase(
+              GroupModel(groupMembers: data['groupNames']));
+        } catch (e) {
+          print(e);
+        }
       });
     });
   } on FirebaseAuthException catch (e) {

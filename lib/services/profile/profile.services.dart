@@ -1,5 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+Stream<QuerySnapshot> getCurrentUserExpenseCollection(
+    {required currentUserEmail}) {
+  return FirebaseFirestore.instance
+      .collection('expense')
+      .where('groupName', isEqualTo: 'akshaya')
+      .where('emailAddress', whereIn: [currentUserEmail])
+      .orderBy('timeStamp', descending: true)
+      .snapshots();
+}
+
 void createUserProfile(name, email, color) {
   FirebaseFirestore.instance
       .collection('profile')

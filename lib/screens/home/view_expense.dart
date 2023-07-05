@@ -48,9 +48,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
           ? const CreateGroup()
           // ? Text(groupState.groupNames[0])
           : StreamBuilder(
-              stream:
-                  // FirebaseFirestore.instance.collection('expense').snapshots(),
-                  getExpenseCollectionFromCloud(),
+              stream: getExpenseCollectionFromCloud(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: Text('Loading ...'));
