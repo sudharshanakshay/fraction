@@ -13,8 +13,8 @@ class GroupState extends ChangeNotifier {
   init() async {
     await getCloudGroupNames().then((GroupModel groupModel) {
       print('---- print data (group_state) ----');
-      print(' ---- ${groupModel.groupNames} (group_state) ----');
-      _groupNames = groupModel.groupNames;
+      print(' ---- ${groupModel.groupMembers} (group_state) ----');
+      _groupNames = groupModel.groupMembers;
     });
   }
 

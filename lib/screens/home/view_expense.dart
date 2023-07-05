@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../../services/expense/expense.services.dart';
 import 'create_group/create_group.dart';
 
 class ViewExpenseLayout extends StatefulWidget {
@@ -71,7 +72,8 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
           // ? Text(groupState.groupNames[0])
           : StreamBuilder(
               stream:
-                  FirebaseFirestore.instance.collection('expense').snapshots(),
+                  // FirebaseFirestore.instance.collection('expense').snapshots(),
+                  getExpenseCollectionFromCloud(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
                   return const Center(child: Text('Loading ...'));
@@ -106,7 +108,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                     '${snapshot.data?.docs[index]['description']}'),
                                 //isThreeLine: true,
                                 subtitle: Text(DateFormat.yMMMd().format(
-                                    snapshot.data?.docs[index]['time_stamp']
+                                    snapshot.data?.docs[index]['timeStamp']
                                         .toDate())),
 
                                 trailing: Text(

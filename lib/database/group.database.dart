@@ -7,7 +7,7 @@ Future<GroupModel> getGroupNamesFromLocalDatabase() async {
   final db = database;
 
   Map groupTable = await db.query('group') as Map<String, dynamic>;
-  return GroupModel(groupNames: groupTable['groupNames']);
+  return GroupModel(groupMembers: groupTable['groupNames']);
 }
 
 void insertGroupIntoLocalDatabase(GroupModel listGroupNames) async {

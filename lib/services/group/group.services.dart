@@ -44,7 +44,7 @@ Future<GroupModel> getCloudGroupNames() async {
   print('---- checking before returning to group state ----');
   print('----Debug:cloud $groupNames ----');
 
-  return GroupModel(groupNames: groupNames);
+  return GroupModel(groupMembers: groupNames);
 }
 
 // Future<void> joinCloudGroup(inputGroupName) async {

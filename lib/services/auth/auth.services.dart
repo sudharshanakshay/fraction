@@ -78,7 +78,7 @@ Future<void> emailSignInUser(
             currentUserName: data['name'],
             currentUserEmail: inputValueUserEmail));
         insertGroupIntoLocalDatabase(
-            GroupModel(groupNames: data['groupNames']));
+            GroupModel(groupMembers: data['groupNames']));
       }).whenComplete(() {
         if (kDebugMode) {
           print('---- printing current user details (auth.services) ----');
