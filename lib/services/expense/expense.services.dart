@@ -3,14 +3,18 @@ import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/group.dart';
 import 'package:fraction/model/profile.dart';
 
-void addExpenseToCloud({required String description, required cost}) async {
+Future addExpenseToCloud({required String description, required cost}) async {
   await getProfileDetailsFromLocalDatabase().then((ProfileModel profileModel) {
-    FirebaseFirestore.instance.collection('expense').add(<String, dynamic>{
+    return FirebaseFirestore.instance
+        .collection('expense')
+        .add(<String, dynamic>{
       'description': description,
       'cost': cost,
       'emailAddress': profileModel.currentUserEmail,
       'groupName': 'akshaya',
       'timeStamp': DateTime.now()
+    }).onError((error, stackTrace) {
+      throw error!;
     });
   });
 }

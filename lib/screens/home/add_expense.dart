@@ -50,21 +50,13 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
                   ))),
           const SizedBox(height: 10),
           FilledButton(
-              onPressed: () {
+              onPressed: () async {
+                const snakBar = SnackBar(content: Text('adding expense ...'));
+                ScaffoldMessenger.of(context).showSnackBar(snakBar);
                 addExpenseToCloud(
-                    description: _descriptionTextController.text,
-                    cost: _costTextController.text);
-                //print('------------------------------------');
-                //print(descriptionController.text);
-                // var data = FirebaseFirestore.instance
-                //     .collection('expense')
-                //     .add(<String, dynamic>{
-                //   'description': descriptionController.text,
-                //   'cost': costController.text,
-                //   'time_stamp': DateTime.now()
-                // });
-
-                //print("return data : $data");
+                        description: _descriptionTextController.text,
+                        cost: _costTextController.text)
+                    .whenComplete(() => Navigator.pop(context));
               },
               child: const Text('Save')),
         ]),
