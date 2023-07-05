@@ -13,6 +13,9 @@ class ApplicationState extends ChangeNotifier {
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
 
+  String _currentUserEmail = '';
+  String get currentUserEmail => _currentUserEmail;
+
   // Map profileInfo;
 
   // ------------- Firebase Initailization -------------
@@ -28,6 +31,7 @@ class ApplicationState extends ChangeNotifier {
     FirebaseAuth.instance.userChanges().listen((user) {
       if (user != null) {
         _loggedIn = true;
+        _currentUserEmail = user.email!;
       } else {
         _loggedIn = false;
       }

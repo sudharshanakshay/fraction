@@ -19,6 +19,13 @@ Future addExpenseToCloud({required String description, required cost}) async {
   });
 }
 
+Stream<DocumentSnapshot> getGroupNamesFromProfile(currentUserEmail) {
+  return FirebaseFirestore.instance
+      .collection('profile')
+      .doc(currentUserEmail)
+      .snapshots();
+}
+
 Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
   return FirebaseFirestore.instance
       .collection('group')

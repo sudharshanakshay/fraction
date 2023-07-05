@@ -53,8 +53,6 @@ Future<void> emailRegisterUser(String inputValueUserName,
   } catch (e) {
     rethrow;
   }
-
-  //return credential;
 }
 
 // ------------- option, sign-in with email & password -------------
@@ -71,7 +69,7 @@ Future<void> emailSignInUser(
       await getProfileDetailsFromCloud(inputValueUserEmail).then((data) {
         // ProfileModel profile =
         if (kDebugMode) {
-          debugPrint(data);
+          print(data);
         }
         try {
           insertCurrentProfileToLocalDatabase(ProfileModel(

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/group_state.dart';
+import 'package:fraction/app_state.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
 import '../../services/expense/expense.services.dart';
 import 'create_group/create_group.dart';
 
@@ -43,11 +42,12 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GroupState>(
-      builder: (context, groupState, child) => groupState.groupNames.isEmpty
-          ? const CreateGroup()
-          // ? Text(groupState.groupNames[0])
-          : StreamBuilder(
+    return Consumer<ApplicationState>(
+      builder: (context, value, _) => StreamBuilder(
+        stream: getGroupNamesFromProfile(value.currentUserEmail),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) return const CreateGroup();
+          return StreamBuilder(
               stream: getExpenseCollectionFromCloud(),
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
@@ -95,9 +95,10 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                             ));
                       })
                 ]));
-              }),
+              });
+        },
+      ),
     );
-    //});
   }
 }
 
