@@ -1,9 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:fraction/database/group.database.dart';
-import 'package:fraction/database/profile.database.dart';
-import 'package:fraction/model/group.dart';
-import 'package:fraction/model/profile.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 

@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fraction/model/group.dart';
-import 'package:fraction/model/profile.dart';
 
 void deleteExpense(docId) {
   FirebaseFirestore.instance.collection('expense').doc(docId).delete().then(

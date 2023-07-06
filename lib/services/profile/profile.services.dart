@@ -23,6 +23,7 @@ Stream getGroupNamesFromProfile(currentUserEmail,
     for (var groupName in doc.data()?['groupNames']) {
       if (groupName == currentGroupName) return Stream.value(groupName);
     }
+    return const Stream.empty();
   });
 }
 
