@@ -24,7 +24,14 @@ class CreateGroupState extends State<CreateGroup> {
           // const Text('Join group'),
           CustomInputFormField(
               controller: _groupNameController, label: 'Group id'),
-          FilledButton(onPressed: () {}, child: const Text('Join group')),
+          FilledButton(
+              onPressed: () {
+                joinCloudGroup(
+                  currentUserEmail: appState.currentUserEmail,
+                  inputGroupName: _groupNameController.text,
+                );
+              },
+              child: const Text('Join group')),
           const Flexible(
               child: FractionallySizedBox(
             heightFactor: 0.1,
@@ -55,10 +62,13 @@ class CreateGroupState extends State<CreateGroup> {
                                   FilledButton(
                                       onPressed: () {
                                         updateGroupNameToProfileCollection(
-                                            _groupNameController.text);
+                                            currentUserEmail:
+                                                appState.currentUserEmail,
+                                            groupNameToAdd:
+                                                _groupNameController.text);
                                       },
                                       child: const DetailAndIcon(
-                                          Icons.navigate_next, "Next")),
+                                          Icons.navigate_next, "create")),
                                 ],
                               ),
                             ),

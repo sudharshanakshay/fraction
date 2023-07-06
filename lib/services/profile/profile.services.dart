@@ -1,28 +1,36 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void createUserProfile(name, email, color) {
+void createUserProfile(
+    {required userName, required currentUserEmail, required color}) {
   FirebaseFirestore.instance
       .collection('profile')
-      .doc(email)
-      .set(<String, dynamic>{'name': name, 'color': color, 'groupNames': []});
+      .doc(currentUserEmail)
+      .set(<String, dynamic>{
+    'userName': userName,
+    'emailAddress': currentUserEmail,
+    'color': color,
+    'groupNames': []
+  });
 }
 
-Future getProfileDetailsFromCloud(email) async {
-  bool kDebugMode = true;
-
+Stream getGroupNamesFromProfile(currentUserEmail,
+    {currentGroupName = 'akshaya'}) {
   return FirebaseFirestore.instance
       .collection('profile')
-      .doc(email)
-      .get()
-      .then((DocumentSnapshot doc) {
-    final data = doc.data();
-    if (kDebugMode) {
-      print('---- Debug:Cloud $data (profile.services) ----');
-    }
-    if (data != null) {
-      return data;
-    } else {
-      return null;
+      .doc(currentUserEmail)
+      .snapshots()
+      .asyncExpand((doc) {
+    for (var groupName in doc.data()?['groupNames']) {
+      if (groupName == currentGroupName) return Stream.value(groupName);
     }
   });
+}
+
+Stream<DocumentSnapshot> getProfileDetailsFromCloud(
+    {required currentUserEmail}) {
+  return FirebaseFirestore.instance
+      .collection('profile')
+      .doc(currentUserEmail)
+      .get()
+      .asStream();
 }

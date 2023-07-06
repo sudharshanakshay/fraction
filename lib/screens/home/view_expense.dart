@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../services/expense/expense.services.dart';
+import '../../services/profile/profile.services.dart';
 import 'create_group/create_group.dart';
 
 class ViewExpenseLayout extends StatefulWidget {
@@ -17,98 +18,125 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   final List<int> colorCodes = <int>[600, 500, 100];
 
   Widget abcWidget() {
-    return Padding(
-        padding: const EdgeInsets.all(16),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(
-              width: 2,
-              color: getRandomColor(),
-            ),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          padding: const EdgeInsets.all(10),
+    return Consumer<ApplicationState>(
+      builder: (context, appState, _) => StreamBuilder(
+          stream: getGroupAccountDetails(
+              currentUserEmail: appState.currentUserEmail),
+          builder: (context, snapshot) {
+            return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 2,
+                      color: getRandomColor(),
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.all(10),
 
-          height: 100,
-          //color: Colors.amber[colorCodes[index % 3]],
-          child: const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                const Flexible(child: FractionallySizedBox(widthFactor: 0.01)),
-                const Flexible(child: FractionallySizedBox(widthFactor: 0.01)),
-              ]),
-        ));
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data?['groupMembers'].length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return ListTile(
+                        leading: Text(
+                            '${snapshot.data?['groupMembers'][index]['userName']}'),
+                      );
+                    },
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                  ),
+
+                  // height: 100,
+                  //color: Colors.amber[colorCodes[index % 3]],
+                  // child: const Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //     children: <Widget>[
+                  //       const Flexible(child: FractionallySizedBox(widthFactor: 0.01)),
+                  //       const Flexible(child: FractionallySizedBox(widthFactor: 0.01)),
+                  //     ]),
+                ));
+          }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(
-      builder: (context, value, _) => StreamBuilder(
-        stream: getGroupNamesFromProfile(value.currentUserEmail),
+      builder: (context, appState, _) => StreamBuilder(
+        stream: getGroupNamesFromProfile(appState.currentUserEmail),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const CreateGroup();
-          return StreamBuilder(
-              stream: getExpenseCollectionFromCloud(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: Text('Loading ...'));
-                }
-                return SingleChildScrollView(
-                    child: Column(children: <Widget>[
-                  abcWidget(),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      padding: const EdgeInsets.all(8),
-                      itemCount: snapshot.data?.docs.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  //eft: BorderSide(
-                                  width: 2,
-                                  // color: getRandomColor(),
-                                  color: Colors.blue.shade100,
-                                  //)
+          if (!snapshot.hasData) {
+            print('printing snapshot ${snapshot.data}');
+            return const CreateGroup();
+          } else {
+            return StreamBuilder(
+                stream: getExpenseCollectionFromCloud(),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    print(snapshot.hasData);
+                    return const Center(child: Text('Loading ...'));
+                  }
+                  return SingleChildScrollView(
+                      child: Column(children: <Widget>[
+                    abcWidget(),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(8),
+                        itemCount: snapshot.data?.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Padding(
+                              padding: const EdgeInsets.all(8),
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    //eft: BorderSide(
+                                    width: 2,
+                                    // color: getRandomColor(),
+                                    color: Colors.blue.shade100,
+                                    //)
+                                  ),
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              //height: 50,
-                              //color: Colors.amber[colorCodes[index % 3]],
-                              child: ListTile(
-                                leading: const Icon(Icons.person),
-                                title: Text(
-                                    '${snapshot.data?.docs[index]['description']}'),
-                                //isThreeLine: true,
-                                subtitle: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    Text(
-                                        snapshot.data?.docs[index]['userName']),
-                                    const Text(','),
-                                    const Flexible(
-                                      child: FractionallySizedBox(
-                                        widthFactor: 0.01,
+                                //height: 50,
+                                //color: Colors.amber[colorCodes[index % 3]],
+                                child: ListTile(
+                                  leading: const Icon(Icons.person),
+                                  title: Text(
+                                      '${snapshot.data?.docs[index]['description']}'),
+                                  //isThreeLine: true,
+                                  subtitle: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(snapshot.data?.docs[index]
+                                          ['userName']),
+                                      const Text(','),
+                                      const Flexible(
+                                        child: FractionallySizedBox(
+                                          widthFactor: 0.01,
+                                        ),
                                       ),
-                                    ),
-                                    Text(DateFormat.yMMMd().format(snapshot
-                                        .data?.docs[index]['timeStamp']
-                                        .toDate())),
-                                  ],
-                                ),
+                                      Text(DateFormat.yMMMd().format(snapshot
+                                          .data?.docs[index]['timeStamp']
+                                          .toDate())),
+                                    ],
+                                  ),
 
-                                trailing: Text(
-                                  '${snapshot.data?.docs[index]['cost']}/-',
-                                  style: const TextStyle(fontSize: 20),
+                                  trailing: Text(
+                                    '${snapshot.data?.docs[index]['cost']}/-',
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
                                 ),
-                              ),
-                            ));
-                      })
-                ]));
-              });
+                              ));
+                        })
+                  ]));
+                });
+          }
         },
       ),
     );

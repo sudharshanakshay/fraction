@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:fraction/app_state.dart';
+import 'package:provider/provider.dart';
 import '../../services/expense/expense.services.dart';
 
 class AddExpensePage extends StatelessWidget {
@@ -29,37 +30,40 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Add Expense'),
       ),
-      body: Center(
-        child: Column(children: <Widget>[
-          FractionallySizedBox(
-              widthFactor: 0.7,
-              //heightFactor: 0.2,
-              child: TextField(
-                  controller: _descriptionTextController,
-                  decoration: const InputDecoration(
-                    label: Text('Item Name'),
-                  ))),
-          const SizedBox(height: 10),
-          FractionallySizedBox(
-              widthFactor: 0.7,
-              //heightFactor: 0.2,
-              child: TextField(
-                  controller: _costTextController,
-                  decoration: const InputDecoration(
-                    label: Text('Item Cost'),
-                  ))),
-          const SizedBox(height: 10),
-          FilledButton(
-              onPressed: () async {
-                const snakBar = SnackBar(content: Text('adding expense ...'));
-                ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                addExpenseToCloud(
-                        description: _descriptionTextController.text,
-                        cost: _costTextController.text)
-                    .whenComplete(() => Navigator.pop(context));
-              },
-              child: const Text('Save')),
-        ]),
+      body: Consumer<ApplicationState>(
+        builder: (context, appState, _) => Center(
+          child: Column(children: <Widget>[
+            FractionallySizedBox(
+                widthFactor: 0.7,
+                //heightFactor: 0.2,
+                child: TextField(
+                    controller: _descriptionTextController,
+                    decoration: const InputDecoration(
+                      label: Text('Item Name'),
+                    ))),
+            const SizedBox(height: 10),
+            FractionallySizedBox(
+                widthFactor: 0.7,
+                //heightFactor: 0.2,
+                child: TextField(
+                    controller: _costTextController,
+                    decoration: const InputDecoration(
+                      label: Text('Item Cost'),
+                    ))),
+            const SizedBox(height: 10),
+            FilledButton(
+                onPressed: () async {
+                  const snakBar = SnackBar(content: Text('adding expense ...'));
+                  ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                  addExpenseToCloud(
+                          currentUserEmail: appState.currentUserEmail,
+                          description: _descriptionTextController.text,
+                          cost: _costTextController.text)
+                      .whenComplete(() => Navigator.pop(context));
+                },
+                child: const Text('Save')),
+          ]),
+        ),
       ),
     );
   }

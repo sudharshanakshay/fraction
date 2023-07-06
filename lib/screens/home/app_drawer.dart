@@ -12,7 +12,7 @@ class FractionAppDrawer extends StatefulWidget {
 class FractionAppDrawerState extends State<FractionAppDrawer> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<GroupState>(
+    return Consumer(
       builder: (context, groupState, _) => Drawer(
         child: SingleChildScrollView(
           child: Column(

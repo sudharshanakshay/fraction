@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/profile_state.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../services/expense/expense.services.dart';
+import '../../services/profile/profile.services.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -56,8 +57,8 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     // ProfileModel profileState = getProfileDetailsFromLocalDatabase();
 
-    return Consumer<ProfileState>(
-      builder: (context, profileState, _) => Scaffold(
+    return Consumer<ApplicationState>(
+      builder: (context, appState, _) => Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text('Profile'),
@@ -73,7 +74,7 @@ class _ProfileState extends State<Profile> {
         ),
         body: StreamBuilder(
             stream: getCurrentUserExpenseCollection(
-                currentUserEmail: profileState.currentUserEmail),
+                currentUserEmail: appState.currentUserEmail),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: Text('Loading ...'));
@@ -118,9 +119,29 @@ class _ProfileState extends State<Profile> {
 
                       // const Flexible(
                       //     child: FractionallySizedBox(heightFactor: 0.05)),
-                      Text(profileState.currentUserName),
 
-                      Text(profileState.currentUserEmail),
+                      StreamBuilder<Object>(
+                          stream: getProfileDetailsFromCloud(
+                              currentUserEmail: appState.currentUserEmail),
+                          builder: (context, profileDetailSnapshot) {
+                            if (profileDetailSnapshot.hasData) {
+                              return Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text('${snapshot.data}'),
+                                  Text(appState.currentUserEmail),
+                                ],
+                              );
+                            } else {
+                              return const Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text('Loading..'),
+                                  Text('Loading..'),
+                                ],
+                              );
+                            }
+                          }),
 
                       // //const TextField(decoration: InputDecoration(label: Text('Name'))),
                       // const Flexible(

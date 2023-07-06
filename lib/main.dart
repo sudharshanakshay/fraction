@@ -1,7 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/group_state.dart';
-import 'package:fraction/profile_state.dart';
 import 'package:fraction/screens/auth/register.dart';
 import 'package:fraction/screens/home/add_expense.dart';
 import 'package:fraction/screens/profile/profile_layout.dart';
@@ -27,8 +25,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (context) => GroupState()),
-    ChangeNotifierProvider(create: (context) => ProfileState()),
     ChangeNotifierProvider(create: (context) => ApplicationState()),
   ], child: const MyApp()));
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/group_state.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import '../../../services/group/group.services.dart';
@@ -18,8 +18,8 @@ class CreateGroupState extends State<CreateGroup> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GroupState>(
-      builder: (context, groupState, _) => Column(
+    return Consumer<ApplicationState>(
+      builder: (context, appState, _) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           // const Text('Join group'),
@@ -27,7 +27,9 @@ class CreateGroupState extends State<CreateGroup> {
               controller: _joinGroupNameController, label: 'Group name'),
           FilledButton(
               onPressed: () {
-                groupState.joinCloudGroup(_joinGroupNameController.text);
+                joinCloudGroup(
+                    inputGroupName: _joinGroupNameController.text,
+                    currentUserEmail: appState.currentUserEmail);
                 //getGroupNamesFromLocalDatabase();
               },
               child: const Text('Join group')),
@@ -61,7 +63,10 @@ class CreateGroupState extends State<CreateGroup> {
                                   FilledButton(
                                       onPressed: () {
                                         createCloudGroup(
-                                            _newGroupNameController.text);
+                                            currentUserEmail:
+                                                appState.currentUserEmail,
+                                            inputGroupName:
+                                                _newGroupNameController.text);
                                       },
                                       child: const DetailAndIcon(
                                           Icons.navigate_next, "Next")),

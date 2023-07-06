@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fraction/database/profile.database.dart';
 import 'package:fraction/model/group.dart';
 import 'package:fraction/model/profile.dart';
 
@@ -8,6 +7,13 @@ void deleteExpense(docId) {
         (doc) => print("Document deleted"),
         onError: (e) => print("Error updating document $e"),
       );
+}
+
+Stream<DocumentSnapshot> getGroupAccountDetails({required currentUserEmail}) {
+  return FirebaseFirestore.instance
+      .collection('group')
+      .doc('akshaya')
+      .snapshots();
 }
 
 Stream<QuerySnapshot> getCurrentUserExpenseCollection(
@@ -20,15 +26,20 @@ Stream<QuerySnapshot> getCurrentUserExpenseCollection(
       .snapshots();
 }
 
-Future addExpenseToCloud({required String description, required cost}) async {
-  await getProfileDetailsFromLocalDatabase().then((ProfileModel profileModel) {
-    return FirebaseFirestore.instance
-        .collection('expense')
-        .add(<String, dynamic>{
+Future addExpenseToCloud(
+    {required currentUserEmail,
+    required String description,
+    required cost}) async {
+  FirebaseFirestore.instance
+      .collection('profile')
+      .doc(currentUserEmail)
+      .get()
+      .then((doc) {
+    FirebaseFirestore.instance.collection('expense').add(<String, dynamic>{
       'description': description,
       'cost': cost,
-      'userName': profileModel.currentUserName,
-      'emailAddress': profileModel.currentUserEmail,
+      'userName': doc.data()?['userName'],
+      'emailAddress': doc.data()?['emailAddress'],
       'groupName': 'akshaya',
       'timeStamp': DateTime.now()
     }).onError((error, stackTrace) {
@@ -37,28 +48,34 @@ Future addExpenseToCloud({required String description, required cost}) async {
   });
 }
 
-Stream<DocumentSnapshot> getGroupNamesFromProfile(currentUserEmail) {
-  return FirebaseFirestore.instance
-      .collection('profile')
-      .doc(currentUserEmail)
-      .snapshots();
-}
-
 Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
   return FirebaseFirestore.instance
       .collection('group')
       .doc('akshaya')
-      .withConverter(
-          fromFirestore: (snapShot, _) => GroupModel.fromJson(snapShot.data()!),
-          toFirestore: (groupModel, _) => groupModel.toJson())
+      // .withConverter(
+      //     fromFirestore: (snapShot, _) => GroupModel.fromJson(snapShot.data()!),
+      //     toFirestore: (groupModel, _) => groupModel.toMemberEmails())
       .snapshots()
       .asyncExpand((doc) {
-    final groupMembers = doc.data()?.toList();
+    // final listOfMemberAccount = doc.data();
+
+    // final groupMembers = doc.data()?.toList();
+
+    // GroupModel groupModel = GroupModel(
+    //     groupMembers: doc.data()?['groupMembers'],
+    //     groupName: doc.data()?['groupName']);
+
+    List groupMemberEmailList = [];
+    for (var groupMemberObj in doc.data()?['groupMembers']) {
+      groupMemberEmailList.add(groupMemberObj['userEmail']);
+    }
+
+    print(groupMemberEmailList);
 
     return FirebaseFirestore.instance
         .collection('expense')
         .where('groupName', isEqualTo: 'akshaya')
-        .where('emailAddress', whereIn: groupMembers)
+        .where('emailAddress', whereIn: groupMemberEmailList)
         .orderBy('timeStamp', descending: true)
         .snapshots();
   });
