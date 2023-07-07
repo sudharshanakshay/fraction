@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/widgets/account_pallet.dart';
+import 'package:fraction/widgets/expense_pallet.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -17,12 +19,12 @@ class ViewExpenseLayout extends StatefulWidget {
 class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   final List<int> colorCodes = <int>[600, 500, 100];
 
-  Widget abcWidget() {
-    return Consumer<ApplicationState>(
-      builder: (context, appState, _) => StreamBuilder(
-          stream: getGroupAccountDetails(
-              currentUserEmail: appState.currentUserEmail),
-          builder: (context, snapshot) {
+  Widget accountDetailWidget({required currentUserEmail}) {
+    return StreamBuilder(
+        // stream: null,
+        stream: getGroupAccountDetails(currentUserEmail: currentUserEmail),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
             return Padding(
                 padding: const EdgeInsets.all(16),
                 child: Container(
@@ -34,33 +36,23 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.all(10),
-
                   child: GridView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: snapshot.data?['groupMembers'].length,
                     itemBuilder: (BuildContext context, int index) {
-                      return ListTile(
-                        leading: Text(
-                            '${snapshot.data?['groupMembers'][index]['userName']}'),
-                      );
+                      return AccountPallet(
+                          streamSnapshot: snapshot, index: index);
                     },
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2),
+                            crossAxisCount: 2, childAspectRatio: (1 / .4)),
                   ),
-
-                  // height: 100,
-                  //color: Colors.amber[colorCodes[index % 3]],
-                  // child: const Row(
-                  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //     children: <Widget>[
-                  //       const Flexible(child: FractionallySizedBox(widthFactor: 0.01)),
-                  //       const Flexible(child: FractionallySizedBox(widthFactor: 0.01)),
-                  //     ]),
                 ));
-          }),
-    );
+          } else {
+            return Container();
+          }
+        });
   }
 
   @override
@@ -74,65 +66,71 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
             return const CreateGroup();
           } else {
             return StreamBuilder(
+                // stream: FirebaseFirestore.instance
+                //     .collection('expense')
+                //     .snapshots(),
                 stream: getExpenseCollectionFromCloud(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    print(snapshot.hasData);
+                    // print(snapshot.hasData);
                     return const Center(child: Text('Loading ...'));
                   }
                   return SingleChildScrollView(
                       child: Column(children: <Widget>[
-                    abcWidget(),
+                    accountDetailWidget(
+                        currentUserEmail: appState.currentUserEmail),
                     ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.all(8),
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                              padding: const EdgeInsets.all(8),
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    //eft: BorderSide(
-                                    width: 2,
-                                    // color: getRandomColor(),
-                                    color: Colors.blue.shade100,
-                                    //)
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                //height: 50,
-                                //color: Colors.amber[colorCodes[index % 3]],
-                                child: ListTile(
-                                  leading: const Icon(Icons.person),
-                                  title: Text(
-                                      '${snapshot.data?.docs[index]['description']}'),
-                                  //isThreeLine: true,
-                                  subtitle: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: <Widget>[
-                                      Text(snapshot.data?.docs[index]
-                                          ['userName']),
-                                      const Text(','),
-                                      const Flexible(
-                                        child: FractionallySizedBox(
-                                          widthFactor: 0.01,
-                                        ),
-                                      ),
-                                      Text(DateFormat.yMMMd().format(snapshot
-                                          .data?.docs[index]['timeStamp']
-                                          .toDate())),
-                                    ],
-                                  ),
+                          return ExpensePallet(
+                              streamSnapshot: snapshot, index: index);
+                          // return Padding(
+                          //     padding: const EdgeInsets.all(8),
+                          //     child: Container(
+                          //       padding: const EdgeInsets.all(4),
+                          //       decoration: BoxDecoration(
+                          //         border: Border.all(
+                          //           //eft: BorderSide(
+                          //           width: 2,
+                          //           // color: getRandomColor(),
+                          //           color: Colors.blue.shade100,
+                          //           //)
+                          //         ),
+                          //         borderRadius: BorderRadius.circular(12),
+                          //       ),
+                          //       //height: 50,
+                          //       //color: Colors.amber[colorCodes[index % 3]],
+                          //       child: ListTile(
+                          //         leading: const Icon(Icons.person),
+                          //         title: Text(
+                          //             '${snapshot.data?.docs[index]['description']}'),
+                          //         //isThreeLine: true,
+                          //         subtitle: Row(
+                          //           mainAxisSize: MainAxisSize.min,
+                          //           children: <Widget>[
+                          //             Text(snapshot.data?.docs[index]
+                          //                 ['userName']),
+                          //             const Text(','),
+                          //             const Flexible(
+                          //               child: FractionallySizedBox(
+                          //                 widthFactor: 0.01,
+                          //               ),
+                          //             ),
+                          //             Text(DateFormat.yMMMd().format(snapshot
+                          //                 .data?.docs[index]['timeStamp']
+                          //                 .toDate())),
+                          //           ],
+                          //         ),
 
-                                  trailing: Text(
-                                    '${snapshot.data?.docs[index]['cost']}/-',
-                                    style: const TextStyle(fontSize: 20),
-                                  ),
-                                ),
-                              ));
+                          //         trailing: Text(
+                          //           '${snapshot.data?.docs[index]['cost']}/-',
+                          //           style: const TextStyle(fontSize: 20),
+                          //         ),
+                          //       ),
+                          //     ));
                         })
                   ]));
                 });

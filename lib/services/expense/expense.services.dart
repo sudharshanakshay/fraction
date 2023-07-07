@@ -43,38 +43,52 @@ Future addExpenseToCloud(
     }).onError((error, stackTrace) {
       throw error!;
     });
+    // .whenComplete(() {
+    //   FirebaseFirestore.instance.collection('group')
+    //   .doc('akshaya')
+    //   // .update()
+    // });
   });
 }
 
 Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
-  return FirebaseFirestore.instance
-      .collection('group')
-      .doc('akshaya')
-      // .withConverter(
-      //     fromFirestore: (snapShot, _) => GroupModel.fromJson(snapShot.data()!),
-      //     toFirestore: (groupModel, _) => groupModel.toMemberEmails())
-      .snapshots()
-      .asyncExpand((doc) {
-    // final listOfMemberAccount = doc.data();
-
-    // final groupMembers = doc.data()?.toList();
-
-    // GroupModel groupModel = GroupModel(
-    //     groupMembers: doc.data()?['groupMembers'],
-    //     groupName: doc.data()?['groupName']);
-
-    List groupMemberEmailList = [];
-    for (var groupMemberObj in doc.data()?['groupMembers']) {
-      groupMemberEmailList.add(groupMemberObj['userEmail']);
-    }
-
-    print(groupMemberEmailList);
-
+  try {
     return FirebaseFirestore.instance
-        .collection('expense')
-        .where('groupName', isEqualTo: 'akshaya')
-        .where('emailAddress', whereIn: groupMemberEmailList)
-        .orderBy('timeStamp', descending: true)
-        .snapshots();
-  });
+        .collection('group')
+        .doc('akshaya')
+        // .withConverter(
+        //     fromFirestore: (snapShot, _) => GroupModel.fromJson(snapShot.data()!),
+        //     toFirestore: (groupModel, _) => groupModel.toMemberEmails())
+        .snapshots()
+        .asyncExpand((doc) {
+      // final listOfMemberAccount = doc.data();
+
+      // final groupMembers = doc.data()?.toList();
+
+      // GroupModel groupModel = GroupModel(
+      //     groupMembers: doc.data()?['groupMembers'],
+      //     groupName: doc.data()?['groupName']);
+
+      List groupMemberEmailList = [];
+      for (var groupMemberObj in doc.data()?['groupMembers']) {
+        groupMemberEmailList.add(groupMemberObj['userEmail']);
+      }
+
+      print(groupMemberEmailList);
+
+      return FirebaseFirestore.instance
+          .collection('expense')
+          .where('groupName', isEqualTo: 'akshaya')
+          .where('emailAddress', whereIn: groupMemberEmailList)
+          // .where('emailAddress', whereIn: [
+          //   'harshith8mangalore@gmail.com',
+          //   'sudharshan6acharya@gmail.com'
+          // ])
+          .orderBy('timeStamp', descending: true)
+          .snapshots();
+    });
+  } catch (e) {
+    print(e);
+    return const Stream.empty();
+  }
 }
