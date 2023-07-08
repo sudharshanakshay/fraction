@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fraction/database/group.database.dart';
+
+import '../../model/group.dart';
 
 void deleteExpense(docId) {
   FirebaseFirestore.instance.collection('expense').doc(docId).delete().then(
@@ -78,24 +79,28 @@ Future addExpenseToCloud(
     }).onError((error, stackTrace) {
       throw error!;
     });
-    // .whenComplete(() {
-    //   FirebaseFirestore.instance.collection('group')
-    //   .doc('akshaya')
-    //   // .update()
-    // });
   });
 }
 
 // donot add stream.empty()
 Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
   return FirebaseFirestore.instance
-      .collection('expense')
-      .where('groupName', isEqualTo: 'akshaya')
-      // .where('emailAddress', whereIn: [])
-      .where('emailAddress', whereIn: [
-        'harshith8mangalore@gmail.com',
-        'sudharshan6acharya@gmail.com'
-      ])
-      .orderBy('timeStamp', descending: true)
-      .snapshots();
+      .collection('group')
+      .doc('akshaya')
+      .withConverter<GroupModel>(
+          fromFirestore: (snapShot, _) => GroupModel.fromJson(snapShot.data()!),
+          toFirestore: (groupModel, _) => groupModel.toJson())
+      .snapshots()
+      .asyncExpand((doc) {
+    return FirebaseFirestore.instance
+        .collection('expense')
+        .where('groupName', isEqualTo: 'akshaya')
+        .where('emailAddress', whereIn: doc.data()?.toMemberEmailsList())
+        // .where('emailAddress', whereIn: [
+        //   'harshith8mangalore@gmail.com',
+        //   'sudharshan6acharya@gmail.com'
+        // ])
+        .orderBy('timeStamp', descending: true)
+        .snapshots();
+  });
 }

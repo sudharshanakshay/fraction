@@ -80,9 +80,7 @@ Future getGroupMembers({required groupName}) {
     if (doc.exists) {
       List groupMembers = [];
       final data = doc.data()! as Map<String, dynamic>;
-      print('hello');
       for (var memberEmail in data['groupMembers']) {
-        print('he;llo');
         print(memberEmail['userEmail']);
         groupMembers.add(memberEmail['userEmail']);
       }

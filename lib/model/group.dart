@@ -27,22 +27,23 @@ class GroupModel {
     };
   }
 
-  Map<String, dynamic> toMemberEmails() {
-    List memberEmailsList = [];
-    for (Map<String, dynamic> memberObj in toMap()['groupMembers']) {
-      print('---- memberEmailList ----');
-      print(memberObj);
-      memberEmailsList.add(memberObj['userEmail']);
-    }
-    return {'memberEmails': memberEmailsList};
-  }
+  // Map<String, dynamic> toMemberEmails() {
+  //   List memberEmailsList = [];
+  //   for (Map<String, dynamic> memberObj in toMap()['groupMembers']) {
+  //     print('---- memberEmailList ----');
+  //     print(memberObj);
+  //     memberEmailsList.add(memberObj['userEmail']);
+  //   }
+  //   return {'memberEmails': memberEmailsList};
+  // }
 
-  List<dynamic> toMemberEmailsList() {
-    List memberEmailsList = [];
-    for (Map<String, dynamic> memberObj in toMap()['groupMembers']) {
-      memberEmailsList.add(memberObj['userEmail']);
-    }
-    return memberEmailsList;
+  List toMemberEmailsList() {
+    List memberEmailList = [];
+    _groupMembers.forEach((key, value) {
+      memberEmailList.add(value['memberEmail']);
+    });
+
+    return memberEmailList;
   }
 
   List toList() {

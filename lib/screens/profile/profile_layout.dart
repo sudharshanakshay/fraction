@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../database/group.database.dart';
 import '../../services/expense/expense.services.dart';
-import '../../services/group/group.services.dart';
 import '../../services/profile/profile.services.dart';
 
 class Profile extends StatefulWidget {
@@ -123,7 +122,7 @@ class _ProfileState extends State<Profile> {
                       //     child: FractionallySizedBox(heightFactor: 0.05)),
                       FilledButton(
                           onPressed: () async {
-                            init();
+                            getGroupMembers(groupName: 'akshaya');
                             // await updateExpenseToGroupEntries(
                             //     currentUserEmail: appState.currentUserEmail,
                             //     valueChange: '2');
