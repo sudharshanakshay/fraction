@@ -66,7 +66,10 @@ class _ProfileState extends State<Profile> {
             IconButton(
                 onPressed: () async {
                   await confirmLogout().then((msg) {
-                    if (msg == 'OK') signOut();
+                    if (msg == 'OK') {
+                      Navigator.pop(context);
+                      signOut();
+                    }
                   });
                 },
                 icon: const Icon(Icons.logout))
