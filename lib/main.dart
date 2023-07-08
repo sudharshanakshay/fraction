@@ -14,10 +14,6 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // insertGroupIntoLocalDatabase(GroupModel(groupNames: ['hello']));
-
-  // This is the last thing you need to add.
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -56,14 +52,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
         useMaterial3: true,
       ),
-      // home: const MyHomePage(title: 'Fraction'),
       home: Consumer<ApplicationState>(
           builder: (context, appState, _) => !appState.loggedIn
               ? const SignInPage()
               : const MyHomePage(
                   title: 'Fraction',
                 )),
-
       routes: {
         '/logIn': (context) => Consumer<ApplicationState>(
               builder: (context, value, child) => value.loggedIn
@@ -159,21 +153,6 @@ class _MyHomePageState extends State<MyHomePage> {
       //   onPressed: () {},
       // ),
       body: const ViewExpenseLayout(),
-      // body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.menu_rounded),
-      //       label: 'Expense',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.add),
-      //       label: 'Add Expense',
-      //     ),
-      //   ],
-      //   currentIndex: _selectedIndex,
-      //   onTap: _onItemTapped,
-      // )
     );
   }
 }

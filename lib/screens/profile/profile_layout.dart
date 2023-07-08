@@ -3,7 +3,6 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import '../../database/group.database.dart';
 import '../../services/expense/expense.services.dart';
 import '../../services/profile/profile.services.dart';
 
