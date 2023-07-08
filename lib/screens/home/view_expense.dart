@@ -3,7 +3,6 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/widgets/account_pallet.dart';
 import 'package:fraction/widgets/expense_pallet.dart';
 import 'dart:math';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import '../../services/expense/expense.services.dart';
 import '../../services/profile/profile.services.dart';
@@ -73,66 +72,68 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
                     // print(snapshot.hasData);
-                    return const Center(child: Text('Loading ...'));
+                    return const Text('Loading ...');
                   }
                   return SingleChildScrollView(
-                      child: Column(children: <Widget>[
-                    accountDetailWidget(
-                        currentUserEmail: appState.currentUserEmail),
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(8),
-                        itemCount: snapshot.data?.docs.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ExpensePallet(
-                              streamSnapshot: snapshot, index: index);
-                          // return Padding(
-                          //     padding: const EdgeInsets.all(8),
-                          //     child: Container(
-                          //       padding: const EdgeInsets.all(4),
-                          //       decoration: BoxDecoration(
-                          //         border: Border.all(
-                          //           //eft: BorderSide(
-                          //           width: 2,
-                          //           // color: getRandomColor(),
-                          //           color: Colors.blue.shade100,
-                          //           //)
-                          //         ),
-                          //         borderRadius: BorderRadius.circular(12),
-                          //       ),
-                          //       //height: 50,
-                          //       //color: Colors.amber[colorCodes[index % 3]],
-                          //       child: ListTile(
-                          //         leading: const Icon(Icons.person),
-                          //         title: Text(
-                          //             '${snapshot.data?.docs[index]['description']}'),
-                          //         //isThreeLine: true,
-                          //         subtitle: Row(
-                          //           mainAxisSize: MainAxisSize.min,
-                          //           children: <Widget>[
-                          //             Text(snapshot.data?.docs[index]
-                          //                 ['userName']),
-                          //             const Text(','),
-                          //             const Flexible(
-                          //               child: FractionallySizedBox(
-                          //                 widthFactor: 0.01,
-                          //               ),
-                          //             ),
-                          //             Text(DateFormat.yMMMd().format(snapshot
-                          //                 .data?.docs[index]['timeStamp']
-                          //                 .toDate())),
-                          //           ],
-                          //         ),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                        accountDetailWidget(
+                            currentUserEmail: appState.currentUserEmail),
+                        ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.all(8),
+                            itemCount: snapshot.data?.docs.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return ExpensePallet(
+                                  streamSnapshot: snapshot, index: index);
+                              // return Padding(
+                              //     padding: const EdgeInsets.all(8),
+                              //     child: Container(
+                              //       padding: const EdgeInsets.all(4),
+                              //       decoration: BoxDecoration(
+                              //         border: Border.all(
+                              //           //eft: BorderSide(
+                              //           width: 2,
+                              //           // color: getRandomColor(),
+                              //           color: Colors.blue.shade100,
+                              //           //)
+                              //         ),
+                              //         borderRadius: BorderRadius.circular(12),
+                              //       ),
+                              //       //height: 50,
+                              //       //color: Colors.amber[colorCodes[index % 3]],
+                              //       child: ListTile(
+                              //         leading: const Icon(Icons.person),
+                              //         title: Text(
+                              //             '${snapshot.data?.docs[index]['description']}'),
+                              //         //isThreeLine: true,
+                              //         subtitle: Row(
+                              //           mainAxisSize: MainAxisSize.min,
+                              //           children: <Widget>[
+                              //             Text(snapshot.data?.docs[index]
+                              //                 ['userName']),
+                              //             const Text(','),
+                              //             const Flexible(
+                              //               child: FractionallySizedBox(
+                              //                 widthFactor: 0.01,
+                              //               ),
+                              //             ),
+                              //             Text(DateFormat.yMMMd().format(snapshot
+                              //                 .data?.docs[index]['timeStamp']
+                              //                 .toDate())),
+                              //           ],
+                              //         ),
 
-                          //         trailing: Text(
-                          //           '${snapshot.data?.docs[index]['cost']}/-',
-                          //           style: const TextStyle(fontSize: 20),
-                          //         ),
-                          //       ),
-                          //     ));
-                        })
-                  ]));
+                              //         trailing: Text(
+                              //           '${snapshot.data?.docs[index]['cost']}/-',
+                              //           style: const TextStyle(fontSize: 20),
+                              //         ),
+                              //       ),
+                              //     ));
+                            })
+                      ]));
                 });
           }
         },

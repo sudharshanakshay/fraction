@@ -158,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {},
       // ),
-      body: const Center(child: ViewExpenseLayout()),
+      body: const ViewExpenseLayout(),
       // body: Center(child: _widgetOptions.elementAt(_selectedIndex)),
       // bottomNavigationBar: BottomNavigationBar(
       //   items: const <BottomNavigationBarItem>[
