@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/widgets/account_pallet.dart';
-import 'package:fraction/widgets/expense_pallet.dart';
+import 'package:fraction/screens/expense/widget/account_pallet.dart';
+import 'package:fraction/screens/expense/widget/expense_pallet.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 import '../../services/expense/expense.services.dart';
 import '../../services/group/group.services.dart';
 import '../../services/profile/profile.services.dart';
-import 'create_group/create_group.dart';
+import '../group/create_group.dart';
 
 class ViewExpenseLayout extends StatefulWidget {
   const ViewExpenseLayout({Key? key}) : super(key: key);

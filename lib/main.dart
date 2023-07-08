@@ -1,10 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/auth/register.dart';
-import 'package:fraction/screens/home/add_expense.dart';
+import 'package:fraction/screens/expense/add_expense.dart';
 import 'package:fraction/screens/profile/profile_layout.dart';
 import 'package:fraction/screens/auth/sign_in.dart';
-import 'package:fraction/screens/home/view_expense.dart';
+import 'package:fraction/screens/expense/view_expense.dart';
 import 'package:fraction/utils/fraction_app_color.dart';
 import 'package:provider/provider.dart';
 
