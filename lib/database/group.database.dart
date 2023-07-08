@@ -60,9 +60,7 @@ void updateGroupMemberDetails(
     {required groupName, required memberEmail, required expenseDiff}) {
   final memberEmailR = memberEmail.replaceAll('.', '#');
   final data = {
-    'groupMembers.$memberEmailR': {
-      'totalExpense': FieldValue.increment(expenseDiff)
-    }
+    'groupMembers.$memberEmailR.totalExpense': FieldValue.increment(expenseDiff)
   };
   FirebaseFirestore.instance
       .collection(_groupCollectionName)

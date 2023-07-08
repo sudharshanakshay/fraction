@@ -72,7 +72,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                 stream: getExpenseCollectionFromCloud(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    // print(snapshot.hasData);
+                    print(snapshot.hasData);
                     return const Text('Loading ...');
                   }
                   return SingleChildScrollView(

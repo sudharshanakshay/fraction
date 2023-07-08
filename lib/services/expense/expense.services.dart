@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fraction/database/group.database.dart';
 
 import '../../model/group.dart';
 
@@ -19,47 +20,6 @@ Stream<QuerySnapshot> getCurrentUserExpenseCollection(
       .snapshots();
 }
 
-// Future updateExpenseToGroupEntries(
-//     {required currentUserEmail, required valueChange}) {
-//   return FirebaseFirestore.instance
-//       .collection('group')
-//       .doc('akshaya')
-//       .update({
-//         'groupMembers ' : FieldValue.arrayRemove()
-//       })
-//       .get()
-//       .then(
-//     (DocumentSnapshot doc) {
-//       if (doc.exists) {
-//         final data = doc.data()! as Map<String, dynamic>;
-//         print('---- printing data ----');
-//         print(data);
-//         for (var memberDetailObj in data['groupMembers']) {
-//           if (memberDetailObj['userEmail'] == currentUserEmail) {
-//             final previousExpense = memberDetailObj['totalExpense'];
-//             final currentExpense = previousExpense + valueChange;
-//             return currentExpense;
-//           }
-//         }
-//         return data;
-//       } else {
-//         print('---- doc.exists is false ----');
-//         return [];
-//       }
-//     },
-//     onError: (e) => print("Error getting document: $e"),
-//   );
-//   // .then((currentExpense) {
-//   //   final data = {
-//   //     'groupMembers': [
-//   //       {},
-//   //     ]
-//   //   };
-//   // FirebaseFirestore.instance.collection('group')
-//   // .doc('akshaya')
-//   // });
-// }
-
 Future addExpenseToCloud(
     {required currentUserEmail,
     required String description,
@@ -78,6 +38,12 @@ Future addExpenseToCloud(
       'timeStamp': DateTime.now()
     }).onError((error, stackTrace) {
       throw error!;
+    }).whenComplete(() {
+      updateGroupMemberDetails(
+        memberEmail: currentUserEmail,
+        groupName: 'akshaya',
+        expenseDiff: 12,
+      );
     });
   });
 }
@@ -92,10 +58,11 @@ Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
           toFirestore: (groupModel, _) => groupModel.toJson())
       .snapshots()
       .asyncExpand((doc) {
+    List? memberEmailList = doc.data()?.toMemberEmailsList();
     return FirebaseFirestore.instance
         .collection('expense')
         .where('groupName', isEqualTo: 'akshaya')
-        .where('emailAddress', whereIn: doc.data()?.toMemberEmailsList())
+        .where('emailAddress', whereIn: memberEmailList)
         // .where('emailAddress', whereIn: [
         //   'harshith8mangalore@gmail.com',
         //   'sudharshan6acharya@gmail.com'
