@@ -120,14 +120,14 @@ class _ProfileState extends State<Profile> {
 
                       // const Flexible(
                       //     child: FractionallySizedBox(heightFactor: 0.05)),
-                      FilledButton(
-                          onPressed: () async {
-                            getGroupMembers(groupName: 'akshaya');
-                            // await updateExpenseToGroupEntries(
-                            //     currentUserEmail: appState.currentUserEmail,
-                            //     valueChange: '2');
-                          },
-                          child: const Text('Tst')),
+                      // FilledButton(
+                      //     onPressed: () async {
+                      //       getGroupMembers(groupName: 'akshaya');
+                      //       // await updateExpenseToGroupEntries(
+                      //       //     currentUserEmail: appState.currentUserEmail,
+                      //       //     valueChange: '2');
+                      //     },
+                      //     child: const Text('Tst')),
                       StreamBuilder<Map<String, dynamic>>(
                           stream: getProfileDetailsFromCloud(
                               currentUserEmail: appState.currentUserEmail),
@@ -170,10 +170,11 @@ class _ProfileState extends State<Profile> {
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(8.0),
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: Container(
                               padding: const EdgeInsets.all(4),
                               decoration: BoxDecoration(
