@@ -62,7 +62,7 @@ Future<void> createCloudGroup({required inputGroupName}) async {
           .get()
           .then((doc) {
         createGroup(
-                groupName: _currentGroupName,
+                groupName: inputGroupName,
                 memberName: doc.data()?['userName'],
                 memberEmail: _currentUserEmail)
             .whenComplete(() {
