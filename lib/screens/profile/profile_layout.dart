@@ -220,8 +220,11 @@ class _ProfileState extends State<Profile> {
                                             await confirmDeleteExpense()
                                                 .then((msg) {
                                               if (msg == 'OK') {
-                                                deleteExpense(snapshot
-                                                    .data?.docs[index].id);
+                                                deleteExpense(
+                                                    docId: snapshot
+                                                        .data?.docs[index].id,
+                                                    cost: snapshot.data
+                                                        ?.docs[index]['cost']);
                                               }
                                             });
                                           },

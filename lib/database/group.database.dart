@@ -57,7 +57,7 @@ Stream<DocumentSnapshot> getGroupDetails({required groupName}) {
 
 // -- update group member details, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
 void updateGroupMemberDetails(
-    {required groupName, required memberEmail, required expenseDiff}) {
+    {required groupName, required memberEmail, required int expenseDiff}) {
   final memberEmailR = memberEmail.replaceAll('.', '#');
   final data = {
     'groupMembers.$memberEmailR.totalExpense': FieldValue.increment(expenseDiff)
