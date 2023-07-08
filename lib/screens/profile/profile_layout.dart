@@ -120,26 +120,25 @@ class _ProfileState extends State<Profile> {
                       // const Flexible(
                       //     child: FractionallySizedBox(heightFactor: 0.05)),
 
-                      StreamBuilder<Object>(
+                      StreamBuilder<Map<String, dynamic>>(
                           stream: getProfileDetailsFromCloud(
                               currentUserEmail: appState.currentUserEmail),
-                          builder: (context, profileDetailSnapshot) {
-                            if (profileDetailSnapshot.hasData) {
+                          builder: (context, profileSnapshot) {
+                            if (profileSnapshot.hasData) {
                               return Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: <Widget>[
-                                  Text('${snapshot.data}'),
-                                  Text(appState.currentUserEmail),
+                                  Text(profileSnapshot.data?['userName']
+                                          .toString() ??
+                                      ''),
+                                  Text(profileSnapshot.data?['emailAddress']
+                                          .toString() ??
+                                      ''),
+                                  // Text(appState.currentUserEmail),
                                 ],
                               );
                             } else {
-                              return const Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text('Loading..'),
-                                  Text('Loading..'),
-                                ],
-                              );
+                              return Container();
                             }
                           }),
 
@@ -165,34 +164,63 @@ class _ProfileState extends State<Profile> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                              // leading: const Icon(Icons.person),
-                              title: Text(
-                                  '${snapshot.data?.docs[index]['description']}'),
-                              //isThreeLine: true,
-                              subtitle: Text(DateFormat.yMMMd().format(snapshot
-                                  .data?.docs[index]['timeStamp']
-                                  .toDate())),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Text(
-                                    '${snapshot.data?.docs[index]['cost']}/-',
-                                    style: const TextStyle(fontSize: 20),
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Container(
+                              padding: const EdgeInsets.all(4),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  //eft: BorderSide(
+                                  width: 2,
+                                  // color: getRandomColor(),
+                                  color: Colors.blue.shade100,
+                                  //)
+                                ),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: ListTile(
+                                  // leading: const Icon(Icons.person),
+                                  title: Text(
+                                      '${snapshot.data?.docs[index]['description']}'),
+                                  //isThreeLine: true,
+                                  subtitle: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(DateFormat.yMMMd().format(snapshot
+                                          .data?.docs[index]['timeStamp']
+                                          .toDate())),
+                                      const Text(','),
+                                      const Flexible(
+                                        child: FractionallySizedBox(
+                                          widthFactor: 0.01,
+                                        ),
+                                      ),
+                                      Text(snapshot.data?.docs[index]
+                                          ['groupName']),
+                                    ],
                                   ),
-                                  IconButton(
-                                      onPressed: () async {
-                                        await confirmDeleteExpense()
-                                            .then((msg) {
-                                          if (msg == 'OK') {
-                                            deleteExpense(
-                                                snapshot.data?.docs[index].id);
-                                          }
-                                        });
-                                      },
-                                      icon: const Icon(Icons.delete))
-                                ],
-                              ));
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      Text(
+                                        '${snapshot.data?.docs[index]['cost']}/-',
+                                        style: const TextStyle(fontSize: 20),
+                                      ),
+                                      IconButton(
+                                          onPressed: () async {
+                                            await confirmDeleteExpense()
+                                                .then((msg) {
+                                              if (msg == 'OK') {
+                                                deleteExpense(snapshot
+                                                    .data?.docs[index].id);
+                                              }
+                                            });
+                                          },
+                                          icon: const Icon(Icons.delete))
+                                    ],
+                                  )),
+                            ),
+                          );
                         },
                       )
                     ]),

@@ -27,11 +27,17 @@ Stream getGroupNamesFromProfile(currentUserEmail,
   });
 }
 
-Stream<DocumentSnapshot> getProfileDetailsFromCloud(
+Stream<Map<String, dynamic>> getProfileDetailsFromCloud(
     {required currentUserEmail}) {
   return FirebaseFirestore.instance
       .collection('profile')
       .doc(currentUserEmail)
       .get()
-      .asStream();
+      .then(
+    (DocumentSnapshot doc) {
+      final data = doc.data()! as Map<String, dynamic>;
+      return data;
+    },
+    onError: (e) => print("Error getting document: $e"),
+  ).asStream();
 }
