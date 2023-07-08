@@ -8,7 +8,7 @@ class AccountPallet extends StatefulWidget {
       required this.index,
       this.leading = false});
 
-  final AsyncSnapshot<DocumentSnapshot<Object?>> streamSnapshot;
+  final AsyncSnapshot streamSnapshot;
   final int index;
   final bool leading;
 
@@ -19,6 +19,7 @@ class AccountPallet extends StatefulWidget {
 class AccountPalletState extends State<AccountPallet> {
   @override
   Widget build(BuildContext context) {
+    print(widget.streamSnapshot.data);
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -29,10 +30,10 @@ class AccountPalletState extends State<AccountPallet> {
         // borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        title: Text(
-            '${widget.streamSnapshot.data?['groupMembers'][widget.index]['userName']}'),
+        title:
+            Text('${widget.streamSnapshot.data[widget.index]['memberName']}'),
         subtitle: Text(
-          '${widget.streamSnapshot.data?['groupMembers'][widget.index]['totalExpense']}',
+          '${widget.streamSnapshot.data[widget.index]['totalExpense']}',
           style: const TextStyle(fontSize: 20),
         ),
       ),

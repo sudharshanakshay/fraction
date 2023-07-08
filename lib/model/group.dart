@@ -1,22 +1,30 @@
 class GroupModel {
-  String groupName;
-  List<Object> groupMembers;
+  String _groupName;
+  Map<String, dynamic> _groupMembers;
 
-  GroupModel({required this.groupMembers, required this.groupName});
+  String get groupName => _groupName;
+  Map<String, dynamic> get groupMembers => _groupMembers;
+
+  GroupModel(
+      {required String groupName, required Map<String, dynamic> groupMembers})
+      : _groupMembers = groupMembers,
+        _groupName = groupName;
 
   GroupModel.fromJson(Map<String, Object?> json)
       : this(
           groupName: json['groupName']! as String,
-          groupMembers: (json['groupMembers']! as List<Map<String, dynamic>>)
-              .cast<String>(),
+          groupMembers: (json['groupMembers']! as Map<String, dynamic>),
         );
 
   Map<String, dynamic> toMap() {
-    return {'groupName': groupName, 'groupMembers': groupMembers};
+    return {'groupName': _groupName, 'groupMembers': _groupMembers};
   }
 
   Map<String, dynamic> toJson() {
-    return {'groupName': groupName, 'groupMembers': groupMembers};
+    return {
+      'groupName': _groupName,
+      'groupMembers': _groupMembers['groupMembers']
+    };
   }
 
   Map<String, dynamic> toMemberEmails() {
@@ -37,12 +45,17 @@ class GroupModel {
     return memberEmailsList;
   }
 
-  Iterable<Object?> toList() {
-    return groupMembers;
+  List toList() {
+    List memberObjList = [];
+    _groupMembers.forEach((key, value) {
+      memberObjList.add(value);
+    });
+
+    return memberObjList;
   }
 
   @override
   String toString() {
-    return 'Group{groupName: $groupName, groupMember: $groupMembers}';
+    return 'Group:{groupName: $_groupName, groupMember: $_groupMembers}';
   }
 }

@@ -3,7 +3,9 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import '../../database/group.database.dart';
 import '../../services/expense/expense.services.dart';
+import '../../services/group/group.services.dart';
 import '../../services/profile/profile.services.dart';
 
 class Profile extends StatefulWidget {
@@ -119,7 +121,14 @@ class _ProfileState extends State<Profile> {
 
                       // const Flexible(
                       //     child: FractionallySizedBox(heightFactor: 0.05)),
-
+                      FilledButton(
+                          onPressed: () async {
+                            init();
+                            // await updateExpenseToGroupEntries(
+                            //     currentUserEmail: appState.currentUserEmail,
+                            //     valueChange: '2');
+                          },
+                          child: const Text('Tst')),
                       StreamBuilder<Map<String, dynamic>>(
                           stream: getProfileDetailsFromCloud(
                               currentUserEmail: appState.currentUserEmail),

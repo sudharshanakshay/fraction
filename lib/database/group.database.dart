@@ -1,28 +1,94 @@
-// import 'package:fraction/model/group.dart';
-// import 'package:path/path.dart';
-// import 'package:sqflite/sqflite.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Future<GroupModel> getGroupNamesFromLocalDatabase() async {
-//   final database = await openDatabase(join(await getDatabasesPath(), 'group'));
-//   final db = database;
+const _groupCollectionName = 'group';
 
-//   Map groupTable = await db.query('group') as Map<String, dynamic>;
-//   return GroupModel(groupMembers: groupTable['groupNames']);
-// }
+// -- whenever user creates group, user is added to that group by default --
+Future<void> createGroup(
+    {required groupName, required memberName, required memberEmail}) {
+  final memberEmailR = memberEmail.replaceAll('.', '#');
+  final data = {
+    'groupName': groupName,
+    'groupMembers': {
+      memberEmailR: {
+        'memberName': memberName,
+        'memberEmail': memberEmail,
+        'totalExpense': 0
+      }
+    }
+  };
 
-// void insertGroupIntoLocalDatabase(GroupModel listGroupNames) async {
-//   // print('---- insertGroupTolocalDatabase func, $listGroupNames ----');
-//   // final database = await openDatabase(join(await getDatabasesPath(), 'group'),
-//   //     onCreate: (db, version) {
-//   //   return db.execute('CREATE TABLE IF NOT EXISTS group (groupName TEXT)');
-//   // }, version: 1);
+  return FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .doc(groupName)
+      .set(data);
+}
 
-//   // final db = database;
+// -- get group collecton --
+Stream<QuerySnapshot> getGroupCollection() {
+  return FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .snapshots();
+}
 
-//   // for (String group in listGroupNames.toMap()['groupNames']) {
-//   //   print(' ---- inserting $group into group table ----');
-//   //   await db.insert('group', {'groupName': group}).onError((error, stackTrace) {
-//   //     throw {'error': error};
-//   //   });
-//   // }
-// }
+// -- add member to the group requires, groupName to add & member details --
+Future<void> addMemberToGroup(
+    {required String currentGroupName,
+    required String memberName,
+    required String memberEmail}) {
+  final memberEmailR = memberEmail.replaceAll('.', '#');
+  final data = {
+    'memberName': memberName,
+    'memberEmail': memberEmail,
+    'totalExpense': 0
+  };
+  return FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .doc(currentGroupName)
+      .update({"groupMembers.$memberEmailR": data});
+}
+
+// -- retrive group details --
+Stream<DocumentSnapshot> getGroupDetails({required groupName}) {
+  return FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .doc(groupName)
+      .snapshots();
+}
+
+// -- update group member details, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
+void updateGroupMemberDetails(
+    {required groupName, required memberEmail, required expenseDiff}) {
+  final memberEmailR = memberEmail.replaceAll('.', '#');
+  final data = {
+    'groupMembers.$memberEmailR': {
+      'totalExpense': FieldValue.increment(expenseDiff)
+    }
+  };
+  FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .doc(groupName)
+      .update(data);
+}
+
+// -- retrive all group members --
+Future getGroupMembers({required groupName}) {
+  return FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .doc(groupName)
+      .get()
+      .then((DocumentSnapshot doc) {
+    if (doc.exists) {
+      List groupMembers = [];
+      final data = doc.data()! as Map<String, dynamic>;
+      print('hello');
+      for (var memberEmail in data['groupMembers']) {
+        print('he;llo');
+        print(memberEmail['userEmail']);
+        groupMembers.add(memberEmail['userEmail']);
+      }
+      return groupMembers;
+    } else {
+      throw 'no group member exists';
+    }
+  });
+}

@@ -28,8 +28,8 @@ class CreateGroupState extends State<CreateGroup> {
           FilledButton(
               onPressed: () {
                 joinCloudGroup(
-                    inputGroupName: _joinGroupNameController.text,
-                    currentUserEmail: appState.currentUserEmail);
+                  inputGroupName: _joinGroupNameController.text,
+                );
                 //getGroupNamesFromLocalDatabase();
               },
               child: const Text('Join group')),
@@ -63,8 +63,6 @@ class CreateGroupState extends State<CreateGroup> {
                                   FilledButton(
                                       onPressed: () {
                                         createCloudGroup(
-                                            currentUserEmail:
-                                                appState.currentUserEmail,
                                             inputGroupName:
                                                 _newGroupNameController.text);
                                       },
