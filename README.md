@@ -1,10 +1,12 @@
-# fraction
+# Fraction
 
 A new Flutter project.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is intended for managing group expenses.
+use case : managing bachelor room expense, where user can keep note all the expenses &
+  can be cleard off by month end by sharing the total expense by the between them. 
 
 A few resources to get you started if this is your first Flutter project:
 
