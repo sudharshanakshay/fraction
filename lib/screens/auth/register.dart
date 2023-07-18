@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/widgets/widgets.dart';
 import '../../services/auth/auth.services.dart';
-import '../../widgets/input_text_field.dart';
+import '../../widgets/custom_input_form_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);

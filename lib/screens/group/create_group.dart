@@ -3,7 +3,7 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import '../../services/group/group.services.dart';
-import '../../widgets/input_text_field.dart';
+import '../../widgets/custom_input_form_field.dart';
 
 class CreateGroup extends StatefulWidget {
   const CreateGroup({super.key});
