@@ -89,51 +89,10 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                             itemBuilder: (BuildContext context, int index) {
                               return ExpensePallet(
                                   streamSnapshot: snapshot, index: index);
-                              // return Padding(
-                              //     padding: const EdgeInsets.all(8),
-                              //     child: Container(
-                              //       padding: const EdgeInsets.all(4),
-                              //       decoration: BoxDecoration(
-                              //         border: Border.all(
-                              //           //eft: BorderSide(
-                              //           width: 2,
-                              //           // color: getRandomColor(),
-                              //           color: Colors.blue.shade100,
-                              //           //)
-                              //         ),
-                              //         borderRadius: BorderRadius.circular(12),
-                              //       ),
-                              //       //height: 50,
-                              //       //color: Colors.amber[colorCodes[index % 3]],
-                              //       child: ListTile(
-                              //         leading: const Icon(Icons.person),
-                              //         title: Text(
-                              //             '${snapshot.data?.docs[index]['description']}'),
-                              //         //isThreeLine: true,
-                              //         subtitle: Row(
-                              //           mainAxisSize: MainAxisSize.min,
-                              //           children: <Widget>[
-                              //             Text(snapshot.data?.docs[index]
-                              //                 ['userName']),
-                              //             const Text(','),
-                              //             const Flexible(
-                              //               child: FractionallySizedBox(
-                              //                 widthFactor: 0.01,
-                              //               ),
-                              //             ),
-                              //             Text(DateFormat.yMMMd().format(snapshot
-                              //                 .data?.docs[index]['timeStamp']
-                              //                 .toDate())),
-                              //           ],
-                              //         ),
-
-                              //         trailing: Text(
-                              //           '${snapshot.data?.docs[index]['cost']}/-',
-                              //           style: const TextStyle(fontSize: 20),
-                              //         ),
-                              //       ),
-                              //     ));
-                            })
+                            }),
+                        const SizedBox(
+                          height: 70,
+                        )
                       ]));
                 });
           }
