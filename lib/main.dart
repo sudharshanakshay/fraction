@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/screens/auth/register.dart';
+import 'package:fraction/screens/drawer/app_drawer.dart';
 import 'package:fraction/screens/expense/add_expense.dart';
 import 'package:fraction/screens/profile/profile_layout.dart';
 import 'package:fraction/screens/auth/sign_in.dart';
@@ -17,6 +18,14 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // final String groupNameToCreate = 'hello' +
+  //     '#' +
+  //     'hello.com' +
+  //     '#' +
+  //     DateTime.now().toString().replaceAll(RegExp(r'[.\s]'), '#');
+
+  // print('-----------$groupNameToCreate-----------');
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -148,10 +157,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.pushNamed(context, '/addExpense');
         },
       ),
-      // drawer: const FractionAppDrawer(),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () {},
-      // ),
+      drawer: const FractionAppDrawer(),
       body: const ViewExpenseLayout(),
     );
   }

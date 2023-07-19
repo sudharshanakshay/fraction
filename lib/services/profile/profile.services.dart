@@ -13,6 +13,17 @@ void createUserProfile(
   });
 }
 
+Stream getGroupNames({required currentUserEamil}) {
+  return FirebaseFirestore.instance
+      .collection('profile')
+      .doc(currentUserEamil)
+      .snapshots()
+      .asyncExpand((DocumentSnapshot doc) {
+    final profileInfo = doc.data()! as Map<String, dynamic>;
+    return Stream.value(profileInfo['groupNames']);
+  });
+}
+
 Stream getGroupNamesFromProfile(currentUserEmail,
     {currentGroupName = 'akshaya'}) {
   return FirebaseFirestore.instance

@@ -62,17 +62,12 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
         stream: getGroupNamesFromProfile(appState.currentUserEmail),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            print('printing snapshot ${snapshot.data}');
             return const CreateGroup();
           } else {
             return StreamBuilder(
-                // stream: FirebaseFirestore.instance
-                //     .collection('expense')
-                //     .snapshots(),
                 stream: getExpenseCollectionFromCloud(),
                 builder: (context, snapshot) {
                   if (!snapshot.hasData) {
-                    print(snapshot.hasData);
                     return const Text('Loading ...');
                   }
                   return SingleChildScrollView(

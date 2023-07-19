@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fraction/database/group.database.dart';
 import 'package:fraction/model/group.dart';
 
-const _currentGroupName = 'akshaya';
+String _currentGroupName = 'akshaya';
 String? _currentUserEmail;
 
 Future<void> init() async {
@@ -22,7 +22,7 @@ void updateTotalExpenseSubCollectionAccount(
     {required userEmail, required newCost}) {
   final accRef = FirebaseFirestore.instance
       .collection('group')
-      .doc('akshaya')
+      .doc(_currentGroupName)
       .collection('account')
       .doc(userEmail);
   accRef.get().then((doc) {
@@ -41,7 +41,7 @@ Future<void> joinCloudGroup({required inputGroupName}) async {
         .get()
         .then((doc) {
       addMemberToGroup(
-              currentGroupName: 'akshaya',
+              currentGroupName: _currentGroupName,
               memberName: doc.data()?['userName'],
               memberEmail: _currentUserEmail ?? 'null')
           .whenComplete(() {
@@ -63,12 +63,12 @@ Future<void> createCloudGroup({required inputGroupName}) async {
           .then((doc) {
         createGroup(
                 groupName: inputGroupName,
-                memberName: doc.data()?['userName'],
-                memberEmail: _currentUserEmail)
-            .whenComplete(() {
+                adminName: doc.data()?['userName'],
+                adminEmail: _currentUserEmail)
+            .then((String groupNameCreatedWithIdentity) {
           updateGroupNameToProfileCollection(
               currentUserEmail: _currentUserEmail,
-              groupNameToAdd: inputGroupName);
+              groupNameToAdd: groupNameCreatedWithIdentity);
         });
       });
     });
@@ -80,7 +80,7 @@ Future<void> createCloudGroup({required inputGroupName}) async {
 Stream<List?> getGroupAccountDetails({required currentUserEmail}) {
   return FirebaseFirestore.instance
       .collection('group')
-      .doc('akshaya')
+      .doc(_currentGroupName)
       .withConverter<GroupModel>(
           fromFirestore: (snapShot, _) => GroupModel.fromJson(snapShot.data()!),
           toFirestore: (groupModel, _) => groupModel.toJson())
@@ -90,25 +90,6 @@ Stream<List?> getGroupAccountDetails({required currentUserEmail}) {
     return Stream.value(doc.data()?.toList());
   });
 }
-
-// Future updateGroupMembersToGroupCollection(
-//     {required groupName, required currentUserEmail}) async {
-//   FirebaseFirestore.instance
-//       .collection('profile')
-//       .doc(currentUserEmail)
-//       .get()
-//       .then((doc) {
-//     var data = {
-//       'userName': doc.data()?['userName'],
-//       'userEmail': doc.data()?['emailAddress'],
-//       'totalExpense': 0
-//     };
-
-//     FirebaseFirestore.instance.collection('group').doc(groupName).update({
-//       "groupMembers": FieldValue.arrayUnion([data]),
-//     });
-//   });
-// }
 
 Future updateGroupNameToProfileCollection(
     {required currentUserEmail, required groupNameToAdd}) async {

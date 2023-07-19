@@ -3,24 +3,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 const _groupCollectionName = 'group';
 
 // -- whenever user creates group, user is added to that group by default --
-Future<void> createGroup(
-    {required groupName, required memberName, required memberEmail}) {
-  final memberEmailR = memberEmail.replaceAll('.', '#');
+Future<String> createGroup(
+    {required groupName, required adminName, required adminEmail}) {
+  final adminEmailR = adminEmail.replaceAll('.', '#');
   final data = {
     'groupName': groupName,
     'groupMembers': {
-      memberEmailR: {
-        'memberName': memberName,
-        'memberEmail': memberEmail,
+      adminEmailR: {
+        'memberName': adminName,
+        'memberEmail': adminEmail,
         'totalExpense': 0
       }
     }
   };
 
+  final String groupNameWithIdentity = groupName +
+      '%' +
+      adminEmail +
+      '%' +
+      DateTime.now().toString().replaceAll(RegExp(r'[\s]'), '%');
+
   return FirebaseFirestore.instance
       .collection(_groupCollectionName)
-      .doc(groupName)
-      .set(data);
+      .doc(groupNameWithIdentity)
+      .set(data)
+      .then((value) => groupNameWithIdentity);
 }
 
 // -- get group collecton --

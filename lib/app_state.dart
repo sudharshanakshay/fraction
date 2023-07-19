@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/services/profile/profile.services.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
@@ -16,7 +17,8 @@ class ApplicationState extends ChangeNotifier {
   String _currentUserEmail = '';
   String get currentUserEmail => _currentUserEmail;
 
-  // Map profileInfo;
+  String _currentUserGroup = '';
+  String get currentUserGroup => _currentUserGroup;
 
   // ------------- Firebase Initailization -------------
 
@@ -37,5 +39,11 @@ class ApplicationState extends ChangeNotifier {
       }
       notifyListeners();
     });
+
+    // await getGroupNames(currentUserEamil: currentUserEamil)
+  }
+
+  void setCurrentGroup({required currentGroupName}) {
+    _currentUserGroup = currentUserGroup;
   }
 }
