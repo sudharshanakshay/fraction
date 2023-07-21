@@ -6,7 +6,6 @@ import 'package:fraction/screens/expense/add_expense.dart';
 import 'package:fraction/screens/profile/profile_layout.dart';
 import 'package:fraction/screens/auth/sign_in.dart';
 import 'package:fraction/screens/expense/view_expense.dart';
-import 'package:fraction/services/profile/profile.services.dart';
 import 'package:fraction/utils/fraction_app_color.dart';
 import 'package:provider/provider.dart';
 
@@ -15,8 +14,6 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  init();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

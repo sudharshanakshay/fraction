@@ -1,6 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:fraction/database/profile.database.dart';
+
+class ProfileServices extends ChangeNotifier {
+  ProfileServices() {
+    init();
+  }
+  String? _currentUserEmail;
+
+  Future<void> init() async {
+    FirebaseAuth.instance.userChanges().listen((User? user) {
+      if (user == null) {
+        print('User is currently signed out!');
+      } else {
+        _currentUserEmail = user.email!;
+        // return _currentUserEmail;
+        print(_currentUserEmail);
+        notifyListeners();
+      }
+    });
+  }
+
+  Stream availableProfileGroupsStream() {
+    return ProfileDatabase()
+        .availableProfileGroupsStream(currentUserEamil: _currentUserEmail);
+  }
+}
 
 String? _currentUserEmail;
 
@@ -38,12 +64,6 @@ void createUserProfile(
 //     return Stream.value(profileInfo['groupNames']);
 //   });
 // }
-
-Stream availableProfileGroupsStream() {
-  if (_currentUserEmail == null) init();
-  return ProfileDatabase()
-      .availableProfileGroupsStream(currentUserEamil: _currentUserEmail);
-}
 
 Stream getGroupNamesFromProfile(currentUserEmail,
     {currentGroupName = 'akshaya'}) {

@@ -13,33 +13,31 @@ class FractionAppDrawer extends StatefulWidget {
 class FractionAppDrawerState extends State<FractionAppDrawer> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApplicationState>(
-      builder: (context, appState, _) => Drawer(
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              const DrawerHeader(child: Text('Profile info')),
-              StreamBuilder(
-                  stream: availableProfileGroupsStream(),
-                  builder: (context, snapShot) {
-                    if (snapShot.hasData) {
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapShot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return ListTile(
-                            title: Text('${snapShot.data[index]}'),
-                            onTap: () {},
-                          );
-                        },
-                      );
-                    } else {
-                      return Container();
-                    }
-                  })
-            ],
-          ),
+    return Drawer(
+      child: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            const DrawerHeader(child: Text('Profile info')),
+            StreamBuilder(
+                stream: ProfileServices().availableProfileGroupsStream(),
+                builder: (context, snapShot) {
+                  if (snapShot.hasData) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: snapShot.data.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text('${snapShot.data[index]}'),
+                          onTap: () {},
+                        );
+                      },
+                    );
+                  } else {
+                    return Container();
+                  }
+                })
+          ],
         ),
       ),
     );
