@@ -86,7 +86,6 @@ Stream<List?> getGroupAccountDetails({required currentUserEmail}) {
           toFirestore: (groupModel, _) => groupModel.toJson())
       .snapshots()
       .asyncExpand((doc) {
-    print(doc.data()?.toList());
     return Stream.value(doc.data()?.toList());
   });
 }
@@ -106,3 +105,5 @@ Future updateGroupNameToProfileCollection(
     }
   });
 }
+
+

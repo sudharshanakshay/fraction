@@ -20,8 +20,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
             children: <Widget>[
               const DrawerHeader(child: Text('Profile info')),
               StreamBuilder(
-                  stream: getGroupNames(
-                      currentUserEamil: appState.currentUserEmail),
+                  stream: availableProfileGroupsStream(),
                   builder: (context, snapShot) {
                     if (snapShot.hasData) {
                       return ListView.builder(

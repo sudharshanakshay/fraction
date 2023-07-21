@@ -25,7 +25,7 @@ void deleteExpense({required docId, required cost}) {
       },
       onError: (e) => print("Error updating document $e"),
     ).whenComplete(() {
-      updateGroupMemberDetails(
+      updateGroupMemberExpense(
           groupName: _currentGroupName,
           memberEmail: _currentUserEmail,
           expenseDiff: -int.parse(cost));
@@ -62,7 +62,7 @@ Future addExpenseToCloud(
     }).onError((error, stackTrace) {
       throw error!;
     }).whenComplete(() {
-      updateGroupMemberDetails(
+      updateGroupMemberExpense(
         memberEmail: currentUserEmail,
         groupName: _currentGroupName,
         expenseDiff: int.parse(cost),

@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 const _groupCollectionName = 'group';
 
+// -- group is created as follows, groupName%creatorEmail%timeStamp --
+// -- '%' represents key separation & --
+// -- '#' represents '.' in a key --
 // -- whenever user creates group, user is added to that group by default --
 Future<String> createGroup(
     {required groupName, required adminName, required adminEmail}) {
@@ -30,13 +33,6 @@ Future<String> createGroup(
       .then((value) => groupNameWithIdentity);
 }
 
-// -- get group collecton --
-Stream<QuerySnapshot> getGroupCollection() {
-  return FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .snapshots();
-}
-
 // -- add member to the group requires, groupName to add & member details --
 Future<void> addMemberToGroup(
     {required String currentGroupName,
@@ -54,16 +50,8 @@ Future<void> addMemberToGroup(
       .update({"groupMembers.$memberEmailR": data});
 }
 
-// -- retrive group details --
-Stream<DocumentSnapshot> getGroupDetails({required groupName}) {
-  return FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .doc(groupName)
-      .snapshots();
-}
-
 // -- update group member details, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
-void updateGroupMemberDetails(
+void updateGroupMemberExpense(
     {required groupName, required memberEmail, required int expenseDiff}) {
   final memberEmailR = memberEmail.replaceAll('.', '#');
   final data = {
@@ -86,7 +74,7 @@ Future getGroupMembers({required groupName}) {
       List groupMembers = [];
       final data = doc.data()! as Map<String, dynamic>;
       for (var memberEmail in data['groupMembers']) {
-        print(memberEmail['userEmail']);
+        // print(memberEmail['userEmail']);
         groupMembers.add(memberEmail['userEmail']);
       }
       return groupMembers;
@@ -94,4 +82,19 @@ Future getGroupMembers({required groupName}) {
       throw 'no group member exists';
     }
   });
+}
+
+// -- group collection stream  --
+Stream<QuerySnapshot> groupCollectionStream() {
+  return FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .snapshots();
+}
+
+// -- retrive group details --
+Stream<DocumentSnapshot> getGroupDetails({required groupName}) {
+  return FirebaseFirestore.instance
+      .collection(_groupCollectionName)
+      .doc(groupName)
+      .snapshots();
 }

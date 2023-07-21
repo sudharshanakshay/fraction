@@ -1,112 +1,33 @@
-// import 'package:path/path.dart';
-// import 'package:sqflite/sqflite.dart';
-// import '../model/profile.dart';
+import 'dart:async';
 
-// Future<void> insertCurrentProfileToLocalDatabase(ProfileModel profile) async {
-//   const bool kDebugMode = true;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-//   try {
-//     final database = openDatabase(
-//       join(await getDatabasesPath(), 'profile'),
-//       onCreate: (db, version) {
-//         return db.execute('''  
-//             CREATE TABLE IF NOT EXISTS profile(
-//               currentUserName TEXT,
-//               currentUserEmail TEXT
-//             )
-//         ''');
-//       },
-//       version: 1,
-//     );
+class ProfileDatabase {
+  Stream availableProfileGroupsStream({required currentUserEamil}) {
+    return FirebaseFirestore.instance
+        .collection('profile')
+        .doc(currentUserEamil)
+        .snapshots()
+        .asyncExpand((DocumentSnapshot doc) {
+      final profileInfo = doc.data()! as Map<String, dynamic>;
+      return Stream.value(profileInfo['groupNames']);
+    });
+  }
+}
 
-//     final db = await database;
-//     await db
-//         .insert(
-//       'profile',
-//       profile.toMap(),
-//       conflictAlgorithm: ConflictAlgorithm.replace,
-//     )
-//         .whenComplete(() {
-//       db.close();
-//       if (kDebugMode) {
-//         print('---- insert successful ----');
-//       }
-//     });
-//   } catch (e) {
-//     if (kDebugMode) {
-//       print('---- error inserting profile ----');
-//       print('---- $e ----');
-//     }
-//   }
-// }
-
-// Future<ProfileModel> getProfileDetailsFromLocalDatabase() async {
-//   const bool kDebugMode = true;
-//   try {
-//     final database = openDatabase(
-//       join(await getDatabasesPath(), 'profile'),
-//       onCreate: (db, version) {
-//         return db.execute('''  
-//             CREATE TABLE IF NOT EXISTS profile(
-//               currentUserName TEXT,
-//               currentUserEmail TEXT
-//             )
-//         ''');
-//       },
-//       version: 1,
-//     );
-//     final db = await database;
-
-//     final List<Map<String, dynamic>> map =
-//         await db.query('profile').whenComplete(() => db.close());
-
-//     if (kDebugMode) {
-//       print(
-//           '---- printing retrieved values from local Database (profile.database) ----');
-//       print(map);
-//     }
-
-//     return ProfileModel(
-//         currentUserName: map[0]['currentUserName'],
-//         currentUserEmail: map[0]['currentUserEmail']);
-//   } catch (e) {
-//     if (kDebugMode) {
-//       print('---- error retrieving profile data (profile.database) ----');
-//       print('---- $e ----');
-//     }
-//   }
-
-//   return ProfileModel(
-//       currentUserName: "currentUserName", currentUserEmail: "currentUserEmail");
-// }
-
-// Future<void> clearProfileDetailsFromLocalStorage() async {
-//   const bool kDebugMode = true;
-//   try {
-//     final database = openDatabase(
-//       join(await getDatabasesPath(), 'profile'),
-//       onCreate: (db, version) {
-//         return db.execute('''  
-//             CREATE TABLE IF NOT EXISTS profile(
-//               currentUserName TEXT,
-//               currentUserEmail TEXT
-//             )
-//         ''');
-//       },
-//       version: 1,
-//     );
-//     final db = await database;
-
-//     db.delete('profile').whenComplete(() {
-//       if (kDebugMode) {
-//         print('---- cleared profile data (profile.database) ----');
-//       }
-//       db.close();
-//     });
-//   } catch (e) {
-//     if (kDebugMode) {
-//       print('---- error clearing profile data (profile.database)  ----');
-//       print('---- $e ----');
-//     }
-//   }
+// Stream availableProfileGroupsStream1({required currentUserEamil}) {
+//   print(currentUserEamil);
+//   return FirebaseFirestore.instance
+//       .collection('profile')
+//       .doc(currentUserEamil)
+//       .snapshots()
+//       .asyncExpand((DocumentSnapshot doc) {
+//     print('hello1');
+//     print(doc.data());
+//     final profileInfo = doc.data()! as Map<String, dynamic>;
+//     print('hello');
+//     print('---$profileInfo---');
+//     // return Stream.value(profileInfo['groupNames']);
+//     return profileInfo['groupNames'];
+//   }).asBroadcastStream();
 // }

@@ -1,4 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fraction/database/profile.database.dart';
+
+String? _currentUserEmail;
+
+Future<void> init() async {
+  FirebaseAuth.instance.userChanges().listen((User? user) {
+    if (user == null) {
+      print('User is currently signed out!');
+    } else {
+      _currentUserEmail = user.email!;
+      // return _currentUserEmail;
+    }
+  });
+}
 
 void createUserProfile(
     {required userName, required currentUserEmail, required color}) {
@@ -13,15 +28,21 @@ void createUserProfile(
   });
 }
 
-Stream getGroupNames({required currentUserEamil}) {
-  return FirebaseFirestore.instance
-      .collection('profile')
-      .doc(currentUserEamil)
-      .snapshots()
-      .asyncExpand((DocumentSnapshot doc) {
-    final profileInfo = doc.data()! as Map<String, dynamic>;
-    return Stream.value(profileInfo['groupNames']);
-  });
+// Stream availableProfileGroupsStream() {
+//   return FirebaseFirestore.instance
+//       .collection('profile')
+//       .doc(_currentUserEmail)
+//       .snapshots()
+//       .asyncExpand((DocumentSnapshot doc) {
+//     final profileInfo = doc.data()! as Map<String, dynamic>;
+//     return Stream.value(profileInfo['groupNames']);
+//   });
+// }
+
+Stream availableProfileGroupsStream() {
+  if (_currentUserEmail == null) init();
+  return ProfileDatabase()
+      .availableProfileGroupsStream(currentUserEamil: _currentUserEmail);
 }
 
 Stream getGroupNamesFromProfile(currentUserEmail,

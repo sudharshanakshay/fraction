@@ -18,7 +18,6 @@ class AccountPallet extends StatefulWidget {
 class AccountPalletState extends State<AccountPallet> {
   @override
   Widget build(BuildContext context) {
-    print(widget.streamSnapshot.data);
     return Container(
       decoration: BoxDecoration(
         border: Border(
