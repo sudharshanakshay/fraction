@@ -27,23 +27,20 @@ Stream<QuerySnapshot> getMyExpenses({required currentUserEmail}) {
       currentGroupName: _currentGroupName, currentUserEmail: currentUserEmail);
 }
 
-Future addExpense(
-    {required currentUserEmail,
-    required String description,
-    required cost}) async {
-  ExpenseDatabase()
-      .addExpense(
-          currentGroupName: _currentGroupName,
-          currentUserEmail: currentUserEmail,
-          description: description,
-          cost: cost)
-      .whenComplete(() {
-    updateGroupMemberExpense(
-      memberEmail: currentUserEmail,
-      groupName: _currentGroupName,
-      expenseDiff: int.parse(cost),
-    );
-  });
+Future addExpense({required String description, required cost}) async {
+  init().whenComplete(() => ExpenseDatabase()
+          .addExpense(
+              currentGroupName: _currentGroupName,
+              currentUserEmail: _currentUserEmail,
+              description: description,
+              cost: cost)
+          .whenComplete(() {
+        updateGroupMemberExpense(
+          memberEmail: _currentUserEmail,
+          groupName: _currentGroupName,
+          expenseDiff: int.parse(cost),
+        );
+      }));
 }
 
 void deleteExpense({required docId, required cost}) {

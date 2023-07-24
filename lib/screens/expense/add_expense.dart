@@ -56,7 +56,6 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
                   const snakBar = SnackBar(content: Text('adding expense ...'));
                   ScaffoldMessenger.of(context).showSnackBar(snakBar);
                   addExpense(
-                          currentUserEmail: appState.currentUserEmail,
                           description: _descriptionTextController.text,
                           cost: _costTextController.text)
                       .whenComplete(() => Navigator.pop(context));
