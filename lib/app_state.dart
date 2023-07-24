@@ -41,8 +41,4 @@ class ApplicationState extends ChangeNotifier {
 
     // await getGroupNames(currentUserEamil: currentUserEamil)
   }
-
-  void Z({required currentGroupName}) {
-    _currentUserGroup = currentUserGroup;
-  }
 }

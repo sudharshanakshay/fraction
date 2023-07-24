@@ -67,6 +67,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
             return StreamBuilder(
                 stream: getExpenseCollectionFromCloud(),
                 builder: (context, snapshot) {
+                  print(snapshot.data);
                   if (!snapshot.hasData) {
                     return const Text('Loading ...');
                   }

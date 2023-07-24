@@ -81,6 +81,7 @@ Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
           toFirestore: (groupModel, _) => groupModel.toJson())
       .snapshots()
       .asyncExpand((doc) {
+    // print(doc.data());
     List? memberEmailList = doc.data()?.toMemberEmailsList();
     return FirebaseFirestore.instance
         .collection('expense')
@@ -92,5 +93,5 @@ Stream<QuerySnapshot> getExpenseCollectionFromCloud() {
         // ])
         .orderBy('timeStamp', descending: true)
         .snapshots();
-  });
+  }).asBroadcastStream();
 }
