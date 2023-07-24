@@ -76,8 +76,7 @@ class _ProfileState extends State<Profile> {
           ],
         ),
         body: StreamBuilder(
-            stream: getCurrentUserExpenseCollection(
-                currentUserEmail: appState.currentUserEmail),
+            stream: getMyExpenses(currentUserEmail: appState.currentUserEmail),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: Text('Loading ...'));
@@ -169,6 +168,12 @@ class _ProfileState extends State<Profile> {
                       //       },
                       //       child: const IconAndDetail(Icons.logout, 'logout')),
                       // ),
+                      FilledButton(
+                          onPressed: () {
+                            // ExpenseDatabase()
+                            //     .getExpenseAndAddToSubCollectionInGroup();
+                          },
+                          child: const Text('click it once')),
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -206,8 +211,8 @@ class _ProfileState extends State<Profile> {
                                           widthFactor: 0.01,
                                         ),
                                       ),
-                                      Text(snapshot.data?.docs[index]
-                                          ['groupName']),
+                                      // Text(snapshot.data?.docs[index]
+                                      //     ['groupName']),
                                     ],
                                   ),
                                   trailing: Row(

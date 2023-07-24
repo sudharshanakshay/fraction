@@ -65,7 +65,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
             return const CreateGroup();
           } else {
             return StreamBuilder(
-                stream: getExpenseCollectionFromCloud(),
+                stream: getExpenseCollection(),
                 builder: (context, snapshot) {
                   print(snapshot.data);
                   if (!snapshot.hasData) {

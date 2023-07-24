@@ -1,64 +1,85 @@
-import 'package:fraction/model/expense.dart';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-void insertExpense(ExpenseModel expense) async {
-  const bool kDebugMode = true;
-  try {
-    final database = await openDatabase(
-        join(await getDatabasesPath(), 'expense'), onCreate: (db, version) {
-      return db.execute('''
-        CREATE TABLE IF NOT EXISTS expense(
-          group_id TEXT,
-          email_id TEXT,
-          description VARCHAR2(50),
-          cost INTEGER,
-          timestamp TEXT
-        )
-    ''');
-    }, version: 1);
+const expenseCollectionName = 'expense';
 
-    final db = await database;
-
-    await db.insert('expense', expense.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  } catch (e) {
-    if (kDebugMode) {
-      print('-------- error inserting profile --------');
-      print('-------- $e --------');
-    }
-  }
-}
-
-Future<List<Map<String, dynamic>>> getExpenseDetials() async {
-  const bool kDebugMode = true;
-
-  try {
-    final database = await openDatabase(
-        join(await getDatabasesPath(), 'expense'), onCreate: (db, version) {
-      return db.execute('''
-        CREATE TABLE IF NOT EXISTS expense(
-          group_id TEXT,
-          email_id TEXT,
-          description VARCHAR2(50),
-          cost INTEGER,
-          timestamp TEXT
-        )
-    ''');
-    }, version: 1);
-
-    final db = await database;
-
-    final List<Map<String, dynamic>> map =
-        await db.query('expense').whenComplete(() => db.close());
-
-    return map;
-  } catch (e) {
-    if (kDebugMode) {
-      print('-------- error inserting profile --------');
-      print('-------- $e --------');
-    }
+class ExpenseDatabase {
+  Stream<QuerySnapshot> getExpenseCollection({required currentGroupName}) {
+    return FirebaseFirestore.instance
+        .collection('group')
+        .doc(currentGroupName)
+        .collection(expenseCollectionName)
+        .orderBy('timeStamp', descending: true)
+        .snapshots();
   }
 
-  return [];
+  Future<void> addExpense(
+      {required currentGroupName,
+      required currentUserEmail,
+      required String description,
+      required cost}) {
+    return FirebaseFirestore.instance
+        .collection('profile')
+        .doc(currentUserEmail)
+        .get()
+        .then((doc) {
+      final data = {
+        'description': description,
+        'cost': cost,
+        'userName': doc.data()?['userName'],
+        'emailAddress': doc.data()?['emailAddress'],
+        'timeStamp': DateTime.now()
+      };
+      FirebaseFirestore.instance
+          .collection('group')
+          .doc(currentGroupName)
+          .collection('expense')
+          .doc()
+          .set(data);
+    });
+  }
+
+  Stream<QuerySnapshot> getMyExpenses(
+      {required currentGroupName, required currentUserEmail}) {
+    return FirebaseFirestore.instance
+        .collection('group')
+        .doc(currentGroupName)
+        .collection('expense')
+        .where('emailAddress', isEqualTo: currentUserEmail)
+        .orderBy('timeStamp', descending: true)
+        .snapshots();
+  }
+
+  Future deleteMyExpense(
+      {required currentUserEmail,
+      required currentGroupName,
+      required docId}) async {
+    return FirebaseFirestore.instance
+        .collection('group')
+        .doc(currentGroupName)
+        .collection('expense')
+        .doc(docId)
+        .delete()
+        .then(
+      (doc) {
+        print("Document deleted");
+      },
+      onError: (e) => print("Error updating document $e"),
+    );
+  }
+
+  // getExpenseAndAddToSubCollectionInGroup() {
+  //   FirebaseFirestore.instance.collection('expense').get().then((value) {
+  //     if (value.docs.isNotEmpty) {
+  //       for (var element in value.docs) {
+  //         print(element.data());
+  //         FirebaseFirestore.instance
+  //             .collection('group')
+  //             .doc('akshaya')
+  //             .collection('expense')
+  //             .doc()
+  //             .set(element.data());
+  //       }
+  //     }
+  //   });
+  // }
 }
