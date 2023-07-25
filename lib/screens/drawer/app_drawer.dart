@@ -18,7 +18,29 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              const DrawerHeader(child: Text('Profile info')),
+              StreamBuilder<Map<String, dynamic>>(
+                  stream: getProfileDetailsFromCloud(
+                      currentUserEmail: appState.currentUserEmail),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return DrawerHeader(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const Text('Profile'),
+                            const Divider(),
+                            Text(snapshot.data?['userName'].toString() ?? ''),
+                            Text(snapshot.data?['emailAddress'].toString() ??
+                                ''),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
               StreamBuilder(
                   stream: availableProfileGroupsStream(
                       currentUserEmail: appState.currentUserEmail),
