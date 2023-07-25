@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
+import 'package:fraction/utils/tools.dart';
+import 'package:fraction/widgets/custom_input_form_field.dart';
+import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class FractionAppDrawer extends StatefulWidget {
@@ -13,6 +17,8 @@ class FractionAppDrawer extends StatefulWidget {
 class FractionAppDrawerState extends State<FractionAppDrawer> {
   @override
   Widget build(BuildContext context) {
+    final _newGroupNameController = TextEditingController();
+    final _joinGroupNameController = TextEditingController();
     return Consumer<ApplicationState>(
       builder: (context, appState, child) => Drawer(
         child: SingleChildScrollView(
@@ -52,7 +58,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                         itemCount: snapShot.data.length,
                         itemBuilder: (BuildContext context, int index) {
                           return ListTile(
-                            title: Text('${snapShot.data[index]}'),
+                            title: Text(Tools().sliptElements(
+                                element: snapShot.data[index])[0]),
                             onTap: () {},
                           );
                         },
@@ -60,7 +67,32 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                     } else {
                       return Container();
                     }
-                  })
+                  }),
+              FilledButton(
+                  onPressed: () {
+                    Scaffold.of(context)
+                        .showBottomSheet<void>((BuildContext context) => Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  const Text('Create new group'),
+                                  CustomInputFormField(
+                                      controller: _newGroupNameController,
+                                      label: 'Group name'),
+                                  FilledButton(
+                                      onPressed: () {
+                                        createCloudGroup(
+                                            inputGroupName:
+                                                _newGroupNameController.text);
+                                      },
+                                      child: const DetailAndIcon(
+                                          Icons.navigate_next, "Next")),
+                                ],
+                              ),
+                            ));
+                  },
+                  child: const Text('create group'))
             ],
           ),
         ),
