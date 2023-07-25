@@ -16,9 +16,6 @@ class ApplicationState extends ChangeNotifier {
   String _currentUserEmail = '';
   String get currentUserEmail => _currentUserEmail;
 
-  String _currentUserGroup = '';
-  String get currentUserGroup => _currentUserGroup;
-
   // ------------- Firebase Initailization -------------
 
   Future<void> init() async {
@@ -38,7 +35,5 @@ class ApplicationState extends ChangeNotifier {
       }
       notifyListeners();
     });
-
-    // await getGroupNames(currentUserEamil: currentUserEamil)
   }
 }

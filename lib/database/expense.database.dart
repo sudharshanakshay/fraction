@@ -9,7 +9,10 @@ class ExpenseDatabase {
         .doc(currentGroupName)
         .collection(expenseCollectionName)
         .orderBy('timeStamp', descending: true)
-        .snapshots();
+        .snapshots()
+        .handleError((e) {
+      throw (e);
+    });
   }
 
   Future<void> addExpense(

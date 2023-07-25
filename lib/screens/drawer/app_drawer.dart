@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:fraction/utils/tools.dart';
@@ -17,8 +18,7 @@ class FractionAppDrawer extends StatefulWidget {
 class FractionAppDrawerState extends State<FractionAppDrawer> {
   @override
   Widget build(BuildContext context) {
-    final _newGroupNameController = TextEditingController();
-    final _joinGroupNameController = TextEditingController();
+    final newGroupNameController = TextEditingController();
     return Consumer<ApplicationState>(
       builder: (context, appState, child) => Drawer(
         child: SingleChildScrollView(
@@ -60,7 +60,12 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                           return ListTile(
                             title: Text(Tools().sliptElements(
                                 element: snapShot.data[index])[0]),
-                            onTap: () {},
+                            onTap: () {
+                              ExpenseService().setCurrentGroupName(
+                                  currentGroupName: snapShot.data[index]);
+                              // appState.setCurrentGroupName(
+                              // currentGroupName: snapShot.data[index]);
+                            },
                           );
                         },
                       );
@@ -68,6 +73,11 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                       return Container();
                     }
                   }),
+              FilledButton(
+                  onPressed: () {
+                    // print(appState.currentUserGroup);
+                  },
+                  child: const Text('get one group name')),
               FilledButton(
                   onPressed: () {
                     Scaffold.of(context)
@@ -78,13 +88,13 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                 children: <Widget>[
                                   const Text('Create new group'),
                                   CustomInputFormField(
-                                      controller: _newGroupNameController,
+                                      controller: newGroupNameController,
                                       label: 'Group name'),
                                   FilledButton(
                                       onPressed: () {
-                                        createCloudGroup(
+                                        GroupServices().createCloudGroup(
                                             inputGroupName:
-                                                _newGroupNameController.text);
+                                                newGroupNameController.text);
                                       },
                                       child: const DetailAndIcon(
                                           Icons.navigate_next, "Next")),

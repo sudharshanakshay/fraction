@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/app_state.dart';
 import 'package:fraction/screens/expense/widget/account_pallet.dart';
 import 'package:fraction/screens/expense/widget/expense_pallet.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 import '../../services/expense/expense.services.dart';
 import '../../services/group/group.services.dart';
-import '../../services/profile/profile.services.dart';
-import '../group/create_group.dart';
 
 class ViewExpenseLayout extends StatefulWidget {
   const ViewExpenseLayout({Key? key}) : super(key: key);
@@ -20,81 +17,74 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   final List<int> colorCodes = <int>[600, 500, 100];
 
   Widget accountDetailWidget({required currentUserEmail}) {
-    return StreamBuilder(
-        // stream: null,
-        stream: getGroupAccountDetails(currentUserEmail: currentUserEmail),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: getRandomColor(),
+    return Consumer<GroupServices>(
+      builder: (context, groupServiceState, child) => StreamBuilder(
+          stream: groupServiceState.getGroupAccountDetails(
+              currentUserEmail: currentUserEmail),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 2,
+                        color: getRandomColor(),
+                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return AccountPallet(
-                          streamSnapshot: snapshot, index: index);
-                    },
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: (1 / .4)),
-                  ),
-                ));
-          } else {
-            return Container();
-          }
-        });
+                    padding: const EdgeInsets.all(10),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return AccountPallet(
+                            streamSnapshot: snapshot, index: index);
+                      },
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, childAspectRatio: (1 / .4)),
+                    ),
+                  ));
+            } else {
+              return Container();
+            }
+          }),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApplicationState>(
-      builder: (context, appState, _) => StreamBuilder(
-        stream: getGroupNamesFromProfile(appState.currentUserEmail),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const CreateGroup();
-          } else {
-            return StreamBuilder(
-                stream: getExpenseCollection(),
-                builder: (context, snapshot) {
-                  print(snapshot.data);
-                  if (!snapshot.hasData) {
-                    return const Text('Loading ...');
-                  }
-                  return SingleChildScrollView(
-                      child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                        accountDetailWidget(
-                            currentUserEmail: appState.currentUserEmail),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.all(8),
-                            itemCount: snapshot.data?.docs.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return ExpensePallet(
-                                  streamSnapshot: snapshot, index: index);
-                            }),
-                        const SizedBox(
-                          height: 70,
-                        )
-                      ]));
-                });
-          }
-        },
-      ),
-    );
+    return Consumer<ExpenseService>(
+        builder: (context, expenseServiceState, _) => StreamBuilder(
+            stream: expenseServiceState.getExpenseCollection(),
+            // stream: getExpenseCollection(),
+            builder: (context, snapshot) {
+              print(snapshot.data);
+              if (!snapshot.hasData) {
+                return const Text('Loading ...');
+              }
+              return SingleChildScrollView(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                    accountDetailWidget(
+                        currentUserEmail: expenseServiceState.currentUserEmail),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(8),
+                        itemCount: snapshot.data?.docs.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ExpensePallet(
+                              streamSnapshot: snapshot, index: index);
+                        }),
+                    const SizedBox(
+                      height: 70,
+                    )
+                  ]));
+            }));
   }
 }
 

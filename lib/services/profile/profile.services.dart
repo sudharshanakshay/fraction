@@ -41,6 +41,11 @@ Stream availableProfileGroupsStream({required String currentUserEmail}) {
       .availableProfileGroupsStream(currentUserEamil: currentUserEmail);
 }
 
+Future getOneProfileGroupName({required String currentUserEmail}) {
+  return ProfileDatabase()
+      .getOneProfileGroupName(currentUserEmail: currentUserEmail);
+}
+
 void createUserProfile(
     {required userName, required currentUserEmail, required color}) {
   FirebaseFirestore.instance

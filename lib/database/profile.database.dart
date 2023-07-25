@@ -12,4 +12,17 @@ class ProfileDatabase {
       return Stream.value(profileInfo['groupNames']);
     });
   }
+
+  Future<String> getOneProfileGroupName({required currentUserEmail}) {
+    return FirebaseFirestore.instance
+        .collection('profile')
+        .doc(currentUserEmail)
+        .get()
+        .then((DocumentSnapshot doc) {
+      final profileInfo = doc.data()! as Map<String, List>;
+      return profileInfo['groupNames']!.isNotEmpty
+          ? profileInfo['groupNames']![0]
+          : null;
+    });
+  }
 }
