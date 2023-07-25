@@ -21,11 +21,6 @@ class ProfileServices extends ChangeNotifier {
       }
     });
   }
-
-  Stream availableProfileGroupsStream() {
-    return ProfileDatabase()
-        .availableProfileGroupsStream(currentUserEamil: _currentUserEmail);
-  }
 }
 
 String? _currentUserEmail;
@@ -39,6 +34,11 @@ Future<void> init() async {
       // return _currentUserEmail;
     }
   });
+}
+
+Stream availableProfileGroupsStream({required String currentUserEmail}) {
+  return ProfileDatabase()
+      .availableProfileGroupsStream(currentUserEamil: currentUserEmail);
 }
 
 void createUserProfile(

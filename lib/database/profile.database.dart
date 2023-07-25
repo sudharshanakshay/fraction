@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 
-class ProfileDatabase extends ChangeNotifier {
+class ProfileDatabase {
   Stream availableProfileGroupsStream({required currentUserEamil}) {
     return FirebaseFirestore.instance
         .collection('profile')
