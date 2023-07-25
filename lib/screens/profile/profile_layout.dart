@@ -96,7 +96,9 @@ class _ProfileState extends State<Profile> {
                       },
                       child: const Text('click it once')),
                   StreamBuilder(
-                      stream: ExpenseService().getMyExpenses(),
+                      stream: ExpenseService().getMyExpenses(
+                          currentUserEmail: appState.currentUserEmail,
+                          currentUserGroup: appState.currentUserGroup),
                       builder: (context, snapshot) {
                         if (!snapshot.hasData) {
                           return const Center(child: Text('Loading ...'));

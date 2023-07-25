@@ -58,10 +58,11 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   Widget build(BuildContext context) {
     return Consumer<ExpenseService>(
         builder: (context, expenseServiceState, _) => StreamBuilder(
-            stream: expenseServiceState.getExpenseCollection(),
+            stream: expenseServiceState.getExpenseCollection(
+                currentUserGroup: expenseServiceState.currentUserGroup),
             // stream: getExpenseCollection(),
             builder: (context, snapshot) {
-              print(snapshot.data);
+              // print(snapshot.data);
               if (!snapshot.hasData) {
                 return const Text('Loading ...');
               }

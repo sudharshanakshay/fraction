@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/services/expense/expense.services.dart';
+import 'package:fraction/services/fraction_services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:fraction/utils/tools.dart';
@@ -61,8 +62,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                             title: Text(Tools().sliptElements(
                                 element: snapShot.data[index])[0]),
                             onTap: () {
-                              ExpenseService().setCurrentGroupName(
-                                  currentGroupName: snapShot.data[index]);
+                              appState.setcurrentUserGroup(
+                                  currentUserGroup: snapShot.data[index]);
                               // appState.setCurrentGroupName(
                               // currentGroupName: snapShot.data[index]);
                             },

@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
 import 'package:fraction/model/group.dart';
-import 'package:fraction/services/fraction_services.dart';
 
-class GroupServices extends FractionServices {
+class GroupServices extends ApplicationState {
   void updateTotalExpenseSubCollectionAccount(
       {required userEmail, required newCost}) {
     final accRef = FirebaseFirestore.instance
@@ -71,12 +71,11 @@ class GroupServices extends FractionServices {
               toFirestore: (groupModel, _) => groupModel.toJson())
           .snapshots()
           .asyncExpand((doc) {
-        print('----------------------');
-        print(' Expense Account  ${doc.data()}');
+        // print('----------------------');
+        // print(' Expense Account  ${doc.data()}');
         return Stream.value(doc.data()?.toList());
       });
     } catch (e) {
-      print(e);
       return const Stream.empty();
     }
   }
