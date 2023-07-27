@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/services/expense/expense.services.dart';
-import 'package:fraction/services/fraction_services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
 import 'package:fraction/utils/tools.dart';
@@ -21,7 +20,6 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _expenseService = Provider.of<ExpenseService>(context, listen: false);
     super.initState();
   }
@@ -34,31 +32,19 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              StreamBuilder<Map<String, dynamic>>(
-                  stream: getProfileDetailsFromCloud(
-                      currentUserEmail: appState.currentUserEmail),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      return DrawerHeader(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            const Text('Profile'),
-                            const Divider(),
-                            Text(appState.currentUserName),
-                            Text(appState.currentUserEmail),
-                            Text(snapshot.data?['userName'].toString() ?? ''),
-                            Text(snapshot.data?['emailAddress'].toString() ??
-                                ''),
-                          ],
-                        ),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }),
+              DrawerHeader(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    const Text('Profile'),
+                    const Divider(),
+                    Text(appState.currentUserName),
+                    Text(appState.currentUserEmail),
+                  ],
+                ),
+              ),
               StreamBuilder(
                   stream: availableProfileGroupsStream(
                       currentUserEmail: appState.currentUserEmail),
@@ -75,10 +61,6 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                             onTap: () {
                               _expenseService.setcurrentUserGroup(
                                   currentUserGroup: snapShot.data[index]);
-                              // appState.setcurrentUserGroup(
-                              //     currentUserGroup: snapShot.data[index]);
-                              // appState.setCurrentGroupName(
-                              // currentGroupName: snapShot.data[index]);
                             },
                           );
                         },
