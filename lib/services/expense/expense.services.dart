@@ -4,10 +4,10 @@ import 'package:fraction/database/expense.database.dart';
 import 'package:fraction/database/group.database.dart';
 
 class ExpenseService extends ApplicationState {
-  Stream<QuerySnapshot> getExpenseCollection({required currentUserGroup}) {
+  Stream<QuerySnapshot> getExpenseCollection() {
     try {
       return ExpenseDatabase()
-          .getExpenseCollection(currentGroupName: currentUserGroup);
+          .getExpenseCollection(currentGroupName: super.currentUserGroup);
     } catch (e) {
       return const Stream.empty();
     }

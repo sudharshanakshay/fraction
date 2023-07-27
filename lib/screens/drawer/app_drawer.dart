@@ -17,6 +17,15 @@ class FractionAppDrawer extends StatefulWidget {
 }
 
 class FractionAppDrawerState extends State<FractionAppDrawer> {
+  late ExpenseService _expenseService;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _expenseService = Provider.of<ExpenseService>(context, listen: false);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final newGroupNameController = TextEditingController();
@@ -38,6 +47,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                           children: <Widget>[
                             const Text('Profile'),
                             const Divider(),
+                            Text(appState.currentUserName),
+                            Text(appState.currentUserEmail),
                             Text(snapshot.data?['userName'].toString() ?? ''),
                             Text(snapshot.data?['emailAddress'].toString() ??
                                 ''),
@@ -62,8 +73,10 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                             title: Text(Tools().sliptElements(
                                 element: snapShot.data[index])[0]),
                             onTap: () {
-                              appState.setcurrentUserGroup(
+                              _expenseService.setcurrentUserGroup(
                                   currentUserGroup: snapShot.data[index]);
+                              // appState.setcurrentUserGroup(
+                              //     currentUserGroup: snapShot.data[index]);
                               // appState.setCurrentGroupName(
                               // currentGroupName: snapShot.data[index]);
                             },

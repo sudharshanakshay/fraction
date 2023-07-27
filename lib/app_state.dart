@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
@@ -14,6 +13,9 @@ class ApplicationState extends ChangeNotifier {
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
+
+  String _currentUserName = '';
+  String get currentUserName => _currentUserName;
 
   String _currentUserEmail = '';
   String get currentUserEmail => _currentUserEmail;
@@ -31,22 +33,13 @@ class ApplicationState extends ChangeNotifier {
       EmailAuthProvider(),
     ]);
 
-    // FirebaseAuth.instance.userChanges().listen((user) {
-    //   if (user != null) {
-    //     _loggedIn = true;
-    //     _currentUserEmail = user.email!;
-    //   } else {
-    //     _loggedIn = false;
-    //   }
-    //   notifyListeners();
-    // });
-
     FirebaseAuth.instance.userChanges().listen((user) async {
-      final prefs = await SharedPreferences.getInstance();
+      // final prefs = await SharedPreferences.getInstance();
       if (user != null) {
         _loggedIn = true;
         _currentUserEmail = user.email!;
-        if (prefs.getString('currentUserGroup') == null) {
+        // if (prefs.getString('currentUserGroup') == null) {
+        if (_currentUserGroup.isEmpty) {
           try {
             FirebaseFirestore.instance
                 .collection('profile')
@@ -54,16 +47,18 @@ class ApplicationState extends ChangeNotifier {
                 .get()
                 .then((DocumentSnapshot doc) async {
               final currentProfileDetails = doc.data() as Map<String, dynamic>;
+              _currentUserName = currentProfileDetails['userName'];
               for (String groupName in currentProfileDetails['groupNames']) {
                 if (groupName.isNotEmpty) {
                   print('---- printing group name from fraction services ----');
                   print(groupName);
                   _currentUserGroup = groupName;
-                  await prefs
-                      .setString('currentUserGroup', _currentUserGroup)
-                      .whenComplete(() {
-                    notifyListeners();
-                  });
+                  notifyListeners();
+                  // await prefs
+                  //     .setString('currentUserGroup', _currentUserGroup)
+                  //     .whenComplete(() {
+                  //   notifyListeners();
+                  // });
 
                   break;
                 }
@@ -73,7 +68,7 @@ class ApplicationState extends ChangeNotifier {
             throw ('user has no group');
           }
         } else {
-          _currentUserGroup = prefs.getString('currentUserGroup')!;
+          // _currentUserGroup = prefs.getString('currentUserGroup')!;
           print('current group is $_currentUserGroup');
           notifyListeners();
         }
@@ -87,13 +82,66 @@ class ApplicationState extends ChangeNotifier {
   // ---- set currentUserGroup variable ----
   Future<void> setcurrentUserGroup({required String currentUserGroup}) async {
     _currentUserGroup = currentUserGroup;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs
-        .setString('currentUserGroup', currentUserGroup)
-        .whenComplete(() {
-      notifyListeners();
-    });
+    notifyListeners();
+    // final prefs = await SharedPreferences.getInstance();
+    // await prefs
+    //     .setString('currentUserGroup', currentUserGroup)
+    //     .whenComplete(() {
+    //   notifyListeners();
+    // });
 
     print('current group -> $_currentUserGroup');
   }
 }
+
+
+// Future<void> init() async {
+//     await Firebase.initializeApp(
+//         options: DefaultFirebaseOptions.currentPlatform);
+
+//     FirebaseUIAuth.configureProviders([
+//       EmailAuthProvider(),
+//     ]);
+
+//     FirebaseAuth.instance.userChanges().listen((user) async {
+//       final prefs = await SharedPreferences.getInstance();
+//       if (user != null) {
+//         _loggedIn = true;
+//         _currentUserEmail = user.email!;
+//         if (prefs.getString('currentUserGroup') == null) {
+//           try {
+//             FirebaseFirestore.instance
+//                 .collection('profile')
+//                 .doc(_currentUserEmail)
+//                 .get()
+//                 .then((DocumentSnapshot doc) async {
+//               final currentProfileDetails = doc.data() as Map<String, dynamic>;
+//               for (String groupName in currentProfileDetails['groupNames']) {
+//                 if (groupName.isNotEmpty) {
+//                   print('---- printing group name from fraction services ----');
+//                   print(groupName);
+//                   _currentUserGroup = groupName;
+//                   await prefs
+//                       .setString('currentUserGroup', _currentUserGroup)
+//                       .whenComplete(() {
+//                     notifyListeners();
+//                   });
+
+//                   break;
+//                 }
+//               }
+//             });
+//           } catch (e) {
+//             throw ('user has no group');
+//           }
+//         } else {
+//           _currentUserGroup = prefs.getString('currentUserGroup')!;
+//           print('current group is $_currentUserGroup');
+//           notifyListeners();
+//         }
+//       } else {
+//         _loggedIn = false;
+//       }
+//       notifyListeners();
+//     });
+//   }

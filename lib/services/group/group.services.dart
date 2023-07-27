@@ -5,13 +5,12 @@ import 'package:fraction/database/group.database.dart';
 import 'package:fraction/model/group.dart';
 
 class GroupServices extends ApplicationState {
-  void updateTotalExpenseSubCollectionAccount(
-      {required userEmail, required newCost}) {
+  void updateTotalExpenseSubCollectionAccount({required newCost}) {
     final accRef = FirebaseFirestore.instance
         .collection('group')
         .doc(super.currentUserGroup)
         .collection('account')
-        .doc(userEmail);
+        .doc(super.currentUserName);
     accRef.get().then((doc) {
       final previousExpense = doc.data()?['totalExpense'];
       return previousExpense;
