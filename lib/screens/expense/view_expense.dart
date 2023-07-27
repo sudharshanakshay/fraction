@@ -75,7 +75,16 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                       itemCount: snapshot.data?.docs.length,
                       itemBuilder: (BuildContext context, int index) {
                         return ExpensePallet(
-                            streamSnapshot: snapshot, index: index);
+                            description: snapshot.data!.docs[index]
+                                ['description'],
+                            cost: snapshot.data!.docs[index]['cost'],
+                            currentUserEmail:
+                                expenseServiceState.currentUserEmail,
+                            currentUserName:
+                                expenseServiceState.currentUserName,
+                            memberEmail: snapshot.data!.docs[index]
+                                ['emailAddress'],
+                            time: snapshot.data!.docs[index]['timeStamp']);
                       }),
                   const SizedBox(
                     height: 70,
