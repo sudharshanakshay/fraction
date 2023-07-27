@@ -14,24 +14,12 @@ class ViewExpenseLayout extends StatefulWidget {
 }
 
 class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
-  String _currentUserGroupState = '';
-
-  // late ExpenseService _expenseProvider;
-
-  @override
-  void initState() {
-    // _currentUserGroupState =  pref.getString('currentUserGroup')!;
-    // _expenseProvider = Provider.of<ExpenseService>(context, listen: true);
-    super.initState();
-  }
-
   final List<int> colorCodes = <int>[600, 500, 100];
 
-  Widget accountDetailWidget({required currentUserEmail}) {
+  Widget accountDetailWidget() {
     return Consumer<GroupServices>(
       builder: (context, groupServiceState, child) => StreamBuilder(
-          stream: groupServiceState.getGroupAccountDetails(
-              currentUserEmail: currentUserEmail),
+          stream: groupServiceState.getMemberDetails(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Padding(
@@ -68,30 +56,17 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ExpenseService>(builder: (context, expenseServiceState, _) {
-      print('viewExpense State $_currentUserGroupState');
-
-      print('viewExpense State $_currentUserGroupState');
       return StreamBuilder(
-          stream: expenseServiceState.getExpenseCollection(
-              // currentUserGroup: expenseServiceState.currentUserGroup
-              ),
-          // stream: getExpenseCollection(),
+          stream: expenseServiceState.getExpenseCollection(),
           builder: (context, snapshot) {
-            // print(snapshot.data);
             if (!snapshot.hasData) {
-              // if (snapshot.connectionState == ConnectionState.waiting) {
-              //   setState(() {
-              //     _currentUserGroupState = expenseServiceState.currentUserGroup;
-              //   });
-              // }
               return const Text('Loading ...');
             }
             return SingleChildScrollView(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                  accountDetailWidget(
-                      currentUserEmail: expenseServiceState.currentUserEmail),
+                  accountDetailWidget(),
                   Text(expenseServiceState.currentUserName),
                   ListView.builder(
                       shrinkWrap: true,

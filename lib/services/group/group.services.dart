@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
-import 'package:fraction/model/group.dart';
 
 class GroupServices extends ApplicationState {
   void updateTotalExpenseSubCollectionAccount({required newCost}) {
@@ -19,79 +18,42 @@ class GroupServices extends ApplicationState {
     });
   }
 
-  Future<void> joinCloudGroup({required inputGroupName}) async {
-    FirebaseFirestore.instance
-        .collection('profile')
-        .doc(super.currentUserEmail)
-        .get()
-        .then((doc) {
-      addMemberToGroup(
-              currentGroupName: super.currentUserGroup,
-              memberName: doc.data()?['userName'],
-              memberEmail: super.currentUserEmail)
-          .whenComplete(() {
-        updateGroupNameToProfileCollection(
-            currentUserEmail: super.currentUserEmail,
-            groupNameToAdd: inputGroupName);
-      });
+  Future<void> joinCloudGroup({required newGroupName}) async {
+    GroupDatabase()
+        .insertMemberToGroup(
+            currentGroupName: super.currentUserGroup,
+            memberName: super.currentUserName,
+            memberEmail: super.currentUserEmail)
+        .whenComplete(() {
+      GroupDatabase().insertGroupNameToProfile(
+          currentUserEmail: super.currentUserEmail,
+          groupNameToAdd: newGroupName);
     });
   }
 
-  Future<void> createCloudGroup({required inputGroupName}) async {
+  Future<void> createGroup({required inputGroupName}) async {
     try {
-      FirebaseFirestore.instance
-          .collection('profile')
-          .doc(super.currentUserEmail)
-          .get()
-          .then((doc) {
-        createGroup(
-                groupName: inputGroupName,
-                adminName: doc.data()?['userName'],
-                adminEmail: super.currentUserEmail)
-            .then((String groupNameCreatedWithIdentity) {
-          updateGroupNameToProfileCollection(
-              currentUserEmail: super.currentUserEmail,
-              groupNameToAdd: groupNameCreatedWithIdentity);
-        });
+      GroupDatabase()
+          .createGroup(
+              groupName: inputGroupName,
+              adminName: super.currentUserName,
+              adminEmail: super.currentUserEmail)
+          .then((String groupNameCreatedWithIdentity) {
+        GroupDatabase().insertGroupNameToProfile(
+            currentUserEmail: super.currentUserEmail,
+            groupNameToAdd: groupNameCreatedWithIdentity);
       });
     } catch (e) {
       print(e);
     }
   }
 
-  Stream<List?> getGroupAccountDetails({required currentUserEmail}) {
+  Stream<List?> getMemberDetails() {
     try {
-      return FirebaseFirestore.instance
-          .collection('group')
-          .doc(super.currentUserGroup)
-          .withConverter<GroupModel>(
-              fromFirestore: (snapShot, _) =>
-                  GroupModel.fromJson(snapShot.data()!),
-              toFirestore: (groupModel, _) => groupModel.toJson())
-          .snapshots()
-          .asyncExpand((doc) {
-        // print('----------------------');
-        // print(' Expense Account  ${doc.data()}');
-        return Stream.value(doc.data()?.toList());
-      });
+      return GroupDatabase()
+          .getMemberDetails(currentUserGroup: super.currentUserGroup);
     } catch (e) {
       return const Stream.empty();
     }
-  }
-
-  Future updateGroupNameToProfileCollection(
-      {required currentUserEmail, required groupNameToAdd}) async {
-    bool kDebugMode = true;
-
-    FirebaseFirestore.instance
-        .collection('profile')
-        .doc(currentUserEmail)
-        .update({
-      "groupNames": FieldValue.arrayUnion([groupNameToAdd]),
-    }).whenComplete(() {
-      if (kDebugMode) {
-        print('-------- groupName $groupNameToAdd added successfuly --------');
-      }
-    });
   }
 }

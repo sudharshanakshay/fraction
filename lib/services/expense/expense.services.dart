@@ -32,7 +32,7 @@ class ExpenseService extends ApplicationState {
             description: description,
             cost: cost)
         .whenComplete(() {
-      updateGroupMemberExpense(
+      GroupDatabase().updateGroupMemberExpense(
         memberEmail: super.currentUserEmail,
         groupName: super.currentUserGroup,
         expenseDiff: int.parse(cost),
@@ -47,7 +47,7 @@ class ExpenseService extends ApplicationState {
             currentGroupName: super.currentUserGroup,
             docId: docId)
         .whenComplete(() {
-      updateGroupMemberExpense(
+      GroupDatabase().updateGroupMemberExpense(
           groupName: super.currentUserGroup,
           memberEmail: super.currentUserEmail,
           expenseDiff: -int.parse(cost));

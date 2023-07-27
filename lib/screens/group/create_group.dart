@@ -28,7 +28,7 @@ class CreateGroupState extends State<CreateGroup> {
           FilledButton(
               onPressed: () {
                 GroupServices().joinCloudGroup(
-                  inputGroupName: _joinGroupNameController.text,
+                  newGroupName: _joinGroupNameController.text,
                 );
                 //getGroupNamesFromLocalDatabase();
               },
@@ -62,7 +62,7 @@ class CreateGroupState extends State<CreateGroup> {
                                       label: 'Group name'),
                                   FilledButton(
                                       onPressed: () {
-                                        GroupServices().createCloudGroup(
+                                        GroupServices().createGroup(
                                             inputGroupName:
                                                 _newGroupNameController.text);
                                       },

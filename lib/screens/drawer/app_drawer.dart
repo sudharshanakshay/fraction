@@ -88,7 +88,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                       label: 'Group name'),
                                   FilledButton(
                                       onPressed: () {
-                                        GroupServices().createCloudGroup(
+                                        GroupServices().createGroup(
                                             inputGroupName:
                                                 newGroupNameController.text);
                                       },
