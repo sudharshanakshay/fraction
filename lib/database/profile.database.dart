@@ -2,10 +2,27 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileDatabase {
-  Stream availableProfileGroupsStream({required currentUserEamil}) {
+  final _profileCollectionName = 'profile';
+
+  Future<void> createUserProfile(
+      {required currentUserEmail,
+      required currentUserName,
+      required preferedColor}) async {
+    FirebaseFirestore.instance
+        .collection(_profileCollectionName)
+        .doc(currentUserEmail)
+        .set(<String, dynamic>{
+      'userName': currentUserName,
+      'emailAddress': currentUserEmail,
+      'color': preferedColor,
+      'groupNames': []
+    });
+  }
+
+  Stream availableProfileGroupsStream({required currentUserEmail}) {
     return FirebaseFirestore.instance
         .collection('profile')
-        .doc(currentUserEamil)
+        .doc(currentUserEmail)
         .snapshots()
         .asyncExpand((DocumentSnapshot doc) {
       final profileInfo = doc.data()! as Map<String, dynamic>;

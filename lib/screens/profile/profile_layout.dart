@@ -4,7 +4,6 @@ import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../../services/expense/expense.services.dart';
-import '../../services/profile/profile.services.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -68,27 +67,6 @@ class _ProfileState extends State<Profile> {
                               onPressed: () {}),
                         ]),
                   ),
-                  StreamBuilder<Map<String, dynamic>>(
-                      stream: getProfileDetailsFromCloud(
-                          currentUserEmail: appState.currentUserEmail),
-                      builder: (context, profileSnapshot) {
-                        if (profileSnapshot.hasData) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Text(profileSnapshot.data?['userName']
-                                      .toString() ??
-                                  ''),
-                              Text(profileSnapshot.data?['emailAddress']
-                                      .toString() ??
-                                  ''),
-                              // Text(appState.currentUserEmail),
-                            ],
-                          );
-                        } else {
-                          return Container();
-                        }
-                      }),
                   FilledButton(
                       onPressed: () {
                         // ExpenseDatabase()

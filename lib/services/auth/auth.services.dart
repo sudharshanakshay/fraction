@@ -36,10 +36,7 @@ Future<void> emailRegisterUser(String inputUserName, String inputUserEmail,
     //   insertCurrentProfileToLocalDatabase(ProfileModel(
     //       currentUserName: inputUserName, currentUserEmail: inputUserEmail));
     // });
-    createUserProfile(
-        userName: inputUserName,
-        currentUserEmail: inputUserEmail,
-        color: 'red');
+    await ProfileServices().createUserProfile(preferedColor: 'red');
   } on FirebaseAuthException catch (e) {
     if (e.code == 'weak-password') {
       debugPrint('The password provided is too weak.');

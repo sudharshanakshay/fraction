@@ -1,23 +1,8 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
 
 class GroupServices extends ApplicationState {
-  void updateTotalExpenseSubCollectionAccount({required newCost}) {
-    final accRef = FirebaseFirestore.instance
-        .collection('group')
-        .doc(super.currentUserGroup)
-        .collection('account')
-        .doc(super.currentUserName);
-    accRef.get().then((doc) {
-      final previousExpense = doc.data()?['totalExpense'];
-      return previousExpense;
-    }).then((previousExpense) {
-      accRef.update({'totalExpense': previousExpense + newCost});
-    });
-  }
-
   Future<void> joinCloudGroup({required newGroupName}) async {
     GroupDatabase()
         .insertMemberToGroup(

@@ -1,13 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-const expenseCollectionName = 'expense';
-
 class ExpenseDatabase {
+  final _expenseCollectionName = 'expense';
+
   Stream<QuerySnapshot> getExpenseCollection({required currentGroupName}) {
     return FirebaseFirestore.instance
         .collection('group')
         .doc(currentGroupName)
-        .collection(expenseCollectionName)
+        .collection(_expenseCollectionName)
         .orderBy('timeStamp', descending: true)
         .snapshots()
         .handleError((e) {
@@ -17,28 +17,23 @@ class ExpenseDatabase {
 
   Future<void> addExpense(
       {required currentGroupName,
+      required currentUserName,
       required currentUserEmail,
       required String description,
       required cost}) {
+    final data = {
+      'description': description,
+      'cost': cost,
+      'userName': currentUserName,
+      'emailAddress': currentUserEmail,
+      'timeStamp': DateTime.now()
+    };
     return FirebaseFirestore.instance
-        .collection('profile')
-        .doc(currentUserEmail)
-        .get()
-        .then((doc) {
-      final data = {
-        'description': description,
-        'cost': cost,
-        'userName': doc.data()?['userName'],
-        'emailAddress': doc.data()?['emailAddress'],
-        'timeStamp': DateTime.now()
-      };
-      FirebaseFirestore.instance
-          .collection('group')
-          .doc(currentGroupName)
-          .collection('expense')
-          .doc()
-          .set(data);
-    });
+        .collection('group')
+        .doc(currentGroupName)
+        .collection('expense')
+        .doc()
+        .set(data);
   }
 
   Stream<QuerySnapshot> getMyExpenses(

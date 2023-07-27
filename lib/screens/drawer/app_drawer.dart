@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/app_state.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
@@ -27,8 +26,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
   @override
   Widget build(BuildContext context) {
     final newGroupNameController = TextEditingController();
-    return Consumer<ApplicationState>(
-      builder: (context, appState, child) => Drawer(
+    return Consumer<ProfileServices>(
+      builder: (context, profileState, child) => Drawer(
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -40,14 +39,13 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                   children: <Widget>[
                     const Text('Profile'),
                     const Divider(),
-                    Text(appState.currentUserName),
-                    Text(appState.currentUserEmail),
+                    Text(profileState.currentUserName),
+                    Text(profileState.currentUserEmail),
                   ],
                 ),
               ),
               StreamBuilder(
-                  stream: availableProfileGroupsStream(
-                      currentUserEmail: appState.currentUserEmail),
+                  stream: profileState.myGroupsStream(),
                   builder: (context, snapShot) {
                     if (snapShot.hasData) {
                       return ListView.builder(

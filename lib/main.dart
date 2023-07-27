@@ -9,6 +9,7 @@ import 'package:fraction/screens/auth/sign_in.dart';
 import 'package:fraction/screens/expense/view_expense.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
+import 'package:fraction/services/profile/profile.services.dart';
 import 'package:fraction/utils/fraction_app_color.dart';
 import 'package:provider/provider.dart';
 
@@ -35,7 +36,8 @@ void main() async {
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => ApplicationState()),
     ChangeNotifierProvider(create: (context) => GroupServices()),
-    ChangeNotifierProvider(create: (context) => ExpenseService())
+    ChangeNotifierProvider(create: (context) => ExpenseService()),
+    ChangeNotifierProvider(create: (context) => ProfileServices())
   ], child: const MyApp()));
 }
 
