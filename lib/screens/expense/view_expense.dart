@@ -16,38 +16,43 @@ class ViewExpenseLayout extends StatefulWidget {
 
 class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   final List<int> colorCodes = <int>[600, 500, 100];
+  String timeNow = '';
 
   Widget accountDetailWidget() {
-    return Consumer<GroupServices>(
-      builder: (context, groupServiceState, child) => StreamBuilder(
-          stream: groupServiceState.getMemberDetails(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 2,
-                    color: getRandomColor(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Consumer<GroupServices>(
+        builder: (context, groupServiceState, child) => StreamBuilder(
+            stream: groupServiceState.getMemberDetails(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 2,
+                      color: getRandomColor(),
+                    ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                padding: const EdgeInsets.all(10),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: snapshot.data?.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return AccountPallet(
-                        streamSnapshot: snapshot, index: index);
-                  },
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, childAspectRatio: (1 / .4)),
-                ),
-              );
-            } else {
-              return Container();
-            }
-          }),
+                  padding: const EdgeInsets.all(10),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: snapshot.data?.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return AccountPallet(
+                          streamSnapshot: snapshot, index: index);
+                    },
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, childAspectRatio: (1 / .4)),
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            }),
+      ),
     );
   }
 
@@ -64,18 +69,61 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
               }
               return SingleChildScrollView(
                   child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                     accountDetailWidget(),
-                    Text(
-                        DateFormat.MMMMEEEEd().format(
-                            snapshot.data!.docs[0]['timeStamp'].toDate()),
-                        style: const TextStyle(fontSize: 20)),
+                    // Text(
+                    //     DateFormat.MMMMEEEEd().format(
+                    //         snapshot.data!.docs[0]['timeStamp'].toDate()),
+                    //     style: const TextStyle(fontSize: 20)),
                     ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (BuildContext context, int index) {
+                          if (timeNow !=
+                              DateFormat.MMMMEEEEd()
+                                  .format(snapshot
+                                      .data!.docs[index]['timeStamp']
+                                      .toDate())
+                                  .toString()) {
+                            timeNow = DateFormat.MMMMEEEEd()
+                                .format(snapshot.data!.docs[index]['timeStamp']
+                                    .toDate())
+                                .toString();
+                            return Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Text(
+                                        DateFormat.MMMMEEEEd().format(snapshot
+                                            .data!.docs[index]['timeStamp']
+                                            .toDate()),
+                                        style: const TextStyle(fontSize: 20)),
+                                  ],
+                                ),
+                                FractionallySizedBox(
+                                  widthFactor: 1,
+                                  child: ExpensePallet(
+                                      description: snapshot.data!.docs[index]
+                                          ['description'],
+                                      cost: snapshot.data!.docs[index]['cost'],
+                                      currentUserEmail:
+                                          expenseServiceState.currentUserEmail,
+                                      currentUserName:
+                                          expenseServiceState.currentUserName,
+                                      memberEmail: snapshot.data!.docs[index]
+                                          ['emailAddress'],
+                                      time: snapshot.data!.docs[index]
+                                          ['timeStamp']),
+                                )
+                              ],
+                            );
+                          }
+
                           return ExpensePallet(
                               description: snapshot.data!.docs[index]
                                   ['description'],
