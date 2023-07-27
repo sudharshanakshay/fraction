@@ -18,6 +18,32 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   final List<int> colorCodes = <int>[600, 500, 100];
   String timeNow = '';
 
+  Widget Dashboard() {
+    return Container(
+      decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: Colors.blue.shade100,
+          ),
+          borderRadius: BorderRadius.circular(6)),
+      child: const Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('my expense'),
+              Text('next clear off'),
+            ],
+          ),
+          Row(
+            children: <Widget>[Icon(Icons.person), Text('1054')],
+          )
+        ],
+      ),
+    );
+  }
+
   Widget accountDetailWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -32,7 +58,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                       width: 2,
                       color: getRandomColor(),
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(6),
                   ),
                   padding: const EdgeInsets.all(10),
                   child: GridView.builder(
@@ -72,6 +98,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
+                    Dashboard(),
                     accountDetailWidget(),
                     // Text(
                     //     DateFormat.MMMMEEEEd().format(

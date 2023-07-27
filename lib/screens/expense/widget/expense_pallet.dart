@@ -27,63 +27,66 @@ class ExpensePallet extends StatefulWidget {
 class ExpensePalletState extends State<ExpensePallet> {
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: widget.currentUserEmail == widget.memberEmail
-          ? MainAxisAlignment.end
-          : MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        Flexible(
-          child: FractionallySizedBox(
-            widthFactor: 0.7,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  //eft: BorderSide(
-                  width: 2,
-                  // color: getRandomColor(),
-                  color: Colors.blue.shade100,
-                  //)
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: widget.currentUserEmail == widget.memberEmail
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          Flexible(
+            child: FractionallySizedBox(
+              widthFactor: 0.8,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    //eft: BorderSide(
+                    width: 2,
+                    // color: getRandomColor(),
+                    color: Colors.blue.shade100,
+                    //)
+                  ),
+                  borderRadius: BorderRadius.circular(6),
                 ),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              //height: 50,
-              //color: Colors.amber[colorCodes[index % 3]],
-              child: ListTile(
-                // leading: const Icon(Icons.person),
-                title: Text(widget.description,
-                    style: const TextStyle(fontSize: 16)),
-                // '${widget.streamSnapshot.data?.docs[widget.index]['description']}'),
-                //isThreeLine: true,
-                subtitle: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Text(widget.currentUserName,
-                        style: const TextStyle(fontSize: 12)),
-                    // widget.streamSnapshot.data?.docs[widget.index]['userName']),
-                    const Text(','),
-                    const Flexible(
-                      child: FractionallySizedBox(
-                        widthFactor: 0.01,
+                //height: 50,
+                //color: Colors.amber[colorCodes[index % 3]],
+                child: ListTile(
+                  // leading: const Icon(Icons.person),
+                  title: Text(widget.description,
+                      style: const TextStyle(fontSize: 16)),
+                  // '${widget.streamSnapshot.data?.docs[widget.index]['description']}'),
+                  //isThreeLine: true,
+                  subtitle: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Text(widget.currentUserName,
+                          style: const TextStyle(fontSize: 12)),
+                      // widget.streamSnapshot.data?.docs[widget.index]['userName']),
+                      const Text(','),
+                      const Flexible(
+                        child: FractionallySizedBox(
+                          widthFactor: 0.01,
+                        ),
                       ),
-                    ),
-                    Text(DateFormat.yMMMd().format(widget.time.toDate()),
-                        style: const TextStyle(fontSize: 12)),
-                    // Text(DateFormat.yMMMd().format(widget
-                    //     .streamSnapshot.data?.docs[widget.index]['timeStamp']
-                    //     .toDate())),
-                  ],
-                ),
+                      Text(DateFormat.jm().format(widget.time.toDate()),
+                          style: const TextStyle(fontSize: 12)),
+                      // Text(DateFormat.yMMMd().format(widget
+                      //     .streamSnapshot.data?.docs[widget.index]['timeStamp']
+                      //     .toDate())),
+                    ],
+                  ),
 
-                trailing: Text(
-                  '${widget.cost}/-',
-                  style: const TextStyle(fontSize: 16),
+                  trailing: Text(
+                    '${widget.cost}/-',
+                    style: const TextStyle(fontSize: 16),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
