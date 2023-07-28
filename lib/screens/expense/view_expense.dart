@@ -82,6 +82,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                     time: snapshot.data!.docs[index]
                                         ['timeStamp'],
                                     expenseServiceState: expenseServiceState,
+                                    expenseDocId: snapshot.data!.docs[index].id,
                                   ),
                                 )
                               ],
@@ -100,6 +101,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                 ['emailAddress'],
                             time: snapshot.data!.docs[index]['timeStamp'],
                             expenseServiceState: expenseServiceState,
+                            expenseDocId: snapshot.data!.docs[index].id,
                           );
                         }),
                     const SizedBox(

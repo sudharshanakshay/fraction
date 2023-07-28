@@ -13,6 +13,7 @@ class ExpensePallet extends StatefulWidget {
     required this.cost,
     required this.time,
     required this.expenseServiceState,
+    required this.expenseDocId,
   });
 
   final String currentUserName;
@@ -22,6 +23,7 @@ class ExpensePallet extends StatefulWidget {
   final String description;
   final Timestamp time;
   final ExpenseService expenseServiceState;
+  final String expenseDocId;
 
   @override
   State<StatefulWidget> createState() => ExpensePalletState();
@@ -137,13 +139,16 @@ class ExpensePalletState extends State<ExpensePallet> {
             child: const Text('cancel')),
         FilledButton(
             onPressed: () async {
-              const snakBar = SnackBar(content: Text('adding expense ...'));
+              const snakBar = SnackBar(content: Text('updating expense ...'));
               ScaffoldMessenger.of(context).showSnackBar(snakBar);
-              // widget.expenseServiceState
-              //     .addExpense(
-              //         description: _descriptionTextController.text,
-              //         cost: _costTextController.text)
-              //     .whenComplete(() => Navigator.pop(context));
+              print(widget.expenseDocId);
+              widget.expenseServiceState
+                  .updateExpense(
+                      docId: widget.expenseDocId,
+                      updatedDescription: _descriptionTextController.text,
+                      updatedCost: _costTextController.text,
+                      previousCost: widget.cost)
+                  .whenComplete(() => Navigator.pop(context));
             },
             child: const Text('update')),
       ],

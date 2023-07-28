@@ -42,6 +42,27 @@ class ExpenseService extends ApplicationState {
     });
   }
 
+  Future updateExpense({
+    required docId,
+    required String updatedDescription,
+    required updatedCost,
+    required previousCost,
+  }) async {
+    try {
+      ExpenseDatabase()
+          .updateExpense(
+            currentGroupName: super.currentUserGroup,
+            docId: docId,
+            updatedCost: updatedCost,
+            updatedDescription: updatedDescription,
+          )
+          .whenComplete(() => GroupDatabase().updateGroupMemberExpense(
+              groupName: super.currentUserGroup,
+              memberEmail: super.currentUserEmail,
+              expenseDiff: int.parse(updatedCost) - int.parse(previousCost)));
+    } catch (e) {}
+  }
+
   void deleteExpense({required docId, required cost}) {
     ExpenseDatabase()
         .deleteMyExpense(

@@ -15,6 +15,17 @@ class ExpenseDatabase {
     });
   }
 
+  Stream<QuerySnapshot> getMyExpenses(
+      {required currentGroupName, required currentUserEmail}) {
+    return FirebaseFirestore.instance
+        .collection('group')
+        .doc(currentGroupName)
+        .collection('expense')
+        .where('emailAddress', isEqualTo: currentUserEmail)
+        .orderBy('timeStamp', descending: true)
+        .snapshots();
+  }
+
   Future<void> addExpense(
       {required currentGroupName,
       required currentUserName,
@@ -36,15 +47,24 @@ class ExpenseDatabase {
         .set(data);
   }
 
-  Stream<QuerySnapshot> getMyExpenses(
-      {required currentGroupName, required currentUserEmail}) {
-    return FirebaseFirestore.instance
+  Future updateExpense({
+    required currentGroupName,
+    required docId,
+    required updatedDescription,
+    required updatedCost,
+  }) async {
+    final data = {
+      'description': updatedDescription,
+      'cost': updatedCost,
+      'tag': 'updated'
+    };
+    FirebaseFirestore.instance
         .collection('group')
         .doc(currentGroupName)
-        .collection('expense')
-        .where('emailAddress', isEqualTo: currentUserEmail)
-        .orderBy('timeStamp', descending: true)
-        .snapshots();
+        .collection(_expenseCollectionName)
+        .doc(docId)
+        .update(data)
+        .whenComplete(() {});
   }
 
   Future deleteMyExpense(
