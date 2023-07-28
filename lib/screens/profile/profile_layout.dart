@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/app_state.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +14,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApplicationState>(
+    return Consumer<ExpenseService>(
       builder: (context, appState, _) => Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -134,13 +133,12 @@ class _ProfileState extends State<Profile> {
                                               await confirmDeleteExpense()
                                                   .then((msg) {
                                                 if (msg == 'OK') {
-                                                  ExpenseService()
-                                                      .deleteExpense(
-                                                          docId: snapshot.data
-                                                              ?.docs[index].id,
-                                                          cost: snapshot.data
-                                                                  ?.docs[index]
-                                                              ['cost']);
+                                                  appState.deleteExpense(
+                                                      docId: snapshot
+                                                          .data?.docs[index].id,
+                                                      cost: snapshot
+                                                              .data?.docs[index]
+                                                          ['cost']);
                                                 }
                                               });
                                             },
