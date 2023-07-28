@@ -66,7 +66,7 @@ class ExpensePalletState extends State<ExpensePallet> {
                 //height: 50,
                 //color: Colors.amber[colorCodes[index % 3]],
                 child: ListTile(
-                  onTap: () {
+                  onLongPress: () {
                     _descriptionTextController.text = widget.description;
                     _costTextController.text = widget.cost;
                     // print(widget.memberEmail);
