@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fraction/screens/expense/widget/account_pallet.dart';
 import 'package:fraction/screens/expense/widget/expense_pallet.dart';
 import 'dart:math';
@@ -18,26 +19,38 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   final List<int> colorCodes = <int>[600, 500, 100];
   String timeNow = '';
 
-  Widget Dashboard() {
+  Widget dashboard() {
+    final String moreMembersIcon = 'assets/icons/moreMembersIcon.svg';
     return Container(
+      padding: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
           border: Border.all(
             width: 2,
             color: Colors.blue.shade100,
           ),
           borderRadius: BorderRadius.circular(6)),
-      child: const Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text('my expense'),
+              Row(
+                children: [
+                  Text('my expense'),
+                ],
+              ),
               Text('next clear off'),
             ],
           ),
           Row(
-            children: <Widget>[Icon(Icons.person), Text('1054')],
+            children: <Widget>[
+              IconButton(
+                icon: SvgPicture.asset(moreMembersIcon),
+                onPressed: () {},
+              ),
+              Text('1054')
+            ],
           )
         ],
       ),
@@ -98,7 +111,7 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                    Dashboard(),
+                    dashboard(),
                     accountDetailWidget(),
                     // Text(
                     //     DateFormat.MMMMEEEEd().format(
