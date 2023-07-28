@@ -25,6 +25,7 @@ class ExpenseService extends ApplicationState {
   }
 
   Future addExpense({required String description, required cost}) async {
+    print(super.currentUserGroup);
     ExpenseDatabase()
         .addExpense(
             currentUserName: super.currentUserName,
