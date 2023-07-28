@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/services/expense/expense.services.dart';
 import 'package:intl/intl.dart';
 
 class ExpensePallet extends StatefulWidget {
@@ -11,6 +12,7 @@ class ExpensePallet extends StatefulWidget {
     required this.description,
     required this.cost,
     required this.time,
+    required this.expenseServiceState,
   });
 
   final String currentUserName;
@@ -19,12 +21,24 @@ class ExpensePallet extends StatefulWidget {
   final String cost;
   final String description;
   final Timestamp time;
+  final ExpenseService expenseServiceState;
 
   @override
   State<StatefulWidget> createState() => ExpensePalletState();
 }
 
 class ExpensePalletState extends State<ExpensePallet> {
+  final _descriptionTextController = TextEditingController();
+  final _costTextController = TextEditingController();
+
+  Future showExpenseDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return manageExpense();
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -52,6 +66,15 @@ class ExpensePalletState extends State<ExpensePallet> {
                 //height: 50,
                 //color: Colors.amber[colorCodes[index % 3]],
                 child: ListTile(
+                  onTap: () {
+                    _descriptionTextController.text = widget.description;
+                    _costTextController.text = widget.cost;
+                    // print(widget.memberEmail);
+                    // print(widget.currentUserEmail);
+                    if (widget.memberEmail == widget.currentUserEmail) {
+                      showExpenseDialog();
+                    }
+                  },
                   // leading: const Icon(Icons.person),
                   title: Text(widget.description,
                       style: const TextStyle(fontSize: 16)),
@@ -87,6 +110,43 @@ class ExpensePalletState extends State<ExpensePallet> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget manageExpense() {
+    return AlertDialog(
+      title: const Text('Edit Expense'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+              controller: _descriptionTextController,
+              decoration: const InputDecoration(
+                label: Text('Item Name'),
+              )),
+          TextField(
+              controller: _costTextController,
+              decoration: const InputDecoration(
+                label: Text('Item Cost'),
+              ))
+        ],
+      ),
+      actions: [
+        TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('cancel')),
+        FilledButton(
+            onPressed: () async {
+              const snakBar = SnackBar(content: Text('adding expense ...'));
+              ScaffoldMessenger.of(context).showSnackBar(snakBar);
+              // widget.expenseServiceState
+              //     .addExpense(
+              //         description: _descriptionTextController.text,
+              //         cost: _costTextController.text)
+              //     .whenComplete(() => Navigator.pop(context));
+            },
+            child: const Text('update')),
+      ],
     );
   }
 }

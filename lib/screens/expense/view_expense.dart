@@ -70,33 +70,37 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                 FractionallySizedBox(
                                   widthFactor: 1,
                                   child: ExpensePallet(
-                                      description: snapshot.data!.docs[index]
-                                          ['description'],
-                                      cost: snapshot.data!.docs[index]['cost'],
-                                      currentUserEmail:
-                                          expenseServiceState.currentUserEmail,
-                                      currentUserName: snapshot
-                                          .data!.docs[index]['userName'],
-                                      memberEmail: snapshot.data!.docs[index]
-                                          ['emailAddress'],
-                                      time: snapshot.data!.docs[index]
-                                          ['timeStamp']),
+                                    description: snapshot.data!.docs[index]
+                                        ['description'],
+                                    cost: snapshot.data!.docs[index]['cost'],
+                                    currentUserEmail:
+                                        expenseServiceState.currentUserEmail,
+                                    currentUserName: snapshot.data!.docs[index]
+                                        ['userName'],
+                                    memberEmail: snapshot.data!.docs[index]
+                                        ['emailAddress'],
+                                    time: snapshot.data!.docs[index]
+                                        ['timeStamp'],
+                                    expenseServiceState: expenseServiceState,
+                                  ),
                                 )
                               ],
                             );
                           }
 
                           return ExpensePallet(
-                              description: snapshot.data!.docs[index]
-                                  ['description'],
-                              cost: snapshot.data!.docs[index]['cost'],
-                              currentUserEmail:
-                                  expenseServiceState.currentUserEmail,
-                              currentUserName: snapshot.data!.docs[index]
-                                  ['userName'],
-                              memberEmail: snapshot.data!.docs[index]
-                                  ['emailAddress'],
-                              time: snapshot.data!.docs[index]['timeStamp']);
+                            description: snapshot.data!.docs[index]
+                                ['description'],
+                            cost: snapshot.data!.docs[index]['cost'],
+                            currentUserEmail:
+                                expenseServiceState.currentUserEmail,
+                            currentUserName: snapshot.data!.docs[index]
+                                ['userName'],
+                            memberEmail: snapshot.data!.docs[index]
+                                ['emailAddress'],
+                            time: snapshot.data!.docs[index]['timeStamp'],
+                            expenseServiceState: expenseServiceState,
+                          );
                         }),
                     const SizedBox(
                       height: 70,

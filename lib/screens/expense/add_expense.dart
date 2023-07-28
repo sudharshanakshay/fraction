@@ -31,7 +31,7 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
       ),
       body: Consumer<ExpenseService>(
         builder: (context, expenseServiceState, _) => Center(
-          child: Column(children: <Widget>[
+          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
             FractionallySizedBox(
                 widthFactor: 0.7,
                 //heightFactor: 0.2,
