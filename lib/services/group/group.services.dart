@@ -16,13 +16,15 @@ class GroupServices extends ApplicationState {
     });
   }
 
-  Future<void> createGroup({required inputGroupName}) async {
+  Future<void> createGroup(
+      {required inputGroupName, required clearOffIntervalInDays}) async {
     try {
       GroupDatabase()
           .createGroup(
               groupName: inputGroupName,
               adminName: super.currentUserName,
-              adminEmail: super.currentUserEmail)
+              adminEmail: super.currentUserEmail,
+              clearOffIntervalInDays: clearOffIntervalInDays)
           .then((String groupNameCreatedWithIdentity) {
         GroupDatabase().insertGroupNameToProfile(
             currentUserEmail: super.currentUserEmail,

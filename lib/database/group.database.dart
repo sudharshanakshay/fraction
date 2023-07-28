@@ -8,15 +8,21 @@ class GroupDatabase {
 // -- '#' represents '.' in a key --
 // -- whenever user creates group, user is added to that group by default --
   Future<String> createGroup(
-      {required groupName, required adminName, required adminEmail}) {
+      {required groupName,
+      required adminName,
+      required adminEmail,
+      required clearOffIntervalInDays}) {
     final adminEmailR = adminEmail.replaceAll('.', '#');
     final data = {
+      'createdOn': DateTime.now(),
+      'clearOffIntervalInDays': clearOffIntervalInDays,
       'groupName': groupName,
+      'totalExpense': 0,
       'groupMembers': {
         adminEmailR: {
           'memberName': adminName,
           'memberEmail': adminEmail,
-          'totalExpense': 0
+          'memberExpense': 0
         }
       }
     };
@@ -59,7 +65,7 @@ class GroupDatabase {
     final data = {
       'memberName': memberName,
       'memberEmail': memberEmail,
-      'totalExpense': 0
+      'memberExpense': 0
     };
     return FirebaseFirestore.instance
         .collection(_groupCollectionName)
