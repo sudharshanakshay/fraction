@@ -74,7 +74,7 @@ class ExpenseDatabase {
   //             .collection('group')
   //             .doc('akshaya')
   //             .collection('expense')
-  //             .doc()
+  //             .doc(element.id)
   //             .set(element.data());
   //       }
   //     }

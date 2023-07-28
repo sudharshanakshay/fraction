@@ -61,7 +61,7 @@ class GroupDatabase {
     });
   }
 
-  Stream<List?> getMemberDetails({required currentUserGroup}) {
+  Future<List?> getMemberDetails({required currentUserGroup}) {
     return FirebaseFirestore.instance
         .collection('group')
         .doc(currentUserGroup)
@@ -69,11 +69,11 @@ class GroupDatabase {
             fromFirestore: (snapShot, _) =>
                 GroupModel.fromJson(snapShot.data()!),
             toFirestore: (groupModel, _) => groupModel.toJson())
-        .snapshots()
-        .asyncExpand((doc) {
+        .get()
+        .then((doc) {
       // print('----------------------');
       // print(' Expense Account  ${doc.data()}');
-      return Stream.value(doc.data()?.toList());
+      return doc.data()?.toList();
     });
   }
 

@@ -63,10 +63,10 @@ class ExpensePalletState extends State<ExpensePallet> {
                       Text(widget.currentUserName,
                           style: const TextStyle(fontSize: 12)),
                       // widget.streamSnapshot.data?.docs[widget.index]['userName']),
-                      const Text(','),
+                      // const Text(','),
                       const Flexible(
                         child: FractionallySizedBox(
-                          widthFactor: 0.01,
+                          widthFactor: 0.04,
                         ),
                       ),
                       Text(DateFormat.jm().format(widget.time.toDate()),

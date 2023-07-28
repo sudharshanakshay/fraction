@@ -53,12 +53,12 @@ class GroupServices extends ApplicationState {
     }
   }
 
-  Stream<List?> getMemberDetails() {
+  Future<List?> getMemberDetails() {
     try {
       return GroupDatabase()
           .getMemberDetails(currentUserGroup: super.currentUserGroup);
     } catch (e) {
-      return const Stream.empty();
+      return Future.value();
     }
   }
 }

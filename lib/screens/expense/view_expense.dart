@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/expense/widget/dashboard.dart';
+import 'package:fraction/screens/expense/widget/my_dashboard.dart';
 import 'package:fraction/screens/expense/widget/expense_pallet.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
@@ -33,12 +33,8 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Dashboard(),
-                    ),
-                    // accountDetailWidget(),
-
+                    const MyDashboard(),
+                    // const MemberDetails(),
                     ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -79,8 +75,8 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                       cost: snapshot.data!.docs[index]['cost'],
                                       currentUserEmail:
                                           expenseServiceState.currentUserEmail,
-                                      currentUserName:
-                                          expenseServiceState.currentUserName,
+                                      currentUserName: snapshot
+                                          .data!.docs[index]['userName'],
                                       memberEmail: snapshot.data!.docs[index]
                                           ['emailAddress'],
                                       time: snapshot.data!.docs[index]
@@ -96,8 +92,8 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                               cost: snapshot.data!.docs[index]['cost'],
                               currentUserEmail:
                                   expenseServiceState.currentUserEmail,
-                              currentUserName:
-                                  expenseServiceState.currentUserName,
+                              currentUserName: snapshot.data!.docs[index]
+                                  ['userName'],
                               memberEmail: snapshot.data!.docs[index]
                                   ['emailAddress'],
                               time: snapshot.data!.docs[index]['timeStamp']);
