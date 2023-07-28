@@ -64,7 +64,8 @@ class CreateGroupState extends State<CreateGroup> {
                                       onPressed: () {
                                         GroupServices().createGroup(
                                             inputGroupName:
-                                                _newGroupNameController.text);
+                                                _newGroupNameController.text,
+                                            nextClearOffTimeStamp: 30);
                                       },
                                       child: const DetailAndIcon(
                                           Icons.navigate_next, "Next")),

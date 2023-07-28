@@ -17,14 +17,14 @@ class GroupServices extends ApplicationState {
   }
 
   Future<void> createGroup(
-      {required inputGroupName, required clearOffIntervalInDays}) async {
+      {required inputGroupName, required nextClearOffTimeStamp}) async {
     try {
       GroupDatabase()
           .createGroup(
               groupName: inputGroupName,
               adminName: super.currentUserName,
               adminEmail: super.currentUserEmail,
-              clearOffIntervalInDays: clearOffIntervalInDays)
+              nextClearOffTimeStamp: nextClearOffTimeStamp)
           .then((String groupNameCreatedWithIdentity) {
         GroupDatabase().insertGroupNameToProfile(
             currentUserEmail: super.currentUserEmail,
@@ -32,6 +32,24 @@ class GroupServices extends ApplicationState {
       });
     } catch (e) {
       print(e);
+    }
+  }
+
+  Stream getGroupDetials() {
+    try {
+      return GroupDatabase().getGroupDetials(groupName: super.currentUserGroup);
+    } catch (e) {
+      return const Stream.empty();
+    }
+  }
+
+  Stream getMyExpense() {
+    try {
+      return GroupDatabase().getMyExpense(
+          currentUserEmail: super.currentUserEmail,
+          groupName: super.currentUserGroup);
+    } catch (e) {
+      return const Stream.empty();
     }
   }
 

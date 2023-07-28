@@ -11,11 +11,11 @@ class GroupDatabase {
       {required groupName,
       required adminName,
       required adminEmail,
-      required clearOffIntervalInDays}) {
+      required nextClearOffTimeStamp}) {
     final adminEmailR = adminEmail.replaceAll('.', '#');
     final data = {
       'createdOn': DateTime.now(),
-      'clearOffIntervalInDays': clearOffIntervalInDays,
+      'nextClearOffTimeStamp': nextClearOffTimeStamp,
       'groupName': groupName,
       'totalExpense': 0,
       'groupMembers': {
@@ -38,6 +38,27 @@ class GroupDatabase {
         .doc(groupNameWithIdentity)
         .set(data)
         .then((value) => groupNameWithIdentity);
+  }
+
+  Stream getGroupDetials({required groupName}) {
+    return FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupName)
+        .snapshots();
+  }
+
+  Stream getMyExpense({required currentUserEmail, required groupName}) {
+    final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
+
+    return FirebaseFirestore.instance
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .snapshots()
+        .asyncExpand((doc) {
+      // print(doc.data()!['groupMembers'][currentUserEmailR]['totalExpense']);
+      return Stream.value(
+          doc.data()!['groupMembers'][currentUserEmailR]['totalExpense']);
+    });
   }
 
   Stream<List?> getMemberDetails({required currentUserGroup}) {

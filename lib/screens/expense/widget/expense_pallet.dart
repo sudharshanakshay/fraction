@@ -37,7 +37,7 @@ class ExpensePalletState extends State<ExpensePallet> {
         children: <Widget>[
           Flexible(
             child: FractionallySizedBox(
-              widthFactor: 0.8,
+              widthFactor: 0.9,
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(

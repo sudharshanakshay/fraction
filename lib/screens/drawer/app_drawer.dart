@@ -88,7 +88,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                       onPressed: () {
                                         GroupServices().createGroup(
                                             inputGroupName:
-                                                newGroupNameController.text);
+                                                newGroupNameController.text,
+                                            nextClearOffTimeStamp: 30);
                                       },
                                       child: const DetailAndIcon(
                                           Icons.navigate_next, "Next")),

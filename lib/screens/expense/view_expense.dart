@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:fraction/screens/expense/widget/account_pallet.dart';
+import 'package:fraction/screens/expense/widget/dashboard.dart';
 import 'package:fraction/screens/expense/widget/expense_pallet.dart';
 import 'dart:math';
 import 'package:provider/provider.dart';
 import '../../services/expense/expense.services.dart';
-import '../../services/group/group.services.dart';
 import 'package:intl/intl.dart';
 
 class ViewExpenseLayout extends StatefulWidget {
@@ -18,82 +16,6 @@ class ViewExpenseLayout extends StatefulWidget {
 class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
   final List<int> colorCodes = <int>[600, 500, 100];
   String timeNow = '';
-
-  Widget dashboard() {
-    final String moreMembersIcon = 'assets/icons/moreMembersIcon.svg';
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-          border: Border.all(
-            width: 2,
-            color: Colors.blue.shade100,
-          ),
-          borderRadius: BorderRadius.circular(6)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Text('my expense'),
-                ],
-              ),
-              Text('next clear off'),
-            ],
-          ),
-          Row(
-            children: <Widget>[
-              IconButton(
-                icon: SvgPicture.asset(moreMembersIcon),
-                onPressed: () {},
-              ),
-              Text('1054')
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget accountDetailWidget() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Consumer<GroupServices>(
-        builder: (context, groupServiceState, child) => StreamBuilder(
-            stream: groupServiceState.getMemberDetails(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 2,
-                      color: getRandomColor(),
-                    ),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  padding: const EdgeInsets.all(10),
-                  child: GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: snapshot.data?.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return AccountPallet(
-                          streamSnapshot: snapshot, index: index);
-                    },
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2, childAspectRatio: (1 / .4)),
-                  ),
-                );
-              } else {
-                return Container();
-              }
-            }),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -111,12 +33,12 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                    dashboard(),
-                    accountDetailWidget(),
-                    // Text(
-                    //     DateFormat.MMMMEEEEd().format(
-                    //         snapshot.data!.docs[0]['timeStamp'].toDate()),
-                    //     style: const TextStyle(fontSize: 20)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Dashboard(),
+                    ),
+                    // accountDetailWidget(),
+
                     ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -138,11 +60,15 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
                                 Row(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
-                                    Text(
-                                        DateFormat.MMMMEEEEd().format(snapshot
-                                            .data!.docs[index]['timeStamp']
-                                            .toDate()),
-                                        style: const TextStyle(fontSize: 20)),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      child: Text(
+                                          DateFormat.MMMMEEEEd().format(snapshot
+                                              .data!.docs[index]['timeStamp']
+                                              .toDate()),
+                                          style: const TextStyle(fontSize: 20)),
+                                    ),
                                   ],
                                 ),
                                 FractionallySizedBox(
