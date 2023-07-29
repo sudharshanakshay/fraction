@@ -22,7 +22,7 @@ class GroupDatabase {
         adminEmailR: {
           'memberName': adminName,
           'memberEmail': adminEmail,
-          'memberExpense': 0
+          'totalExpense': 0
         }
       }
     };
@@ -86,7 +86,7 @@ class GroupDatabase {
     final data = {
       'memberName': memberName,
       'memberEmail': memberEmail,
-      'memberExpense': 0
+      'totalExpense': 0
     };
     return FirebaseFirestore.instance
         .collection(_groupCollectionName)
