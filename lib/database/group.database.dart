@@ -99,6 +99,7 @@ class GroupDatabase {
       {required groupName, required memberEmail, required int expenseDiff}) {
     final memberEmailR = memberEmail.replaceAll('.', '#');
     final data = {
+      'totalExpense': FieldValue.increment(expenseDiff),
       'groupMembers.$memberEmailR.totalExpense':
           FieldValue.increment(expenseDiff)
     };

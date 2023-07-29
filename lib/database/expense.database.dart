@@ -85,20 +85,4 @@ class ExpenseDatabase {
       onError: (e) => print("Error deleting document $e"),
     );
   }
-
-  // getExpenseAndAddToSubCollectionInGroup() {
-  //   FirebaseFirestore.instance.collection('expense').get().then((value) {
-  //     if (value.docs.isNotEmpty) {
-  //       for (var element in value.docs) {
-  //         print(element.data());
-  //         FirebaseFirestore.instance
-  //             .collection('group')
-  //             .doc('akshaya')
-  //             .collection('expense')
-  //             .doc(element.id)
-  //             .set(element.data());
-  //       }
-  //     }
-  //   });
-  // }
 }

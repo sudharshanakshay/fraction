@@ -1,3 +1,6 @@
+# devil code
+/lib/database/devilCode.dart
+
 # Miscellaneous
 *.class
 *.log
