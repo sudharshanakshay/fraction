@@ -47,7 +47,7 @@ class GroupDatabase {
         .snapshots();
   }
 
-  Stream getMyExpense({required currentUserEmail, required groupName}) {
+  Stream getMyTotalExpense({required currentUserEmail, required groupName}) {
     final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
 
     return FirebaseFirestore.instance

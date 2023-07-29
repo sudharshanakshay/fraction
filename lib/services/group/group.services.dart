@@ -3,6 +3,10 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
 
 class GroupServices extends ApplicationState {
+  late GroupDatabase groupDatabaseRef;
+  GroupServices() {
+    groupDatabaseRef = GroupDatabase();
+  }
   Future<void> joinCloudGroup({required newGroupName}) async {
     GroupDatabase()
         .insertMemberToGroup(
@@ -36,6 +40,8 @@ class GroupServices extends ApplicationState {
   }
 
   Stream getGroupDetials() {
+    print('group changed in group');
+    print(super.currentUserGroup);
     try {
       return GroupDatabase().getGroupDetials(groupName: super.currentUserGroup);
     } catch (e) {
@@ -43,9 +49,9 @@ class GroupServices extends ApplicationState {
     }
   }
 
-  Stream getMyExpense() {
+  Stream getMyTotalExpense() {
     try {
-      return GroupDatabase().getMyExpense(
+      return GroupDatabase().getMyTotalExpense(
           currentUserEmail: super.currentUserEmail,
           groupName: super.currentUserGroup);
     } catch (e) {

@@ -16,10 +16,12 @@ class FractionAppDrawer extends StatefulWidget {
 
 class FractionAppDrawerState extends State<FractionAppDrawer> {
   late ExpenseService _expenseService;
+  late GroupServices _groupService;
 
   @override
   void initState() {
     _expenseService = Provider.of<ExpenseService>(context, listen: false);
+    _groupService = Provider.of<GroupServices>(context, listen: false);
     super.initState();
   }
 
@@ -59,6 +61,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                             onTap: () {
                               _expenseService.setcurrentUserGroup(
                                   currentUserGroup: snapShot.data[index]);
+                              _groupService.setcurrentUserGroup(
+                                  currentUserGroup: snapShot.data[index]);
                             },
                           );
                         },
@@ -79,15 +83,22 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                   CustomInputFormField(
                                       controller: newGroupNameController,
                                       label: 'Group name'),
-                                  FilledButton(
-                                      onPressed: () {
-                                        GroupServices().createGroup(
-                                            inputGroupName:
-                                                newGroupNameController.text,
-                                            nextClearOffTimeStamp: 30);
-                                      },
-                                      child: const DetailAndIcon(
-                                          Icons.navigate_next, "Next")),
+                                  Consumer<GroupServices>(
+                                    builder: (context, groupServiceState, _) {
+                                      return FilledButton(
+                                          onPressed: () {
+                                            print(groupServiceState
+                                                .currentUserEmail);
+                                            groupServiceState.createGroup(
+                                                inputGroupName:
+                                                    newGroupNameController.text,
+                                                nextClearOffTimeStamp:
+                                                    DateTime.now());
+                                          },
+                                          child: const DetailAndIcon(
+                                              Icons.navigate_next, "Next"));
+                                    },
+                                  ),
                                 ],
                               ),
                             ));
