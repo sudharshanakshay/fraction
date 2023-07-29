@@ -57,7 +57,7 @@ class ExpenseDatabase {
     final data = {
       'description': updatedDescription,
       'cost': updatedCost,
-      'tag': 'updated'
+      'tag': FieldValue.arrayUnion(['updated'])
     };
     FirebaseFirestore.instance
         .collection('group')

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/database/devilCode.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
@@ -69,9 +70,10 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                   }),
               FilledButton(
                   onPressed: () {
-                    // print(appState.currentUserGroup);
+                    DevilCode()
+                        .callDevil1(shouldCallExpenseToGroupExpense: true);
                   },
-                  child: const Text('get one group name')),
+                  child: const Text('call devil')),
               FilledButton(
                   onPressed: () {
                     Scaffold.of(context)
