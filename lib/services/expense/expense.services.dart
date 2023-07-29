@@ -63,17 +63,19 @@ class ExpenseService extends ApplicationState {
     } catch (e) {}
   }
 
-  void deleteExpense({required docId, required cost}) {
-    ExpenseDatabase()
-        .deleteMyExpense(
-            currentUserEmail: super.currentUserEmail,
-            currentGroupName: super.currentUserGroup,
-            docId: docId)
-        .whenComplete(() {
-      GroupDatabase().updateGroupMemberExpense(
-          groupName: super.currentUserGroup,
-          memberEmail: super.currentUserEmail,
-          expenseDiff: -int.parse(cost));
-    });
+  Future deleteExpense({required expenseDoc}) async {
+    if (super.currentUserEmail == expenseDoc['emailAddress']) {
+      ExpenseDatabase()
+          .deleteMyExpense(
+              currentUserEmail: super.currentUserEmail,
+              currentGroupName: super.currentUserGroup,
+              docId: expenseDoc.id)
+          .whenComplete(() {
+        GroupDatabase().updateGroupMemberExpense(
+            groupName: super.currentUserGroup,
+            memberEmail: super.currentUserEmail,
+            expenseDiff: -int.parse(expenseDoc['cost']));
+      });
+    }
   }
 }

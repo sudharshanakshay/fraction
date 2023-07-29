@@ -6,24 +6,16 @@ import 'package:intl/intl.dart';
 class ExpensePallet extends StatefulWidget {
   const ExpensePallet({
     super.key,
+    required this.expenseDoc,
     required this.currentUserName,
     required this.currentUserEmail,
-    required this.memberEmail,
-    required this.description,
-    required this.cost,
-    required this.time,
     required this.expenseServiceState,
-    required this.expenseDocId,
   });
 
+  final QueryDocumentSnapshot expenseDoc;
   final String currentUserName;
   final String currentUserEmail;
-  final String memberEmail;
-  final String cost;
-  final String description;
-  final Timestamp time;
   final ExpenseService expenseServiceState;
-  final String expenseDocId;
 
   @override
   State<StatefulWidget> createState() => ExpensePalletState();
@@ -46,9 +38,10 @@ class ExpensePalletState extends State<ExpensePallet> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment: widget.currentUserEmail == widget.memberEmail
-            ? MainAxisAlignment.end
-            : MainAxisAlignment.start,
+        mainAxisAlignment:
+            widget.currentUserEmail == widget.expenseDoc['emailAddress']
+                ? MainAxisAlignment.end
+                : MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Flexible(
@@ -69,16 +62,18 @@ class ExpensePalletState extends State<ExpensePallet> {
                 //color: Colors.amber[colorCodes[index % 3]],
                 child: ListTile(
                   onLongPress: () {
-                    _descriptionTextController.text = widget.description;
-                    _costTextController.text = widget.cost;
-                    // print(widget.memberEmail);
+                    _descriptionTextController.text =
+                        widget.expenseDoc['description'];
+                    _costTextController.text = widget.expenseDoc['cost'];
+                    // print(widget.expenseDoc['emailAddress']);
                     // print(widget.currentUserEmail);
-                    if (widget.memberEmail == widget.currentUserEmail) {
+                    if (widget.expenseDoc['emailAddress'] ==
+                        widget.currentUserEmail) {
                       showExpenseDialog();
                     }
                   },
                   // leading: const Icon(Icons.person),
-                  title: Text(widget.description,
+                  title: Text(widget.expenseDoc['description'],
                       style: const TextStyle(fontSize: 16)),
                   // '${widget.streamSnapshot.data?.docs[widget.index]['description']}'),
                   //isThreeLine: true,
@@ -94,7 +89,9 @@ class ExpensePalletState extends State<ExpensePallet> {
                           widthFactor: 0.04,
                         ),
                       ),
-                      Text(DateFormat.jm().format(widget.time.toDate()),
+                      Text(
+                          DateFormat.jm()
+                              .format(widget.expenseDoc['timeStamp'].toDate()),
                           style: const TextStyle(fontSize: 12)),
                       // Text(DateFormat.yMMMd().format(widget
                       //     .streamSnapshot.data?.docs[widget.index]['timeStamp']
@@ -103,7 +100,7 @@ class ExpensePalletState extends State<ExpensePallet> {
                   ),
 
                   trailing: Text(
-                    '${widget.cost}/-',
+                    '${widget.expenseDoc['cost']}/-',
                     style: const TextStyle(fontSize: 16),
                   ),
                 ),
@@ -118,40 +115,95 @@ class ExpensePalletState extends State<ExpensePallet> {
   Widget manageExpense() {
     return AlertDialog(
       title: const Text('Edit Expense'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-              controller: _descriptionTextController,
-              decoration: const InputDecoration(
-                label: Text('Item Name'),
-              )),
-          TextField(
-              controller: _costTextController,
-              decoration: const InputDecoration(
-                label: Text('Item Cost'),
-              ))
-        ],
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+                controller: _descriptionTextController,
+                decoration: const InputDecoration(
+                  label: Text('Item Name'),
+                )),
+            TextField(
+                controller: _costTextController,
+                decoration: const InputDecoration(
+                  label: Text('Item Cost'),
+                ))
+          ],
+        ),
       ),
       actions: [
-        TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('cancel')),
-        FilledButton(
-            onPressed: () async {
-              const snakBar = SnackBar(content: Text('updating expense ...'));
-              ScaffoldMessenger.of(context).showSnackBar(snakBar);
-              print(widget.expenseDocId);
-              widget.expenseServiceState
-                  .updateExpense(
-                      docId: widget.expenseDocId,
-                      updatedDescription: _descriptionTextController.text,
-                      updatedCost: _costTextController.text,
-                      previousCost: widget.cost)
-                  .whenComplete(() => Navigator.pop(context));
-            },
-            child: const Text('update')),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('cancel')),
+                FilledButton(
+                    onPressed: () async {
+                      const snakBar =
+                          SnackBar(content: Text('updating expense ...'));
+                      ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                      widget.expenseServiceState
+                          .updateExpense(
+                              docId: widget.expenseDoc.id,
+                              updatedDescription:
+                                  _descriptionTextController.text,
+                              updatedCost: _costTextController.text,
+                              previousCost: widget.expenseDoc['cost'])
+                          .whenComplete(() => Navigator.pop(context));
+                    },
+                    child: const Text('update')),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
+                TextButton(
+                  onPressed: () async {
+                    print(widget.expenseDoc.id);
+                    await confirmDeleteExpense().then((msg) {
+                      print(msg);
+                      if (msg == 'OK') {
+                        widget.expenseServiceState
+                            .deleteExpense(expenseDoc: widget.expenseDoc)
+                            .whenComplete(() => Navigator.pop(context));
+                      }
+                    });
+                  },
+                  child: const Text('delete expense ?'),
+                )
+              ],
+            )
+          ],
+        )
       ],
     );
+  }
+
+  Future<String?> confirmDeleteExpense() {
+    return showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text('Delete Alert'),
+              content: const Text('do you want to delete expense ?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'Cancel'),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, 'OK'),
+                  child: const Text('OK'),
+                ),
+              ],
+            ));
   }
 }

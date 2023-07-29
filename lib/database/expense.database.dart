@@ -81,7 +81,7 @@ class ExpenseDatabase {
       (doc) {
         print("Document deleted");
       },
-      onError: (e) => print("Error updating document $e"),
+      onError: (e) => print("Error deleting document $e"),
     );
   }
 

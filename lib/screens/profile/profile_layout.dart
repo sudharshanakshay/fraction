@@ -133,12 +133,12 @@ class _ProfileState extends State<Profile> {
                                               await confirmDeleteExpense()
                                                   .then((msg) {
                                                 if (msg == 'OK') {
-                                                  appState.deleteExpense(
-                                                      docId: snapshot
-                                                          .data?.docs[index].id,
-                                                      cost: snapshot
-                                                              .data?.docs[index]
-                                                          ['cost']);
+                                                  // appState.deleteExpense(
+                                                  //     docId: snapshot
+                                                  //         .data?.docs[index].id,
+                                                  //     cost: snapshot
+                                                  //             .data?.docs[index]
+                                                  //         ['cost']);
                                                 }
                                               });
                                             },
