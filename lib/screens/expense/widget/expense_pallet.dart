@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/services/expense/expense.services.dart';
+import 'package:fraction/utils/color.dart';
 import 'package:intl/intl.dart';
 
 class ExpensePallet extends StatefulWidget {
@@ -99,9 +100,27 @@ class ExpensePalletState extends State<ExpensePallet> {
                     ],
                   ),
 
-                  trailing: Text(
-                    '${widget.expenseDoc['cost']}/-',
-                    style: const TextStyle(fontSize: 16),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.expenseDoc['tags'].length != 0)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: Container(
+                            padding: const EdgeInsets.all(2.0),
+                            decoration: BoxDecoration(
+                                color: AppColors().tags,
+                                borderRadius: BorderRadius.circular(12)),
+                            child: const Text(
+                              'updated',
+                            ),
+                          ),
+                        ),
+                      Text(
+                        '${widget.expenseDoc['cost']}/-',
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ],
                   ),
                 ),
               ),

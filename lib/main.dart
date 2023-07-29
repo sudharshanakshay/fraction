@@ -10,7 +10,7 @@ import 'package:fraction/screens/expense/view_expense.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
-import 'package:fraction/utils/fraction_app_color.dart';
+import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 
 import 'app_state.dart';
@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
           //
           // This works for code too, not just values: Most code changes can be
           // tested with just a hot reload.
-          colorScheme: ColorScheme.fromSeed(seedColor: themeColor),
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors().themeColor),
           useMaterial3: true,
         ),
         home: Consumer<ApplicationState>(

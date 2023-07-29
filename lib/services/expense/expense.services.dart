@@ -57,7 +57,7 @@ class ExpenseService extends ApplicationState {
         updatedDescription: updatedDescription,
       )
           .whenComplete(() {
-        if (updatedCost - previousCost != 0) {
+        if (int.parse(updatedCost) - int.parse(previousCost) != 0) {
           GroupDatabase().updateGroupMemberExpense(
               groupName: super.currentUserGroup,
               memberEmail: super.currentUserEmail,
