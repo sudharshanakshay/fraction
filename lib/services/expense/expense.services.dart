@@ -51,15 +51,19 @@ class ExpenseService extends ApplicationState {
     try {
       ExpenseDatabase()
           .updateExpense(
-            currentGroupName: super.currentUserGroup,
-            docId: docId,
-            updatedCost: updatedCost,
-            updatedDescription: updatedDescription,
-          )
-          .whenComplete(() => GroupDatabase().updateGroupMemberExpense(
+        currentGroupName: super.currentUserGroup,
+        docId: docId,
+        updatedCost: updatedCost,
+        updatedDescription: updatedDescription,
+      )
+          .whenComplete(() {
+        if (updatedCost - previousCost != 0) {
+          GroupDatabase().updateGroupMemberExpense(
               groupName: super.currentUserGroup,
               memberEmail: super.currentUserEmail,
-              expenseDiff: int.parse(updatedCost) - int.parse(previousCost)));
+              expenseDiff: int.parse(updatedCost) - int.parse(previousCost));
+        }
+      });
     } catch (e) {}
   }
 

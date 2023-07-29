@@ -35,6 +35,7 @@ class ExpenseDatabase {
     final data = {
       'description': description,
       'cost': cost,
+      'tag': [],
       'userName': currentUserName,
       'emailAddress': currentUserEmail,
       'timeStamp': DateTime.now()
