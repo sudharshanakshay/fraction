@@ -107,7 +107,8 @@ class ExpensePalletState extends State<ExpensePallet> {
                         Padding(
                           padding: const EdgeInsets.only(right: 8.0),
                           child: Container(
-                            padding: const EdgeInsets.all(2.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
                             decoration: BoxDecoration(
                                 color: AppColors().tags,
                                 borderRadius: BorderRadius.circular(12)),

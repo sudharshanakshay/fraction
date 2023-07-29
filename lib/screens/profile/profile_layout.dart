@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../services/expense/expense.services.dart';
 
 class Profile extends StatefulWidget {
@@ -66,90 +65,6 @@ class _ProfileState extends State<Profile> {
                               onPressed: () {}),
                         ]),
                   ),
-                  FilledButton(
-                      onPressed: () {
-                        // ExpenseDatabase()
-                        //     .getExpenseAndAddToSubCollectionInGroup();
-                      },
-                      child: const Text('click it once')),
-                  StreamBuilder(
-                      stream: ExpenseService().getMyExpenses(
-                          currentUserEmail: appState.currentUserEmail,
-                          currentUserGroup: appState.currentUserGroup),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const Center(child: Text('Loading ...'));
-                        }
-                        return ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.all(8.0),
-                          itemCount: snapshot.data?.docs.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    //eft: BorderSide(
-                                    width: 2,
-                                    // color: getRandomColor(),
-                                    color: Colors.blue.shade100,
-                                    //)
-                                  ),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: ListTile(
-                                    // leading: const Icon(Icons.person),
-                                    title: Text(
-                                        '${snapshot.data?.docs[index]['description']}'),
-                                    //isThreeLine: true,
-                                    subtitle: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(DateFormat.yMMMd().format(snapshot
-                                            .data?.docs[index]['timeStamp']
-                                            .toDate())),
-                                        const Text(','),
-                                        const Flexible(
-                                          child: FractionallySizedBox(
-                                            widthFactor: 0.01,
-                                          ),
-                                        ),
-                                        // Text(snapshot.data?.docs[index]
-                                        //     ['groupName']),
-                                      ],
-                                    ),
-                                    trailing: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: <Widget>[
-                                        Text(
-                                          '${snapshot.data?.docs[index]['cost']}/-',
-                                          style: const TextStyle(fontSize: 20),
-                                        ),
-                                        IconButton(
-                                            onPressed: () async {
-                                              await confirmDeleteExpense()
-                                                  .then((msg) {
-                                                if (msg == 'OK') {
-                                                  // appState.deleteExpense(
-                                                  //     docId: snapshot
-                                                  //         .data?.docs[index].id,
-                                                  //     cost: snapshot
-                                                  //             .data?.docs[index]
-                                                  //         ['cost']);
-                                                }
-                                              });
-                                            },
-                                            icon: const Icon(Icons.delete))
-                                      ],
-                                    )),
-                              ),
-                            );
-                          },
-                        );
-                      })
                 ]),
           )),
     );
