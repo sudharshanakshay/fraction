@@ -49,6 +49,7 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
                     //heightFactor: 0.2,
                     child: TextField(
                         controller: _costTextController,
+                        keyboardType: TextInputType.number,
                         decoration: const InputDecoration(
                           label: Text('Item Cost'),
                         ))),

@@ -87,7 +87,13 @@ class MyDashboard extends StatelessWidget {
                               },
                             ),
                             Text(snapshot.data['totalExpense'].toString(),
-                                style: const TextStyle(fontSize: 12))
+                                style: const TextStyle(fontSize: 12)),
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(
+                                      context, '/viewGroupInfo');
+                                },
+                                icon: const Icon(Icons.navigate_next))
                           ],
                         )
                       ],

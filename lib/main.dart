@@ -1,13 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fraction/database/devilCode.dart';
 import 'package:fraction/screens/auth/register.dart';
 import 'package:fraction/screens/drawer/app_drawer.dart';
 import 'package:fraction/screens/expense/add_expense.dart';
 import 'package:fraction/screens/group/create_group.dart';
+import 'package:fraction/screens/group/group_layout.dart';
 import 'package:fraction/screens/profile/profile_layout.dart';
 import 'package:fraction/screens/auth/sign_in.dart';
-import 'package:fraction/screens/expense/view_expense.dart';
+import 'package:fraction/screens/expense/view_expense_layout.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
@@ -77,6 +80,9 @@ class MyApp extends StatelessWidget {
           '/createGroup': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) =>
                   appState.loggedIn ? const CreateGroup() : const SignInPage()),
+          '/viewGroupInfo': (context) => Consumer<ApplicationState>(
+              builder: (context, appState, _) =>
+                  appState.loggedIn ? const GroupLayout() : const SignInPage()),
         });
   }
 }
@@ -99,8 +105,19 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
         actions: [
+          kDebugMode
+              ? IconButton(
+                  onPressed: () {
+                    DevilCode()
+                        .callDevil1(shouldCallExpenseToGroupExpense: true);
+                  },
+                  icon: const Icon(Icons.refresh))
+              : Container(),
           IconButton(
             onPressed: () {
+              if (kDebugMode) {
+                print('');
+              }
               // Navigator.pushNamed(context, '/profile');
             },
             icon: SvgPicture.asset(clearOffIconPath),
@@ -110,14 +127,14 @@ class _MyHomePageState extends State<MyHomePage> {
           )
         ],
       ),
+      drawer: const FractionAppDrawer(),
+      body: const ViewExpenseLayout(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
           Navigator.pushNamed(context, '/addExpense');
         },
       ),
-      drawer: const FractionAppDrawer(),
-      body: const ViewExpenseLayout(),
     );
   }
 }
