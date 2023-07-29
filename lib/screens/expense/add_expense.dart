@@ -31,37 +31,41 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
       ),
       body: Consumer<ExpenseService>(
         builder: (context, expenseServiceState, _) => Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            FractionallySizedBox(
-                widthFactor: 0.7,
-                //heightFactor: 0.2,
-                child: TextField(
-                    controller: _descriptionTextController,
-                    decoration: const InputDecoration(
-                      label: Text('Item Name'),
-                    ))),
-            const SizedBox(height: 10),
-            FractionallySizedBox(
-                widthFactor: 0.7,
-                //heightFactor: 0.2,
-                child: TextField(
-                    controller: _costTextController,
-                    decoration: const InputDecoration(
-                      label: Text('Item Cost'),
-                    ))),
-            const SizedBox(height: 10),
-            FilledButton(
-                onPressed: () async {
-                  const snakBar = SnackBar(content: Text('adding expense ...'));
-                  ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                  expenseServiceState
-                      .addExpense(
-                          description: _descriptionTextController.text,
-                          cost: _costTextController.text)
-                      .whenComplete(() => Navigator.pop(context));
-                },
-                child: const Text('Save')),
-          ]),
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                FractionallySizedBox(
+                    widthFactor: 0.7,
+                    //heightFactor: 0.2,
+                    child: TextField(
+                        controller: _descriptionTextController,
+                        decoration: const InputDecoration(
+                          label: Text('Item Name'),
+                        ))),
+                const SizedBox(height: 10),
+                FractionallySizedBox(
+                    widthFactor: 0.7,
+                    //heightFactor: 0.2,
+                    child: TextField(
+                        controller: _costTextController,
+                        decoration: const InputDecoration(
+                          label: Text('Item Cost'),
+                        ))),
+                const SizedBox(height: 10),
+                FilledButton(
+                    onPressed: () async {
+                      const snakBar =
+                          SnackBar(content: Text('adding expense ...'));
+                      ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                      expenseServiceState
+                          .addExpense(
+                              description: _descriptionTextController.text,
+                              cost: _costTextController.text)
+                          .whenComplete(() => Navigator.pop(context));
+                    },
+                    child: const Text('Save')),
+              ]),
         ),
       ),
     );
