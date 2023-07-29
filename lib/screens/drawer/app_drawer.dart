@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/profile/profile.services.dart';
+import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:fraction/widgets/custom_input_form_field.dart';
 import 'package:fraction/widgets/widgets.dart';
@@ -15,6 +17,8 @@ class FractionAppDrawer extends StatefulWidget {
 }
 
 class FractionAppDrawerState extends State<FractionAppDrawer> {
+  final String profileIconPath = 'assets/icons/profileIcon.svg';
+  final String settingsIconPath = 'assets/icons/SettingsIcon.svg';
   late ExpenseService _expenseService;
   late GroupServices _groupService;
 
@@ -33,17 +37,38 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              DrawerHeader(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    const Text('Profile'),
-                    const Divider(),
-                    Text(profileState.currentUserName),
-                    Text(profileState.currentUserEmail),
-                  ],
+              Container(
+                decoration: BoxDecoration(
+                    color: AppColors().appDrawerHeaderBackgroudColor,
+                    borderRadius: BorderRadius.circular(6.0)),
+                child: DrawerHeader(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SvgPicture.asset(profileIconPath),
+                          SvgPicture.asset(settingsIconPath),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 16.0,
+                      ),
+                      Text(profileState.currentUserName,
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white)),
+                      const SizedBox(
+                        height: 16.0,
+                      ),
+                      Text(profileState.currentUserEmail,
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.white)),
+                    ],
+                  ),
                 ),
               ),
               StreamBuilder(
