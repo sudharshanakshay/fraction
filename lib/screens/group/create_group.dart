@@ -82,4 +82,11 @@ class CreateGroupState extends State<CreateGroup> {
       ),
     );
   }
+
+  @override
+  void dispose() {
+    _newGroupNameController.dispose();
+    _joinGroupNameController.dispose();
+    super.dispose();
+  }
 }

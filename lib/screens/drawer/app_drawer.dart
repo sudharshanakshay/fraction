@@ -22,6 +22,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
   late ExpenseService _expenseService;
   late GroupServices _groupService;
 
+  final _newGroupNameController = TextEditingController();
+
   @override
   void initState() {
     _expenseService = Provider.of<ExpenseService>(context, listen: false);
@@ -31,7 +33,6 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    final newGroupNameController = TextEditingController();
     return Consumer<ProfileServices>(
       builder: (context, profileState, child) => Drawer(
         child: SingleChildScrollView(
@@ -106,7 +107,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                 children: <Widget>[
                                   const Text('Create new group'),
                                   CustomInputFormField(
-                                      controller: newGroupNameController,
+                                      controller: _newGroupNameController,
                                       label: 'Group name'),
                                   Consumer<GroupServices>(
                                     builder: (context, groupServiceState, _) {
@@ -114,7 +115,8 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                           onPressed: () {
                                             groupServiceState.createGroup(
                                                 inputGroupName:
-                                                    newGroupNameController.text,
+                                                    _newGroupNameController
+                                                        .text,
                                                 nextClearOffTimeStamp:
                                                     DateTime.now());
                                           },
@@ -132,5 +134,11 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _newGroupNameController.dispose();
+    super.dispose();
   }
 }

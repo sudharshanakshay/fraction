@@ -223,4 +223,11 @@ class ExpensePalletState extends State<ExpensePallet> {
               ],
             ));
   }
+
+  @override
+  void dispose() {
+    _costTextController.dispose();
+    _descriptionTextController.dispose();
+    super.dispose();
+  }
 }
