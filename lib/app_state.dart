@@ -50,8 +50,6 @@ class ApplicationState extends ChangeNotifier {
               _currentUserName = currentProfileDetails['userName'];
               for (String groupName in currentProfileDetails['groupNames']) {
                 if (groupName.isNotEmpty) {
-                  print('---- printing group name from fraction services ----');
-                  print(groupName);
                   _currentUserGroup = groupName;
                   notifyListeners();
                   // await prefs
@@ -69,7 +67,6 @@ class ApplicationState extends ChangeNotifier {
           }
         } else {
           // _currentUserGroup = prefs.getString('currentUserGroup')!;
-          print('current group is $_currentUserGroup');
           notifyListeners();
         }
       } else {
@@ -89,59 +86,5 @@ class ApplicationState extends ChangeNotifier {
     //     .whenComplete(() {
     //   notifyListeners();
     // });
-
-    print('current group -> $_currentUserGroup');
   }
 }
-
-
-// Future<void> init() async {
-//     await Firebase.initializeApp(
-//         options: DefaultFirebaseOptions.currentPlatform);
-
-//     FirebaseUIAuth.configureProviders([
-//       EmailAuthProvider(),
-//     ]);
-
-//     FirebaseAuth.instance.userChanges().listen((user) async {
-//       final prefs = await SharedPreferences.getInstance();
-//       if (user != null) {
-//         _loggedIn = true;
-//         _currentUserEmail = user.email!;
-//         if (prefs.getString('currentUserGroup') == null) {
-//           try {
-//             FirebaseFirestore.instance
-//                 .collection('profile')
-//                 .doc(_currentUserEmail)
-//                 .get()
-//                 .then((DocumentSnapshot doc) async {
-//               final currentProfileDetails = doc.data() as Map<String, dynamic>;
-//               for (String groupName in currentProfileDetails['groupNames']) {
-//                 if (groupName.isNotEmpty) {
-//                   print('---- printing group name from fraction services ----');
-//                   print(groupName);
-//                   _currentUserGroup = groupName;
-//                   await prefs
-//                       .setString('currentUserGroup', _currentUserGroup)
-//                       .whenComplete(() {
-//                     notifyListeners();
-//                   });
-
-//                   break;
-//                 }
-//               }
-//             });
-//           } catch (e) {
-//             throw ('user has no group');
-//           }
-//         } else {
-//           _currentUserGroup = prefs.getString('currentUserGroup')!;
-//           print('current group is $_currentUserGroup');
-//           notifyListeners();
-//         }
-//       } else {
-//         _loggedIn = false;
-//       }
-//       notifyListeners();
-//     });
-//   }

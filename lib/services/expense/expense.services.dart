@@ -5,8 +5,6 @@ import 'package:fraction/database/group.database.dart';
 
 class ExpenseService extends ApplicationState {
   Stream<QuerySnapshot> getExpenseCollection() {
-    print('group changed in expense');
-    print(super.currentUserGroup);
     try {
       return ExpenseDatabase()
           .getExpenseCollection(currentGroupName: super.currentUserGroup);

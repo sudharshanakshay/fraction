@@ -30,8 +30,6 @@ class ViewExpenseLayoutState extends State<ViewExpenseLayout> {
           children: [
             Consumer<GroupServices>(
               builder: (context, groupServiceState, _) {
-                print('in group service setate');
-                print(groupServiceState.currentUserGroup);
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: StreamBuilder(

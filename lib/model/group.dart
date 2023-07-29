@@ -27,16 +27,6 @@ class GroupModel {
     };
   }
 
-  // Map<String, dynamic> toMemberEmails() {
-  //   List memberEmailsList = [];
-  //   for (Map<String, dynamic> memberObj in toMap()['groupMembers']) {
-  //     print('---- memberEmailList ----');
-  //     print(memberObj);
-  //     memberEmailsList.add(memberObj['userEmail']);
-  //   }
-  //   return {'memberEmails': memberEmailsList};
-  // }
-
   List toMemberEmailsList() {
     List memberEmailList = [];
     _groupMembers.forEach((key, value) {

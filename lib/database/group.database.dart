@@ -55,7 +55,6 @@ class GroupDatabase {
         .doc(groupName)
         .snapshots()
         .asyncExpand((doc) {
-      // print(doc.data()!['groupMembers'][currentUserEmailR]['totalExpense']);
       return Stream.value(
           doc.data()!['groupMembers'][currentUserEmailR]['totalExpense']);
     });
@@ -71,8 +70,6 @@ class GroupDatabase {
             toFirestore: (groupModel, _) => groupModel.toJson())
         .get()
         .then((doc) {
-      // print('----------------------');
-      // print(' Expense Account  ${doc.data()}');
       return doc.data()?.toList();
     });
   }
@@ -120,7 +117,10 @@ class GroupDatabase {
       "groupNames": FieldValue.arrayUnion([groupNameToAdd]),
     }).whenComplete(() {
       if (kDebugMode) {
-        print('-------- groupName $groupNameToAdd added successfuly --------');
+        if (kDebugMode) {
+          print(
+              '-------- groupName $groupNameToAdd added successfuly --------');
+        }
       }
     });
   }

@@ -66,8 +66,7 @@ class ExpensePalletState extends State<ExpensePallet> {
                     _descriptionTextController.text =
                         widget.expenseDoc['description'];
                     _costTextController.text = widget.expenseDoc['cost'];
-                    // print(widget.expenseDoc['emailAddress']);
-                    // print(widget.currentUserEmail);
+
                     if (widget.expenseDoc['emailAddress'] ==
                         widget.currentUserEmail) {
                       showExpenseDialog();
@@ -188,9 +187,7 @@ class ExpensePalletState extends State<ExpensePallet> {
                 // IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
                 TextButton(
                   onPressed: () async {
-                    print(widget.expenseDoc.id);
                     await confirmDeleteExpense().then((msg) {
-                      print(msg);
                       if (msg == 'OK') {
                         widget.expenseServiceState
                             .deleteExpense(expenseDoc: widget.expenseDoc)

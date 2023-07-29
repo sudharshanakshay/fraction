@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
 
@@ -35,13 +36,13 @@ class GroupServices extends ApplicationState {
             groupNameToAdd: groupNameCreatedWithIdentity);
       });
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 
   Stream getGroupDetials() {
-    print('group changed in group');
-    print(super.currentUserGroup);
     try {
       return GroupDatabase().getGroupDetials(groupName: super.currentUserGroup);
     } catch (e) {

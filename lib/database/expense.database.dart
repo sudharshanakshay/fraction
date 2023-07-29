@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class ExpenseDatabase {
   final _expenseCollectionName = 'expense';
@@ -80,7 +81,9 @@ class ExpenseDatabase {
         .delete()
         .then(
       (doc) {
-        print("Document deleted");
+        if (kDebugMode) {
+          print("Document deleted");
+        }
       },
       onError: (e) => print("Error deleting document $e"),
     );

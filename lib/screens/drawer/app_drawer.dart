@@ -112,8 +112,6 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                     builder: (context, groupServiceState, _) {
                                       return FilledButton(
                                           onPressed: () {
-                                            print(groupServiceState
-                                                .currentUserEmail);
                                             groupServiceState.createGroup(
                                                 inputGroupName:
                                                     newGroupNameController.text,
