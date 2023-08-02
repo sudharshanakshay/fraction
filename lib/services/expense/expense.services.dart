@@ -9,6 +9,7 @@ class ExpenseService extends ApplicationState {
       return ExpenseDatabase()
           .getExpenseCollection(currentGroupName: super.currentUserGroup);
     } catch (e) {
+      print(e);
       return const Stream.empty();
     }
   }

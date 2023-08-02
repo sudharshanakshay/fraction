@@ -1,6 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DevilCode {
+  callDevil3() {
+    print(DateTime.now());
+    FirebaseFirestore.instance.collection('expense').get().then((value) {
+      for (var doc in value.docs) {
+        print(doc.data());
+        break;
+      }
+    });
+  }
+
   callDevil2({shouldCallGrouptotalValueUpdate = false}) {
     if (shouldCallGrouptotalValueUpdate) {
       FirebaseFirestore.instance

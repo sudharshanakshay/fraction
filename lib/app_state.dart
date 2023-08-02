@@ -42,23 +42,28 @@ class ApplicationState extends ChangeNotifier {
         if (_currentUserGroup.isEmpty) {
           try {
             FirebaseFirestore.instance
-                .collection('profile')
+                .collection('users')
                 .doc(_currentUserEmail)
                 .get()
                 .then((DocumentSnapshot doc) async {
-              final currentProfileDetails = doc.data() as Map<String, dynamic>;
-              _currentUserName = currentProfileDetails['userName'];
-              for (String groupName in currentProfileDetails['groupNames']) {
-                if (groupName.isNotEmpty) {
-                  _currentUserGroup = groupName;
-                  notifyListeners();
-                  // await prefs
-                  //     .setString('currentUserGroup', _currentUserGroup)
-                  //     .whenComplete(() {
-                  //   notifyListeners();
-                  // });
+              if (doc.exists) {
+                print(_currentUserName);
+                print(doc.data());
+                final currentProfileDetails =
+                    doc.data() as Map<String, dynamic>;
+                _currentUserName = currentProfileDetails['userName'];
+                for (String groupName in currentProfileDetails['groupNames']) {
+                  if (groupName.isNotEmpty) {
+                    _currentUserGroup = groupName;
+                    notifyListeners();
+                    // await prefs
+                    //     .setString('currentUserGroup', _currentUserGroup)
+                    //     .whenComplete(() {
+                    //   notifyListeners();
+                    // });
 
-                  break;
+                    break;
+                  } else {}
                 }
               }
             });
@@ -86,5 +91,13 @@ class ApplicationState extends ChangeNotifier {
     //     .whenComplete(() {
     //   notifyListeners();
     // });
+  }
+
+  // ------------- option, sign-out -------------
+
+  void signOut() async {
+    FirebaseAuth.instance.signOut();
+    // await clearProfileDetailsFromLocalStorage()
+    //     .whenComplete(() => FirebaseAuth.instance.signOut());
   }
 }

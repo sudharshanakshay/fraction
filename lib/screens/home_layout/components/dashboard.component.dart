@@ -4,8 +4,8 @@ import 'package:fraction/services/group/group.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class MyDashboard extends StatelessWidget {
-  const MyDashboard({super.key, required this.context});
+class Dashboard extends StatelessWidget {
+  const Dashboard({super.key, required this.context});
 
   final BuildContext context;
   final String moreMembersIcon = 'assets/icons/moreMembersIcon.svg';

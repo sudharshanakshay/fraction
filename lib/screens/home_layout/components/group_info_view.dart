@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:provider/provider.dart';
 
-class GroupLayout extends StatefulWidget {
-  const GroupLayout({Key? key}) : super(key: key);
+class GroupInfo extends StatefulWidget {
+  const GroupInfo({Key? key}) : super(key: key);
 
   @override
-  State<GroupLayout> createState() => _GroupLayoutState();
+  State<GroupInfo> createState() => _GroupInfoState();
 }
 
-class _GroupLayoutState extends State<GroupLayout> {
+class _GroupInfoState extends State<GroupInfo> {
   @override
   Widget build(BuildContext context) {
     return Consumer<GroupServices>(builder: (context, groupServiceState, _) {

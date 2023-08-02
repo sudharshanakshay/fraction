@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
-import '../../services/expense/expense.services.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -13,8 +12,8 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<ExpenseService>(
-      builder: (context, appState, _) => Scaffold(
+    return Consumer<AuthServices>(
+      builder: (context, authServiceState, _) => Scaffold(
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: const Text('Profile'),
@@ -24,7 +23,7 @@ class _ProfileState extends State<Profile> {
                     await confirmLogout().then((msg) {
                       if (msg == 'OK') {
                         Navigator.pop(context);
-                        signOut();
+                        authServiceState.signOut();
                       }
                     });
                   },

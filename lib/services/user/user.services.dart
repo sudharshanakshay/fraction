@@ -1,10 +1,21 @@
 import 'package:fraction/app_state.dart';
-import 'package:fraction/database/profile.database.dart';
+import 'package:fraction/database/user.database.dart';
 
-class ProfileServices extends ApplicationState {
-  Stream myGroupsStream() {
+class UserServices extends ApplicationState {
+  late UserDatabase database;
+
+  UserServices() {
+    database = UserDatabase();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  Stream groupStream() {
     try {
-      return ProfileDatabase().availableProfileGroupsStream(
+      return database.userSubscribedGroupsStream(
           currentUserEmail: super.currentUserEmail);
     } catch (e) {
       return const Stream.empty();
@@ -13,7 +24,7 @@ class ProfileServices extends ApplicationState {
 
   Future<void> createUserProfile({required preferedColor}) async {
     try {
-      ProfileDatabase().createUserProfile(
+      database.createUser(
           currentUserEmail: super.currentUserEmail,
           currentUserName: super.currentUserName,
           preferedColor: preferedColor);

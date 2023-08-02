@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/services/group/group.services.dart';
-import 'package:fraction/services/profile/profile.services.dart';
+import 'package:fraction/services/user/user.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:fraction/widgets/custom_input_form_field.dart';
@@ -33,7 +33,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ProfileServices>(
+    return Consumer<UserServices>(
       builder: (context, profileState, child) => Drawer(
         child: SingleChildScrollView(
           child: Column(
@@ -73,7 +73,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                 ),
               ),
               StreamBuilder(
-                  stream: profileState.myGroupsStream(),
+                  stream: profileState.groupStream(),
                   builder: (context, snapShot) {
                     if (snapShot.hasData) {
                       return ListView.builder(

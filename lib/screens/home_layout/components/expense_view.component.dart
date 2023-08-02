@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/expense/widget/expense_pallet.dart';
+import 'package:fraction/screens/home_layout/expense_view/widget/expense_pallet.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class MyExpenseView extends StatefulWidget {
-  const MyExpenseView({super.key});
+class ExpenseView extends StatefulWidget {
+  const ExpenseView({super.key});
 
   @override
-  State<StatefulWidget> createState() => MyExpenseViewState();
+  State<StatefulWidget> createState() => ExpenseViewState();
 }
 
-class MyExpenseViewState extends State<MyExpenseView> {
+class ExpenseViewState extends State<ExpenseView> {
   String timeNow = '';
 
   @override
@@ -23,6 +23,7 @@ class MyExpenseViewState extends State<MyExpenseView> {
             if (!snapshot.hasData) {
               return const Text('Loading ...');
             }
+            // if (snapshot.hasError) {}
             return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
