@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/database/devilCode.dart';
-import 'package:fraction/screens/home_layout/components/dashboard.component.dart';
-import 'package:fraction/screens/home_layout/components/expense_view.component.dart';
+import 'package:fraction/screens/home_layout/dashboard_view/dashboard.component.dart';
+import 'package:fraction/screens/home_layout/expense_view/expense_view.component.dart';
 
 import 'drawer_view/app_drawer.dart';
 
