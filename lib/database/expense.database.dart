@@ -3,12 +3,18 @@ import 'package:flutter/foundation.dart';
 
 class ExpenseDatabase {
   final _expenseCollectionName = 'expense';
+  late FirebaseFirestore _databaseRef;
 
-  Stream<QuerySnapshot> getExpenseCollection({required currentGroupName}) {
-    return FirebaseFirestore.instance
-        .collection('group')
-        .doc(currentGroupName)
+  ExpenseDatabase() {
+    _databaseRef = FirebaseFirestore.instance;
+  }
+
+  Stream<QuerySnapshot> getExpenseCollection(
+      {required currentGroupName, required currentExpenseInstance}) {
+    return _databaseRef
         .collection(_expenseCollectionName)
+        .doc(currentGroupName)
+        .collection(currentExpenseInstance)
         .orderBy('timeStamp', descending: true)
         .snapshots()
         .handleError((e) {
@@ -16,23 +22,24 @@ class ExpenseDatabase {
     });
   }
 
-  Stream<QuerySnapshot> getMyExpenses(
-      {required currentGroupName, required currentUserEmail}) {
-    return FirebaseFirestore.instance
-        .collection('group')
-        .doc(currentGroupName)
-        .collection('expense')
-        .where('emailAddress', isEqualTo: currentUserEmail)
-        .orderBy('timeStamp', descending: true)
-        .snapshots();
-  }
+  // Stream<QuerySnapshot> getMyExpenses(
+  //     {required currentGroupName, required currentUserEmail}) {
+  //   return FirebaseFirestore.instance
+  //       .collection('group')
+  //       .doc(currentGroupName)
+  //       .collection('expense')
+  //       .where('emailAddress', isEqualTo: currentUserEmail)
+  //       .orderBy('timeStamp', descending: true)
+  //       .snapshots();
+  // }
 
   Future<void> addExpense(
-      {required currentGroupName,
-      required currentUserName,
-      required currentUserEmail,
+      {required String currentGroupName,
+      required String currentExpenseInstance,
+      required String currentUserName,
+      required String currentUserEmail,
       required String description,
-      required cost}) {
+      required int cost}) {
     final data = {
       'description': description,
       'cost': cost,
@@ -41,29 +48,30 @@ class ExpenseDatabase {
       'emailAddress': currentUserEmail,
       'timeStamp': DateTime.now()
     };
-    return FirebaseFirestore.instance
-        .collection('group')
+    return _databaseRef
+        .collection(_expenseCollectionName)
         .doc(currentGroupName)
-        .collection('expense')
+        .collection(currentExpenseInstance)
         .doc()
         .set(data);
   }
 
   Future updateExpense({
-    required currentGroupName,
-    required docId,
-    required updatedDescription,
-    required updatedCost,
+    required String currentGroupName,
+    required String currentExpenseInstance,
+    required String docId,
+    required String updatedDescription,
+    required int updatedCost,
   }) async {
     final data = {
       'description': updatedDescription,
       'cost': updatedCost,
       'tags': FieldValue.arrayUnion(['updated'])
     };
-    FirebaseFirestore.instance
-        .collection('group')
-        .doc(currentGroupName)
+    _databaseRef
         .collection(_expenseCollectionName)
+        .doc(currentGroupName)
+        .collection(currentExpenseInstance)
         .doc(docId)
         .update(data)
         .whenComplete(() {});
@@ -72,11 +80,12 @@ class ExpenseDatabase {
   Future deleteMyExpense(
       {required currentUserEmail,
       required currentGroupName,
+      required currentExpenseInstance,
       required docId}) async {
-    return FirebaseFirestore.instance
-        .collection('group')
+    return _databaseRef
+        .collection(_expenseCollectionName)
         .doc(currentGroupName)
-        .collection('expense')
+        .collection(currentExpenseInstance)
         .doc(docId)
         .delete()
         .then(

@@ -22,12 +22,13 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
   late ExpenseService _expenseService;
   late GroupServices _groupService;
 
-  final _newGroupNameController = TextEditingController();
+  late TextEditingController _newGroupNameController;
 
   @override
   void initState() {
     _expenseService = Provider.of<ExpenseService>(context, listen: false);
     _groupService = Provider.of<GroupServices>(context, listen: false);
+    _newGroupNameController = TextEditingController();
     super.initState();
   }
 

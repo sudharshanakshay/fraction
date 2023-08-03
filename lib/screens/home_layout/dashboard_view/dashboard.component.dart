@@ -90,8 +90,7 @@ class Dashboard extends StatelessWidget {
                                 style: const TextStyle(fontSize: 12)),
                             IconButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(
-                                      context, '/viewGroupInfo');
+                                  Navigator.pushNamed(context, '/groupInfo');
                                 },
                                 icon: const Icon(Icons.navigate_next))
                           ],

@@ -4,36 +4,46 @@ import 'package:fraction/database/expense.database.dart';
 import 'package:fraction/database/group.database.dart';
 
 class ExpenseService extends ApplicationState {
+  late ExpenseDatabase _expenseDatabaseRef;
+
+  ExpenseService() {
+    _expenseDatabaseRef = ExpenseDatabase();
+  }
+
   Stream<QuerySnapshot> getExpenseCollection() {
     try {
-      return ExpenseDatabase()
-          .getExpenseCollection(currentGroupName: super.currentUserGroup);
+      return _expenseDatabaseRef.getExpenseCollection(
+          currentGroupName: super.currentUserGroup,
+          currentExpenseInstance:
+              super.currentExpenseInstance!.toDate().toString());
     } catch (e) {
       print(e);
       return const Stream.empty();
     }
   }
 
-  Stream<QuerySnapshot> getMyExpenses(
-      {required currentUserEmail, required currentUserGroup}) {
-    try {
-      return ExpenseDatabase().getMyExpenses(
-          currentGroupName: currentUserGroup,
-          currentUserEmail: currentUserEmail);
-    } catch (e) {
-      return const Stream.empty();
-    }
-  }
+  // Stream<QuerySnapshot> getMyExpenses(
+  //     {required currentUserEmail, required currentUserGroup}) {
+  //   try {
+  //     return _expenseDatabaseRef.getMyExpenses(
+  //         currentGroupName: currentUserGroup,
+  //         currentUserEmail: currentUserEmail);
+  //   } catch (e) {
+  //     return const Stream.empty();
+  //   }
+  // }
 
-  Future addExpense({required String description, required cost}) async {
+  Future addExpense({required String description, required String cost}) async {
     print(super.currentUserGroup);
-    ExpenseDatabase()
+    _expenseDatabaseRef
         .addExpense(
             currentUserName: super.currentUserName,
             currentGroupName: super.currentUserGroup,
             currentUserEmail: super.currentUserEmail,
             description: description,
-            cost: cost)
+            cost: int.parse(cost),
+            currentExpenseInstance:
+                super.currentExpenseInstance!.toDate().toString())
         .whenComplete(() {
       GroupDatabase().updateGroupMemberExpense(
         memberEmail: super.currentUserEmail,
@@ -44,25 +54,27 @@ class ExpenseService extends ApplicationState {
   }
 
   Future updateExpense({
-    required docId,
+    required String docId,
     required String updatedDescription,
-    required updatedCost,
-    required previousCost,
+    required String updatedCost,
+    required int previousCost,
   }) async {
     try {
-      ExpenseDatabase()
+      _expenseDatabaseRef
           .updateExpense(
         currentGroupName: super.currentUserGroup,
         docId: docId,
-        updatedCost: updatedCost,
+        updatedCost: int.parse(updatedCost),
         updatedDescription: updatedDescription,
+        currentExpenseInstance:
+            super.currentExpenseInstance!.toDate().toString(),
       )
           .whenComplete(() {
-        if (int.parse(updatedCost) - int.parse(previousCost) != 0) {
+        if (int.parse(updatedCost) - previousCost != 0) {
           GroupDatabase().updateGroupMemberExpense(
               groupName: super.currentUserGroup,
               memberEmail: super.currentUserEmail,
-              expenseDiff: int.parse(updatedCost) - int.parse(previousCost));
+              expenseDiff: int.parse(updatedCost) - previousCost);
         }
       });
     } catch (e) {}
@@ -70,16 +82,18 @@ class ExpenseService extends ApplicationState {
 
   Future deleteExpense({required expenseDoc}) async {
     if (super.currentUserEmail == expenseDoc['emailAddress']) {
-      ExpenseDatabase()
+      _expenseDatabaseRef
           .deleteMyExpense(
               currentUserEmail: super.currentUserEmail,
               currentGroupName: super.currentUserGroup,
-              docId: expenseDoc.id)
+              docId: expenseDoc.id,
+              currentExpenseInstance:
+                  super.currentExpenseInstance!.toDate().toString())
           .whenComplete(() {
         GroupDatabase().updateGroupMemberExpense(
             groupName: super.currentUserGroup,
             memberEmail: super.currentUserEmail,
-            expenseDiff: -int.parse(expenseDoc['cost']));
+            expenseDiff: -expenseDoc['cost']);
       });
     }
   }

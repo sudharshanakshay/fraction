@@ -19,10 +19,17 @@ class AddExpenseLayout extends StatefulWidget {
 }
 
 class _AddExpenseLayoutState extends State<AddExpenseLayout> {
-  final _descriptionTextController = TextEditingController();
-  final _costTextController = TextEditingController();
+  late TextEditingController _descriptionTextController;
+  late TextEditingController _costTextController;
+  late GlobalKey<FormState> _formKey;
 
-  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    _descriptionTextController = TextEditingController();
+    _costTextController = TextEditingController();
+    _formKey = GlobalKey<FormState>();
+    super.initState();
+  }
 
   validateNotEmptyDesc(value) {
     if (value == null || value.isEmpty) {

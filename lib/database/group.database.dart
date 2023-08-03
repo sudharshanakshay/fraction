@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fraction/model/group.dart';
 
 class GroupDatabase {
@@ -8,13 +9,14 @@ class GroupDatabase {
 // -- '#' represents '.' in a key --
 // -- whenever user creates group, user is added to that group by default --
   Future<String> createGroup(
-      {required groupName,
-      required adminName,
-      required adminEmail,
-      required nextClearOffTimeStamp}) {
+      {required String groupName,
+      required String adminName,
+      required String adminEmail,
+      required DateTime nextClearOffTimeStamp}) {
     final adminEmailR = adminEmail.replaceAll('.', '#');
     final data = {
       'createdOn': DateTime.now(),
+      'expenseInstance': DateTime.now(),
       'nextClearOffTimeStamp': nextClearOffTimeStamp,
       'groupName': groupName,
       'totalExpense': 0,
@@ -32,6 +34,10 @@ class GroupDatabase {
         adminEmail +
         '%' +
         DateTime.now().toString().replaceAll(RegExp(r'[\s]'), '%');
+
+    if (kDebugMode) {
+      print('group info: $data');
+    }
 
     return FirebaseFirestore.instance
         .collection(_groupCollectionName)
@@ -111,7 +117,7 @@ class GroupDatabase {
     bool kDebugMode = true;
 
     FirebaseFirestore.instance
-        .collection('profile')
+        .collection('users')
         .doc(currentUserEmail)
         .update({
       "groupNames": FieldValue.arrayUnion([groupNameToAdd]),

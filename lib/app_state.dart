@@ -7,12 +7,17 @@ import 'package:flutter/material.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
+  // late FirebaseFirestoreRef;
   ApplicationState() {
     init();
   }
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
+
+  bool _hasGroup = true;
+  bool get hasGroup => _hasGroup;
+  set hasGroup(bool value) => _hasGroup = value;
 
   String _currentUserName = '';
   String get currentUserName => _currentUserName;
@@ -22,6 +27,12 @@ class ApplicationState extends ChangeNotifier {
 
   String _currentUserGroup = '';
   String get currentUserGroup => _currentUserGroup;
+
+  // Timestamp _currentExpenseInstance;
+  Timestamp? get currentExpenseInstance =>
+      groupsAndExpenseInstances[_currentUserGroup];
+
+  Map<String, Timestamp> groupsAndExpenseInstances = {};
 
   // ------------- Firebase Initailization -------------
 
@@ -41,35 +52,11 @@ class ApplicationState extends ChangeNotifier {
         // if (prefs.getString('currentUserGroup') == null) {
         if (_currentUserGroup.isEmpty) {
           try {
-            FirebaseFirestore.instance
-                .collection('users')
-                .doc(_currentUserEmail)
-                .get()
-                .then((DocumentSnapshot doc) async {
-              if (doc.exists) {
-                print(_currentUserName);
-                print(doc.data());
-                final currentProfileDetails =
-                    doc.data() as Map<String, dynamic>;
-                _currentUserName = currentProfileDetails['userName'];
-                for (String groupName in currentProfileDetails['groupNames']) {
-                  if (groupName.isNotEmpty) {
-                    _currentUserGroup = groupName;
-                    notifyListeners();
-                    // await prefs
-                    //     .setString('currentUserGroup', _currentUserGroup)
-                    //     .whenComplete(() {
-                    //   notifyListeners();
-                    // });
-
-                    break;
-                  } else {}
-                }
-              }
-            });
+            await setGroupAndExpenseInstances();
           } catch (e) {
             throw ('user has no group');
           }
+          print(groupsAndExpenseInstances);
         } else {
           // _currentUserGroup = prefs.getString('currentUserGroup')!;
           notifyListeners();
@@ -78,6 +65,45 @@ class ApplicationState extends ChangeNotifier {
         _loggedIn = false;
       }
       notifyListeners();
+    });
+  }
+
+  Future<void> setGroupAndExpenseInstances() async {
+    // -- get values from user database ----
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(_currentUserEmail)
+        .get()
+        .then((DocumentSnapshot doc) async {
+      if (doc.exists) {
+        final currentProfileDetails = doc.data() as Map<String, dynamic>;
+        // ---- set current user name from user database ----
+        _currentUserName = currentProfileDetails['userName'];
+
+        for (String groupName in currentProfileDetails['groupNames']) {
+          if (groupName.isNotEmpty) {
+            // ---- get values from group database ----
+
+            FirebaseFirestore.instance
+                .collection('group')
+                .doc(groupName)
+                .get()
+                .then((value) => value.data()!['expenseInstance'])
+                .then((value) {
+              // ---- set the group name & instance value from the groups database ----
+              Map<String, Timestamp> data = {groupName: value};
+              // print(data);
+              groupsAndExpenseInstances.addAll(data);
+            });
+          }
+        }
+      }
+    });
+  }
+
+  printGroupMap() {
+    groupsAndExpenseInstances.forEach((key, value) {
+      print('key : $key -- value: ${value.toDate()}');
     });
   }
 

@@ -4,18 +4,18 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
 
 class GroupServices extends ApplicationState {
-  late GroupDatabase groupDatabaseRef;
+  late GroupDatabase _groupDatabaseRef;
   GroupServices() {
-    groupDatabaseRef = GroupDatabase();
+    _groupDatabaseRef = GroupDatabase();
   }
   Future<void> joinCloudGroup({required newGroupName}) async {
-    GroupDatabase()
+    _groupDatabaseRef
         .insertMemberToGroup(
             currentGroupName: super.currentUserGroup,
             memberName: super.currentUserName,
             memberEmail: super.currentUserEmail)
         .whenComplete(() {
-      GroupDatabase().insertGroupNameToProfile(
+      _groupDatabaseRef.insertGroupNameToProfile(
           currentUserEmail: super.currentUserEmail,
           groupNameToAdd: newGroupName);
     });
@@ -24,16 +24,19 @@ class GroupServices extends ApplicationState {
   Future<void> createGroup(
       {required inputGroupName, required nextClearOffTimeStamp}) async {
     try {
-      GroupDatabase()
+      _groupDatabaseRef
           .createGroup(
               groupName: inputGroupName,
               adminName: super.currentUserName,
               adminEmail: super.currentUserEmail,
               nextClearOffTimeStamp: nextClearOffTimeStamp)
           .then((String groupNameCreatedWithIdentity) {
-        GroupDatabase().insertGroupNameToProfile(
+        _groupDatabaseRef.insertGroupNameToProfile(
             currentUserEmail: super.currentUserEmail,
             groupNameToAdd: groupNameCreatedWithIdentity);
+      }).whenComplete(() {
+        hasGroup = true;
+        notifyListeners();
       });
     } catch (e) {
       if (kDebugMode) {
@@ -44,7 +47,8 @@ class GroupServices extends ApplicationState {
 
   Stream getGroupDetials() {
     try {
-      return GroupDatabase().getGroupDetials(groupName: super.currentUserGroup);
+      return _groupDatabaseRef.getGroupDetials(
+          groupName: super.currentUserGroup);
     } catch (e) {
       return const Stream.empty();
     }
@@ -52,7 +56,7 @@ class GroupServices extends ApplicationState {
 
   Stream getMyTotalExpense() {
     try {
-      return GroupDatabase().getMyTotalExpense(
+      return _groupDatabaseRef.getMyTotalExpense(
           currentUserEmail: super.currentUserEmail,
           groupName: super.currentUserGroup);
     } catch (e) {
@@ -62,8 +66,8 @@ class GroupServices extends ApplicationState {
 
   Future<List?> getMemberDetails() {
     try {
-      return GroupDatabase()
-          .getMemberDetails(currentUserGroup: super.currentUserGroup);
+      return _groupDatabaseRef.getMemberDetails(
+          currentUserGroup: super.currentUserGroup);
     } catch (e) {
       return Future.value();
     }

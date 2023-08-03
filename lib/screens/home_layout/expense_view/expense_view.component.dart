@@ -20,8 +20,26 @@ class ExpenseViewState extends State<ExpenseView> {
       return StreamBuilder(
           stream: expenseServiceState.getExpenseCollection(),
           builder: (context, snapshot) {
+            // if (!expenseServiceState.hasGroup) {
+            //   return const CreateGroupLayout();
+            // }
             if (!snapshot.hasData) {
-              return const Text('Loading ...');
+              return Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      //eft: BorderSide(
+                      width: 2,
+                      // color: getRandomColor(),
+                      color: Colors.blue.shade100,
+                      //)
+                    ),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  //height: 50,
+                  //color: Colors.amber[colorCodes[index % 3]],
+                  child: const ListTile(
+                    title: Text('no expense to display'),
+                  ));
             }
             // if (snapshot.hasError) {}
             return ListView.builder(

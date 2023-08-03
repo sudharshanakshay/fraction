@@ -47,6 +47,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: AppColors().themeColor),
           useMaterial3: true,
         ),
+        // home: const CreateGroupLayout(),
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
                 ? const SignInPage()
@@ -76,9 +77,10 @@ class MyApp extends StatelessWidget {
                   ? const AddExpenseLayout()
                   : const SignInPage()),
           '/createGroup': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) =>
-                  appState.loggedIn ? const CreateGroup() : const SignInPage()),
-          '/viewGroupInfo': (context) => Consumer<ApplicationState>(
+              builder: (context, appState, _) => appState.loggedIn
+                  ? const CreateGroupLayout()
+                  : const SignInPage()),
+          '/groupInfo': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) =>
                   appState.loggedIn ? const GroupInfo() : const SignInPage()),
         });

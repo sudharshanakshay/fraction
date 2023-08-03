@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +13,7 @@ class GroupInfo extends StatefulWidget {
 }
 
 class _GroupInfoState extends State<GroupInfo> {
+  final String clearOffIconPath = 'assets/icons/ClearOffIcon.svg';
   @override
   Widget build(BuildContext context) {
     return Consumer<GroupServices>(builder: (context, groupServiceState, _) {
@@ -19,6 +22,20 @@ class _GroupInfoState extends State<GroupInfo> {
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text('Fraction : ${groupServiceState.currentUserGroup}',
               style: const TextStyle(fontSize: 20)),
+          actions: [
+            IconButton(
+              onPressed: () {
+                if (kDebugMode) {
+                  print('');
+                }
+                // Navigator.pushNamed(context, '/profile');
+              },
+              icon: SvgPicture.asset(clearOffIconPath),
+            ),
+            const SizedBox(
+              width: 8.0,
+            )
+          ],
         ),
         body: Column(
           children: [

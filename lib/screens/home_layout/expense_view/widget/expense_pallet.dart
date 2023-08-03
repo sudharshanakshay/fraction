@@ -65,7 +65,8 @@ class ExpensePalletState extends State<ExpensePallet> {
                   onLongPress: () {
                     _descriptionTextController.text =
                         widget.expenseDoc['description'];
-                    _costTextController.text = widget.expenseDoc['cost'];
+                    _costTextController.text =
+                        widget.expenseDoc['cost'].toString();
 
                     if (widget.expenseDoc['emailAddress'] ==
                         widget.currentUserEmail) {
@@ -103,17 +104,31 @@ class ExpensePalletState extends State<ExpensePallet> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (widget.expenseDoc['tags'].length != 0)
-                        Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                            decoration: BoxDecoration(
-                                color: AppColors().tags,
-                                borderRadius: BorderRadius.circular(12)),
-                            child: const Text(
-                              'updated',
-                            ),
+                        Container(
+                          alignment: Alignment.center,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: widget.expenseDoc['tags'].length,
+                            itemBuilder: (context, index) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: SizedBox(
+                                  height: 6.0,
+                                  child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4.0),
+                                      decoration: BoxDecoration(
+                                          color: AppColors().tags,
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
+                                      child: Text(
+                                        widget.expenseDoc['tags'][index],
+                                      )),
+                                ),
+                              );
+                            },
                           ),
                         ),
                       Text(
