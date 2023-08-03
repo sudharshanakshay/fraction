@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/database/user.database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
@@ -29,14 +31,16 @@ class ApplicationState extends ChangeNotifier {
   String get currentUserGroup => _currentUserGroup;
 
   // Timestamp _currentExpenseInstance;
-  Timestamp? get currentExpenseInstance =>
-      groupsAndExpenseInstances[_currentUserGroup];
+  Timestamp get currentExpenseInstance =>
+      groupsAndExpenseInstances[_currentUserGroup] ?? Timestamp.now();
 
   Map<String, Timestamp> groupsAndExpenseInstances = {};
 
   // ------------- Firebase Initailization -------------
 
   Future<void> init() async {
+    final prefs = await SharedPreferences.getInstance();
+
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
 
@@ -45,21 +49,24 @@ class ApplicationState extends ChangeNotifier {
     ]);
 
     FirebaseAuth.instance.userChanges().listen((user) async {
-      // final prefs = await SharedPreferences.getInstance();
       if (user != null) {
         _loggedIn = true;
         _currentUserEmail = user.email!;
-        // if (prefs.getString('currentUserGroup') == null) {
+
+        await setGroupAndExpenseInstances()
+            .whenComplete(() => notifyListeners());
+
         if (_currentUserGroup.isEmpty) {
-          try {
-            await setGroupAndExpenseInstances()
-                .whenComplete(() => notifyListeners());
-          } catch (e) {
-            throw ('user has no group');
+          if (prefs.getString('currentUserGroup') == null) {
+            if (_currentUserEmail.isNotEmpty) {
+              String groupNameFromUserProfile = await UserDatabase()
+                  .getOneUserGroupName(currentUserEmail: _currentUserEmail);
+              prefs.setString('currentUserGroup', groupNameFromUserProfile);
+              _currentUserGroup = groupNameFromUserProfile;
+            }
+          } else {
+            _currentUserGroup = prefs.getString('currentUserGroup') ?? '';
           }
-          print(groupsAndExpenseInstances);
-        } else {
-          // _currentUserGroup = prefs.getString('currentUserGroup')!;
           notifyListeners();
         }
       } else {
@@ -112,14 +119,12 @@ class ApplicationState extends ChangeNotifier {
 
   // ---- set currentUserGroup variable ----
   Future<void> setcurrentUserGroup({required String currentUserGroup}) async {
+    final prefs = await SharedPreferences.getInstance();
+
     _currentUserGroup = currentUserGroup;
     notifyListeners();
-    // final prefs = await SharedPreferences.getInstance();
-    // await prefs
-    //     .setString('currentUserGroup', currentUserGroup)
-    //     .whenComplete(() {
-    //   notifyListeners();
-    // });
+
+    await prefs.setString('currentUserGroup', currentUserGroup);
   }
 
   // ------------- option, sign-out -------------

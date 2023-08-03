@@ -8,18 +8,18 @@ class GroupServices extends ApplicationState {
   GroupServices() {
     _groupDatabaseRef = GroupDatabase();
   }
-  Future<void> joinCloudGroup({required newGroupName}) async {
-    _groupDatabaseRef
-        .insertMemberToGroup(
-            currentGroupName: super.currentUserGroup,
-            memberName: super.currentUserName,
-            memberEmail: super.currentUserEmail)
-        .whenComplete(() {
-      _groupDatabaseRef.insertGroupNameToProfile(
-          currentUserEmail: super.currentUserEmail,
-          groupNameToAdd: newGroupName);
-    });
-  }
+  // Future<void> joinCloudGroup({required newGroupName}) async {
+  //   _groupDatabaseRef
+  //       .insertMemberToGroup(
+  //           currentGroupName: super.currentUserGroup,
+  //           memberName: super.currentUserName,
+  //           memberEmail: super.currentUserEmail)
+  //       .whenComplete(() {
+  //     _groupDatabaseRef.insertGroupNameToProfile(
+  //         currentUserEmail: super.currentUserEmail,
+  //         groupNameToAdd: newGroupName);
+  //   });
+  // }
 
   Future<void> createGroup(
       {required inputGroupName, required nextClearOffTimeStamp}) async {

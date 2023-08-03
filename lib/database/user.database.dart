@@ -36,7 +36,7 @@ class UserDatabase {
         .doc(currentUserEmail)
         .get()
         .then((DocumentSnapshot doc) {
-      final profileInfo = doc.data()! as Map<String, List>;
+      final profileInfo = doc.data()! as Map<String, dynamic>;
       return profileInfo['groupNames']!.isNotEmpty
           ? profileInfo['groupNames']![0]
           : null;

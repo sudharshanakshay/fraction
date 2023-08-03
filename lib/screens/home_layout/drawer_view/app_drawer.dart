@@ -8,9 +8,7 @@ import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 
 class FractionAppDrawer extends StatefulWidget {
-  const FractionAppDrawer({super.key, required this.context});
-
-  final context;
+  const FractionAppDrawer({super.key});
 
   @override
   State<StatefulWidget> createState() => FractionAppDrawerState();
@@ -73,6 +71,14 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                   ),
                 ),
               ),
+              // ListView.builder(
+              //   shrinkWrap: true,
+              //   physics: const NeverScrollableScrollPhysics(),
+              //   itemCount: profileState.groupsAndExpenseInstances.length,
+              //   itemBuilder: (BuildContext context, int index) {
+              //     return const Text('hello');
+              //   },
+              // ),
               StreamBuilder(
                   stream: profileState.groupStream(),
                   builder: (context, snapShot) {
@@ -100,7 +106,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                   }),
               FilledButton(
                   onPressed: () {
-                    Navigator.pushNamed(widget.context, '/createGroup');
+                    Navigator.pushNamed(context, '/createGroup');
                   },
                   child: const Text('create group'))
             ],
@@ -116,33 +122,3 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
     super.dispose();
   }
 }
-
-
-//  Scaffold.of(context)
-//                         .showBottomSheet<void>((BuildContext context) => Center(
-//                               child: Column(
-//                                 mainAxisAlignment: MainAxisAlignment.center,
-//                                 mainAxisSize: MainAxisSize.min,
-//                                 children: <Widget>[
-//                                   const Text('Create new group'),
-//                                   CustomInputFormField(
-//                                       controller: _newGroupNameController,
-//                                       label: 'Group name'),
-//                                   Consumer<GroupServices>(
-//                                     builder: (context, groupServiceState, _) {
-//                                       return FilledButton(
-//                                           onPressed: () {
-//                                             groupServiceState.createGroup(
-//                                                 inputGroupName:
-//                                                     _newGroupNameController
-//                                                         .text,
-//                                                 nextClearOffTimeStamp:
-//                                                     DateTime.now());
-//                                           },
-//                                           child: const DetailAndIcon(
-//                                               Icons.navigate_next, "Next"));
-//                                     },
-//                                   ),
-//                                 ],
-//                               ),
-//                             ));

@@ -15,7 +15,7 @@ class ExpenseService extends ApplicationState {
       return _expenseDatabaseRef.getExpenseCollection(
           currentGroupName: super.currentUserGroup,
           currentExpenseInstance:
-              super.currentExpenseInstance!.toDate().toString());
+              super.currentExpenseInstance.toDate().toString());
     } catch (e) {
       print(e);
       return const Stream.empty();
@@ -43,7 +43,7 @@ class ExpenseService extends ApplicationState {
             description: description,
             cost: int.parse(cost),
             currentExpenseInstance:
-                super.currentExpenseInstance!.toDate().toString())
+                super.currentExpenseInstance.toDate().toString())
         .whenComplete(() {
       GroupDatabase().updateGroupMemberExpense(
         memberEmail: super.currentUserEmail,
@@ -67,7 +67,7 @@ class ExpenseService extends ApplicationState {
         updatedCost: int.parse(updatedCost),
         updatedDescription: updatedDescription,
         currentExpenseInstance:
-            super.currentExpenseInstance!.toDate().toString(),
+            super.currentExpenseInstance.toDate().toString(),
       )
           .whenComplete(() {
         if (int.parse(updatedCost) - previousCost != 0) {
@@ -88,7 +88,7 @@ class ExpenseService extends ApplicationState {
               currentGroupName: super.currentUserGroup,
               docId: expenseDoc.id,
               currentExpenseInstance:
-                  super.currentExpenseInstance!.toDate().toString())
+                  super.currentExpenseInstance.toDate().toString())
           .whenComplete(() {
         GroupDatabase().updateGroupMemberExpense(
             groupName: super.currentUserGroup,
