@@ -69,7 +69,9 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           ],
         ),
-        drawer: const FractionAppDrawer(),
+        drawer: FractionAppDrawer(
+          context: context,
+        ),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),

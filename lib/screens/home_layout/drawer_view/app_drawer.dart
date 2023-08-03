@@ -5,12 +5,12 @@ import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/user/user.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/tools.dart';
-import 'package:fraction/widgets/custom_input_form_field.dart';
-import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 
 class FractionAppDrawer extends StatefulWidget {
-  const FractionAppDrawer({super.key});
+  const FractionAppDrawer({super.key, required this.context});
+
+  final context;
 
   @override
   State<StatefulWidget> createState() => FractionAppDrawerState();
@@ -100,34 +100,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                   }),
               FilledButton(
                   onPressed: () {
-                    Scaffold.of(context)
-                        .showBottomSheet<void>((BuildContext context) => Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  const Text('Create new group'),
-                                  CustomInputFormField(
-                                      controller: _newGroupNameController,
-                                      label: 'Group name'),
-                                  Consumer<GroupServices>(
-                                    builder: (context, groupServiceState, _) {
-                                      return FilledButton(
-                                          onPressed: () {
-                                            groupServiceState.createGroup(
-                                                inputGroupName:
-                                                    _newGroupNameController
-                                                        .text,
-                                                nextClearOffTimeStamp:
-                                                    DateTime.now());
-                                          },
-                                          child: const DetailAndIcon(
-                                              Icons.navigate_next, "Next"));
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ));
+                    Navigator.pushNamed(widget.context, '/createGroup');
                   },
                   child: const Text('create group'))
             ],
@@ -143,3 +116,33 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
     super.dispose();
   }
 }
+
+
+//  Scaffold.of(context)
+//                         .showBottomSheet<void>((BuildContext context) => Center(
+//                               child: Column(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 mainAxisSize: MainAxisSize.min,
+//                                 children: <Widget>[
+//                                   const Text('Create new group'),
+//                                   CustomInputFormField(
+//                                       controller: _newGroupNameController,
+//                                       label: 'Group name'),
+//                                   Consumer<GroupServices>(
+//                                     builder: (context, groupServiceState, _) {
+//                                       return FilledButton(
+//                                           onPressed: () {
+//                                             groupServiceState.createGroup(
+//                                                 inputGroupName:
+//                                                     _newGroupNameController
+//                                                         .text,
+//                                                 nextClearOffTimeStamp:
+//                                                     DateTime.now());
+//                                           },
+//                                           child: const DetailAndIcon(
+//                                               Icons.navigate_next, "Next"));
+//                                     },
+//                                   ),
+//                                 ],
+//                               ),
+//                             ));

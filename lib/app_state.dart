@@ -52,7 +52,8 @@ class ApplicationState extends ChangeNotifier {
         // if (prefs.getString('currentUserGroup') == null) {
         if (_currentUserGroup.isEmpty) {
           try {
-            await setGroupAndExpenseInstances();
+            await setGroupAndExpenseInstances()
+                .whenComplete(() => notifyListeners());
           } catch (e) {
             throw ('user has no group');
           }
@@ -67,6 +68,8 @@ class ApplicationState extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  // Future<void> setCurrentG
 
   Future<void> setGroupAndExpenseInstances() async {
     // -- get values from user database ----
