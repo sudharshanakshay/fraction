@@ -11,10 +11,10 @@ class FractionAppDrawer extends StatefulWidget {
   const FractionAppDrawer({super.key});
 
   @override
-  State<StatefulWidget> createState() => FractionAppDrawerState();
+  State<StatefulWidget> createState() => _FractionAppDrawerState();
 }
 
-class FractionAppDrawerState extends State<FractionAppDrawer> {
+class _FractionAppDrawerState extends State<FractionAppDrawer> {
   final String profileIconPath = 'assets/icons/profileIcon.svg';
   final String settingsIconPath = 'assets/icons/SettingsIcon.svg';
   late ExpenseService _expenseService;
@@ -87,7 +87,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: snapShot.data.length,
-                        itemBuilder: (BuildContext context, int index) {
+                        itemBuilder: (context, int index) {
                           return ListTile(
                             title: Text(Tools().sliptElements(
                                 element: snapShot.data[index])[0]),
@@ -96,6 +96,7 @@ class FractionAppDrawerState extends State<FractionAppDrawer> {
                                   currentUserGroup: snapShot.data[index]);
                               _groupService.setcurrentUserGroup(
                                   currentUserGroup: snapShot.data[index]);
+                              Navigator.pop(context);
                             },
                           );
                         },

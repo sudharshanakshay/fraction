@@ -1,9 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fraction/database/utils/database.dart';
 import 'package:fraction/model/group.dart';
 
 class GroupDatabase {
-  final _groupCollectionName = 'group';
+  late String _groupCollectionName;
+  late FirebaseFirestore _firebaseFirestoreRef;
+
+  GroupDatabase() {
+    _groupCollectionName = DatabaseUtils().groupCollectionName;
+    _firebaseFirestoreRef = FirebaseFirestore.instance;
+  }
+
 // -- group is created as follows, groupName%creatorEmail%timeStamp --
 // -- '%' represents key separation & --
 // -- '#' represents '.' in a key --
@@ -29,17 +37,14 @@ class GroupDatabase {
       }
     };
 
-    final String groupNameWithIdentity = groupName +
-        '%' +
-        adminEmail +
-        '%' +
-        DateTime.now().toString().replaceAll(RegExp(r'[\s]'), '%');
+    final String groupNameWithIdentity =
+        '$groupName%$adminEmail%${DateTime.now().toString().replaceAll(RegExp(r'[\s]'), '%')}';
 
     if (kDebugMode) {
       print('group info: $data');
     }
 
-    return FirebaseFirestore.instance
+    return _firebaseFirestoreRef
         .collection(_groupCollectionName)
         .doc(groupNameWithIdentity)
         .set(data)
@@ -48,7 +53,7 @@ class GroupDatabase {
 
   Stream getGroupDetials({required groupName}) {
     return FirebaseFirestore.instance
-        .collection('group')
+        .collection(_groupCollectionName)
         .doc(groupName)
         .snapshots();
   }
@@ -56,7 +61,7 @@ class GroupDatabase {
   Stream getMyTotalExpense({required currentUserEmail, required groupName}) {
     final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
 
-    return FirebaseFirestore.instance
+    return _firebaseFirestoreRef
         .collection(_groupCollectionName)
         .doc(groupName)
         .snapshots()
@@ -67,8 +72,8 @@ class GroupDatabase {
   }
 
   Future<List?> getMemberDetails({required currentUserGroup}) {
-    return FirebaseFirestore.instance
-        .collection('group')
+    return _firebaseFirestoreRef
+        .collection(_groupCollectionName)
         .doc(currentUserGroup)
         .withConverter<GroupModel>(
             fromFirestore: (snapShot, _) =>
@@ -91,7 +96,7 @@ class GroupDatabase {
       'memberEmail': memberEmail,
       'totalExpense': 0
     };
-    return FirebaseFirestore.instance
+    return _firebaseFirestoreRef
         .collection(_groupCollectionName)
         .doc(currentGroupName)
         .update({"groupMembers.$memberEmailR": data});
@@ -106,28 +111,9 @@ class GroupDatabase {
       'groupMembers.$memberEmailR.totalExpense':
           FieldValue.increment(expenseDiff)
     };
-    FirebaseFirestore.instance
+    _firebaseFirestoreRef
         .collection(_groupCollectionName)
         .doc(groupName)
         .update(data);
-  }
-
-  Future insertGroupNameToProfile(
-      {required currentUserEmail, required groupNameToAdd}) async {
-    bool kDebugMode = true;
-
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(currentUserEmail)
-        .update({
-      "groupNames": FieldValue.arrayUnion([groupNameToAdd]),
-    }).whenComplete(() {
-      if (kDebugMode) {
-        if (kDebugMode) {
-          print(
-              '-------- groupName $groupNameToAdd added successfuly --------');
-        }
-      }
-    });
   }
 }

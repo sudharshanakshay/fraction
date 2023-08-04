@@ -7,10 +7,10 @@ class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => SignInPageState();
+  State<StatefulWidget> createState() => _SignInPageState();
 }
 
-class SignInPageState extends State<SignInPage> {
+class _SignInPageState extends State<SignInPage> {
   final _emailStringController = TextEditingController();
   final _passwordStringController = TextEditingController();
 

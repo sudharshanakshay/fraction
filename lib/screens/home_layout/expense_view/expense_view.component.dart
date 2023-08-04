@@ -8,10 +8,10 @@ class ExpenseView extends StatefulWidget {
   const ExpenseView({super.key});
 
   @override
-  State<StatefulWidget> createState() => ExpenseViewState();
+  State<StatefulWidget> createState() => _ExpenseViewState();
 }
 
-class ExpenseViewState extends State<ExpenseView> {
+class _ExpenseViewState extends State<ExpenseView> {
   String timeNow = '';
 
   @override
@@ -24,24 +24,15 @@ class ExpenseViewState extends State<ExpenseView> {
             //   return const CreateGroupLayout();
             // }
             if (!snapshot.hasData) {
-              return Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      //eft: BorderSide(
-                      width: 2,
-                      // color: getRandomColor(),
-                      color: Colors.blue.shade100,
-                      //)
-                    ),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  //height: 50,
-                  //color: Colors.amber[colorCodes[index % 3]],
-                  child: const ListTile(
-                    title: Text('no expense to display'),
-                  ));
+              return const Column(
+                children: [Icon(Icons.refresh_outlined), Text('loading _')],
+              );
+            } else if (snapshot.data!.docs.isEmpty) {
+              return const ListTile(
+                title: Text('no expense to display _ '),
+              );
             }
-            // if (snapshot.hasError) {}
+            // print(snapshot.data!.docs[0]);
             return ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

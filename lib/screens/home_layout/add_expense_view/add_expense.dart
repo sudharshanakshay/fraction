@@ -2,15 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../services/expense/expense.services.dart';
 
-class AddExpensePage extends StatelessWidget {
-  const AddExpensePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(home: AddExpenseLayout());
-  }
-}
-
 class AddExpenseLayout extends StatefulWidget {
   const AddExpenseLayout({Key? key}) : super(key: key);
 

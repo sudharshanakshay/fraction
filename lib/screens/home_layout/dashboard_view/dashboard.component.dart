@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/services/group/group.services.dart';
+import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -18,8 +19,8 @@ class Dashboard extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: StreamBuilder(
               stream: groupServiceState.getGroupDetials(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
+              builder: (context, groupDetailsSnapshot) {
+                if (groupDetailsSnapshot.hasData) {
                   return Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
@@ -30,14 +31,15 @@ class Dashboard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(6)),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             StreamBuilder(
                                 stream: groupServiceState.getMyTotalExpense(),
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData) {
+                                builder: (context, myTotalExpenseSnapshot) {
+                                  if (myTotalExpenseSnapshot.hasData) {
                                     return Row(
                                       children: [
                                         Container(
@@ -50,7 +52,9 @@ class Dashboard extends StatelessWidget {
                                           child: const Text('My Expense: ',
                                               style: TextStyle(fontSize: 16)),
                                         ),
-                                        Text(snapshot.data.toString(),
+                                        Text(
+                                            myTotalExpenseSnapshot.data
+                                                .toString(),
                                             style:
                                                 const TextStyle(fontSize: 16))
                                       ],
@@ -64,9 +68,10 @@ class Dashboard extends StatelessWidget {
                                 const Text('Next clear off',
                                     style: TextStyle(fontSize: 12)),
                                 Text(
-                                    DateFormat.MMMd().format(snapshot
-                                        .data['nextClearOffTimeStamp']
-                                        .toDate()),
+                                    DateFormat.MMMd().format(
+                                        groupDetailsSnapshot
+                                            .data['nextClearOffTimeStamp']
+                                            .toDate()),
                                     style: const TextStyle(fontSize: 16))
                               ],
                             ),
@@ -74,6 +79,9 @@ class Dashboard extends StatelessWidget {
                         ),
                         Row(
                           children: <Widget>[
+                            Text(Tools().sliptElements(
+                                element:
+                                    groupServiceState.currentUserGroup)[0]),
                             IconButton(
                               icon: SvgPicture.asset(moreMembersIcon),
                               onPressed: () async {
@@ -86,7 +94,9 @@ class Dashboard extends StatelessWidget {
                                     memberDetailList: someValue);
                               },
                             ),
-                            Text(snapshot.data['totalExpense'].toString(),
+                            Text(
+                                groupDetailsSnapshot.data['totalExpense']
+                                    .toString(),
                                 style: const TextStyle(fontSize: 12)),
                             IconButton(
                                 onPressed: () {
@@ -110,7 +120,7 @@ class Dashboard extends StatelessWidget {
   Future<String?> showMemberDetails({required memberDetailList}) {
     return showDialog<String>(
         context: context,
-        builder: (BuildContext context) {
+        builder: (context) {
           return AlertDialog(
               scrollable: true,
               content: SizedBox(
@@ -118,7 +128,7 @@ class Dashboard extends StatelessWidget {
                 width: 400,
                 child: ListView.builder(
                     itemCount: memberDetailList.length,
-                    itemBuilder: (BuildContext context, int index) {
+                    itemBuilder: (context, int index) {
                       return Container(
                         decoration: BoxDecoration(
                           border: Border(

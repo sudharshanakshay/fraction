@@ -2,26 +2,19 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
+import 'package:fraction/database/user.database.dart';
+import 'package:fraction/utils/constants.dart';
 
 class GroupServices extends ApplicationState {
   late GroupDatabase _groupDatabaseRef;
+  late UserDatabase _userDatabaseRef;
+
   GroupServices() {
     _groupDatabaseRef = GroupDatabase();
+    _userDatabaseRef = UserDatabase();
   }
-  // Future<void> joinCloudGroup({required newGroupName}) async {
-  //   _groupDatabaseRef
-  //       .insertMemberToGroup(
-  //           currentGroupName: super.currentUserGroup,
-  //           memberName: super.currentUserName,
-  //           memberEmail: super.currentUserEmail)
-  //       .whenComplete(() {
-  //     _groupDatabaseRef.insertGroupNameToProfile(
-  //         currentUserEmail: super.currentUserEmail,
-  //         groupNameToAdd: newGroupName);
-  //   });
-  // }
 
-  Future<void> createGroup(
+  Future<String> createGroup(
       {required inputGroupName, required nextClearOffTimeStamp}) async {
     try {
       _groupDatabaseRef
@@ -31,17 +24,20 @@ class GroupServices extends ApplicationState {
               adminEmail: super.currentUserEmail,
               nextClearOffTimeStamp: nextClearOffTimeStamp)
           .then((String groupNameCreatedWithIdentity) {
-        _groupDatabaseRef.insertGroupNameToProfile(
-            currentUserEmail: super.currentUserEmail,
-            groupNameToAdd: groupNameCreatedWithIdentity);
-      }).whenComplete(() {
-        hasGroup = true;
-        notifyListeners();
+        _userDatabaseRef
+            .insertGroupNameToProfile(
+                currentUserEmail: super.currentUserEmail,
+                groupNameToAdd: groupNameCreatedWithIdentity)
+            .whenComplete(() async {
+          super.initGroupAndExpenseInstances();
+        });
       });
+      return Constants().success;
     } catch (e) {
       if (kDebugMode) {
         print(e);
       }
+      return Constants().failed;
     }
   }
 
@@ -50,6 +46,7 @@ class GroupServices extends ApplicationState {
       return _groupDatabaseRef.getGroupDetials(
           groupName: super.currentUserGroup);
     } catch (e) {
+      print(e);
       return const Stream.empty();
     }
   }
@@ -70,6 +67,12 @@ class GroupServices extends ApplicationState {
           currentUserGroup: super.currentUserGroup);
     } catch (e) {
       return Future.value();
+    }
+  }
+
+  onError(e) {
+    if (kDebugMode) {
+      print(e);
     }
   }
 }

@@ -19,10 +19,10 @@ class ExpensePallet extends StatefulWidget {
   final ExpenseService expenseServiceState;
 
   @override
-  State<StatefulWidget> createState() => ExpensePalletState();
+  State<StatefulWidget> createState() => _ExpensePalletState();
 }
 
-class ExpensePalletState extends State<ExpensePallet> {
+class _ExpensePalletState extends State<ExpensePallet> {
   final _descriptionTextController = TextEditingController();
   final _costTextController = TextEditingController();
 
@@ -104,32 +104,29 @@ class ExpensePalletState extends State<ExpensePallet> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (widget.expenseDoc['tags'].length != 0)
-                        Container(
-                          alignment: Alignment.center,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: widget.expenseDoc['tags'].length,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: SizedBox(
-                                  height: 6.0,
-                                  child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4.0),
-                                      decoration: BoxDecoration(
-                                          color: AppColors().tags,
-                                          borderRadius:
-                                              BorderRadius.circular(12)),
-                                      child: Text(
-                                        widget.expenseDoc['tags'][index],
-                                      )),
-                                ),
-                              );
-                            },
-                          ),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: widget.expenseDoc['tags'].length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: SizedBox(
+                                height: 6.0,
+                                child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
+                                    decoration: BoxDecoration(
+                                        color: AppColors().tags,
+                                        borderRadius:
+                                            BorderRadius.circular(12)),
+                                    child: Text(
+                                      widget.expenseDoc['tags'][index],
+                                    )),
+                              ),
+                            );
+                          },
                         ),
                       Text(
                         '${widget.expenseDoc['cost']}/-',

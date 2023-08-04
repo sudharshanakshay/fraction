@@ -1,14 +1,21 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fraction/database/utils/database.dart';
 
 class UserDatabase {
-  final _userCollectionName = 'users';
+  late String _userCollectionName;
+  late FirebaseFirestore _firebaseFirestoreRef;
+
+  UserDatabase() {
+    _userCollectionName = DatabaseUtils().userCollectionName;
+    _firebaseFirestoreRef = FirebaseFirestore.instance;
+  }
 
   Future<void> createUser(
       {required currentUserEmail,
       required currentUserName,
       required preferedColor}) async {
-    FirebaseFirestore.instance
+    _firebaseFirestoreRef
         .collection(_userCollectionName)
         .doc(currentUserEmail)
         .set(<String, dynamic>{
@@ -20,7 +27,7 @@ class UserDatabase {
   }
 
   Stream userSubscribedGroupsStream({required currentUserEmail}) {
-    return FirebaseFirestore.instance
+    return _firebaseFirestoreRef
         .collection(_userCollectionName)
         .doc(currentUserEmail)
         .snapshots()
@@ -31,7 +38,7 @@ class UserDatabase {
   }
 
   Future<String> getOneUserGroupName({required currentUserEmail}) {
-    return FirebaseFirestore.instance
+    return _firebaseFirestoreRef
         .collection(_userCollectionName)
         .doc(currentUserEmail)
         .get()
@@ -40,6 +47,25 @@ class UserDatabase {
       return profileInfo['groupNames']!.isNotEmpty
           ? profileInfo['groupNames']![0]
           : null;
+    });
+  }
+
+  Future insertGroupNameToProfile(
+      {required currentUserEmail, required groupNameToAdd}) async {
+    bool kDebugMode = true;
+
+    _firebaseFirestoreRef
+        .collection(_userCollectionName)
+        .doc(currentUserEmail)
+        .update({
+      "groupNames": FieldValue.arrayUnion([groupNameToAdd]),
+    }).whenComplete(() {
+      if (kDebugMode) {
+        if (kDebugMode) {
+          print(
+              '-------- groupName $groupNameToAdd added successfuly --------');
+        }
+      }
     });
   }
 }

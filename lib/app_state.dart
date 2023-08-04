@@ -5,21 +5,28 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/database/user.database.dart';
+import 'package:fraction/database/utils/database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
-  // late FirebaseFirestoreRef;
+  late FirebaseFirestore firebaseFirestoreRef;
+  late String _userCollectionName;
+  late String _groupCollectionName;
+
   ApplicationState() {
+    firebaseFirestoreRef = FirebaseFirestore.instance;
+    _userCollectionName = DatabaseUtils().userCollectionName;
+    _groupCollectionName = DatabaseUtils().groupCollectionName;
     init();
   }
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
 
-  bool _hasGroup = true;
-  bool get hasGroup => _hasGroup;
-  set hasGroup(bool value) => _hasGroup = value;
+  bool _hasOneGroup = true;
+  bool get hasOneGroup => _hasOneGroup;
+  set hasOneGroup(bool value) => _hasOneGroup = value;
 
   String _currentUserName = '';
   String get currentUserName => _currentUserName;
@@ -30,17 +37,17 @@ class ApplicationState extends ChangeNotifier {
   String _currentUserGroup = '';
   String get currentUserGroup => _currentUserGroup;
 
+  final Map<String, Timestamp> _groupsAndExpenseInstances = {};
+  Map<String, Timestamp> get groupAndExpenseInstances =>
+      _groupsAndExpenseInstances;
+
   // Timestamp _currentExpenseInstance;
   Timestamp get currentExpenseInstance =>
-      groupsAndExpenseInstances[_currentUserGroup] ?? Timestamp.now();
-
-  Map<String, Timestamp> groupsAndExpenseInstances = {};
+      _groupsAndExpenseInstances[_currentUserGroup]!;
 
   // ------------- Firebase Initailization -------------
 
   Future<void> init() async {
-    final prefs = await SharedPreferences.getInstance();
-
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
 
@@ -52,23 +59,7 @@ class ApplicationState extends ChangeNotifier {
       if (user != null) {
         _loggedIn = true;
         _currentUserEmail = user.email!;
-
-        await setGroupAndExpenseInstances()
-            .whenComplete(() => notifyListeners());
-
-        if (_currentUserGroup.isEmpty) {
-          if (prefs.getString('currentUserGroup') == null) {
-            if (_currentUserEmail.isNotEmpty) {
-              String groupNameFromUserProfile = await UserDatabase()
-                  .getOneUserGroupName(currentUserEmail: _currentUserEmail);
-              prefs.setString('currentUserGroup', groupNameFromUserProfile);
-              _currentUserGroup = groupNameFromUserProfile;
-            }
-          } else {
-            _currentUserGroup = prefs.getString('currentUserGroup') ?? '';
-          }
-          notifyListeners();
-        }
+        await initGroupAndExpenseInstances();
       } else {
         _loggedIn = false;
       }
@@ -76,12 +67,35 @@ class ApplicationState extends ChangeNotifier {
     });
   }
 
-  // Future<void> setCurrentG
+  Future<void> initGroupAndExpenseInstances() async {
+    await setGroupAndExpenseInstances().whenComplete(() async {
+      await setCurrentUserGroup();
+    });
+  }
+
+  // ---- set currentUserGroup ----
+  Future<void> setCurrentUserGroup() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_currentUserGroup.isEmpty) {
+      if (prefs.getString('currentUserGroup') == null) {
+        if (_currentUserEmail.isNotEmpty) {
+          String groupNameFromUserProfile = await UserDatabase()
+              .getOneUserGroupName(currentUserEmail: _currentUserEmail);
+          prefs.setString('currentUserGroup', groupNameFromUserProfile);
+          _currentUserGroup = groupNameFromUserProfile;
+          notifyListeners();
+        }
+      } else {
+        _currentUserGroup = prefs.getString('currentUserGroup') ?? '';
+        notifyListeners();
+      }
+    }
+  }
 
   Future<void> setGroupAndExpenseInstances() async {
     // -- get values from user database ----
-    FirebaseFirestore.instance
-        .collection('users')
+    firebaseFirestoreRef
+        .collection(_userCollectionName)
         .doc(_currentUserEmail)
         .get()
         .then((DocumentSnapshot doc) async {
@@ -89,30 +103,39 @@ class ApplicationState extends ChangeNotifier {
         final currentProfileDetails = doc.data() as Map<String, dynamic>;
         // ---- set current user name from user database ----
         _currentUserName = currentProfileDetails['userName'];
+        notifyListeners();
 
-        for (String groupName in currentProfileDetails['groupNames']) {
-          if (groupName.isNotEmpty) {
+        if (currentProfileDetails['groupNames'].length != 0) {
+          _hasOneGroup = true;
+          for (String groupName in currentProfileDetails['groupNames']) {
             // ---- get values from group database ----
 
-            FirebaseFirestore.instance
-                .collection('group')
+            firebaseFirestoreRef
+                .collection(_groupCollectionName)
                 .doc(groupName)
                 .get()
-                .then((value) => value.data()!['expenseInstance'])
-                .then((value) {
-              // ---- set the group name & instance value from the groups database ----
+                .then((doc) {
+              final value = doc.data()!['expenseInstance'];
               Map<String, Timestamp> data = {groupName: value};
-              // print(data);
-              groupsAndExpenseInstances.addAll(data);
+
+              // ---- set the group name & instance value from the groups database ----
+              _groupsAndExpenseInstances.addAll(data);
+              print('group added');
+            }).whenComplete(() {
+              notifyListeners();
+              print('notified');
             });
           }
+        } else {
+          _hasOneGroup = false;
+          notifyListeners();
         }
       }
     });
   }
 
   printGroupMap() {
-    groupsAndExpenseInstances.forEach((key, value) {
+    _groupsAndExpenseInstances.forEach((key, value) {
       print('key : $key -- value: ${value.toDate()}');
     });
   }
