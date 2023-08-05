@@ -1,7 +1,9 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/database/utils/database.dart';
-import 'package:fraction/model/group.dart';
+import 'package:fraction/database_model/group.dart';
 
 class GroupDatabase {
   late String _groupCollectionName;
@@ -115,5 +117,42 @@ class GroupDatabase {
         .collection(_groupCollectionName)
         .doc(groupName)
         .update(data);
+  }
+
+  Future<void> clearOff(
+      {required String groupName, required DateTime nextClearOffDate}) async {
+    final Map<String, dynamic> groupMembers = {};
+
+    await _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        final groupDetails = doc.data() as Map<String, dynamic>;
+        final memberDetails =
+            groupDetails['groupMembers'] as Map<String, dynamic>;
+        memberDetails.forEach((key, value) {
+          final Map<String, dynamic> groupMember = {
+            key: {'totalExpense': 0}
+          };
+          groupMembers.addAll(groupMember);
+        });
+      }
+    });
+
+    final data = {
+      'expenseInstance': DateTime.now(),
+      'groupMembers': groupMembers,
+      'totalExpense': 0,
+      'nextClearOffTimeStamp': nextClearOffDate
+    };
+
+    // print(data);
+
+    _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .set(data, SetOptions(merge: true));
   }
 }

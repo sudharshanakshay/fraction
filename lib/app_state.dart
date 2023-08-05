@@ -120,10 +120,10 @@ class ApplicationState extends ChangeNotifier {
 
               // ---- set the group name & instance value from the groups database ----
               _groupsAndExpenseInstances.addAll(data);
-              print('group added');
+              // print('group added');
             }).whenComplete(() {
               notifyListeners();
-              print('notified');
+              // print('notified');
             });
           }
         } else {

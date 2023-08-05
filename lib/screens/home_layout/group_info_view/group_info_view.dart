@@ -3,7 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/services/group/group.services.dart';
+import 'package:fraction/utils/constants.dart';
+import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class GroupInfo extends StatefulWidget {
   const GroupInfo({Key? key}) : super(key: key);
@@ -14,21 +17,32 @@ class GroupInfo extends StatefulWidget {
 
 class _GroupInfoState extends State<GroupInfo> {
   final String clearOffIconPath = 'assets/icons/ClearOffIcon.svg';
+  late DateTime next30day;
+
   @override
   Widget build(BuildContext context) {
     return Consumer<GroupServices>(builder: (context, groupServiceState, _) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text('Fraction : ${groupServiceState.currentUserGroup}',
+          title: Text(
+              'Fraction : ${Tools().sliptElements(element: groupServiceState.currentUserGroup)[0]}',
               style: const TextStyle(fontSize: 20)),
           actions: [
+            kDebugMode
+                ? IconButton(onPressed: () {}, icon: const Icon(Icons.print))
+                : Container(),
             IconButton(
-              onPressed: () {
+              onPressed: () async {
                 if (kDebugMode) {
                   print('');
                 }
-                // Navigator.pushNamed(context, '/profile');
+                await confirmClearOff().then((value) {
+                  if (value != Constants().cancel && value != null) {
+                    groupServiceState.clearOff(
+                        nextClearOffDate: value as DateTime);
+                  }
+                });
               },
               icon: SvgPicture.asset(clearOffIconPath),
             ),
@@ -94,6 +108,78 @@ class _GroupInfoState extends State<GroupInfo> {
         ),
       );
     });
+  }
+
+  Future<dynamic> confirmClearOff() {
+    TextEditingController selectDateController = TextEditingController();
+    DateTime today = DateTime.now();
+    DateTime selectedDateTime =
+        DateTime(today.year, today.month + 1, today.day, today.hour);
+    DateTime lastDate = DateTime(today.year + 1);
+
+    // selectDateController.text = initialDate.toString();
+
+    setSelectedDateController({required dateToSet}) {
+      selectDateController.text =
+          DateFormat.MMMd().format(dateToSet).toString();
+    }
+
+    setSelectedDateController(dateToSet: selectedDateTime);
+
+    return showDialog<dynamic>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+              title: const Text(
+                'Confirm clearoff',
+                style: TextStyle(fontSize: 16),
+              ),
+              content: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('next clearOff will be on _'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        height: 50,
+                        width: 80,
+                        child: TextFormField(
+                          controller: selectDateController,
+                          readOnly: true,
+                        ),
+                      ),
+                      IconButton(
+                          onPressed: () async {
+                            await showDatePicker(
+                                    context: context,
+                                    initialDate: selectedDateTime,
+                                    firstDate: today,
+                                    lastDate: lastDate)
+                                .then((dateTime) {
+                              if (dateTime != null) {
+                                selectedDateTime = dateTime;
+                                setSelectedDateController(dateToSet: dateTime);
+                              }
+                            });
+                          },
+                          icon: const Icon(Icons.calendar_month))
+                    ],
+                  )
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.pop(context, Constants().cancel),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, selectedDateTime),
+                  child: const Text('OK'),
+                ),
+              ],
+            ));
   }
 }
 

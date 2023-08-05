@@ -61,12 +61,43 @@ class GroupServices extends ApplicationState {
     }
   }
 
+  StreamController broadCastMyTotalExpense() {
+    StreamController streamController = StreamController.broadcast();
+    try {
+      streamController.addStream(_groupDatabaseRef.getMyTotalExpense(
+          currentUserEmail: super.currentUserEmail,
+          groupName: super.currentUserGroup));
+    } catch (e) {
+      print(e);
+    }
+
+    return streamController;
+  }
+
   Future<List?> getMemberDetails() {
     try {
       return _groupDatabaseRef.getMemberDetails(
           currentUserGroup: super.currentUserGroup);
     } catch (e) {
       return Future.value();
+    }
+  }
+
+  Future<void> clearOff({required DateTime nextClearOffDate}) async {
+    try {
+      _groupDatabaseRef
+          .clearOff(
+              groupName: super.currentUserGroup,
+              nextClearOffDate: nextClearOffDate)
+          .whenComplete(() async {
+        await super.initGroupAndExpenseInstances().whenComplete(() {
+          print(super.currentExpenseInstance.toDate().toString());
+        });
+      });
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 

@@ -4,4 +4,7 @@ class Constants {
 
   final String _failed = 'Failed';
   get failed => _failed;
+
+  final String _cancel = 'Cancel';
+  get cancel => _cancel;
 }
