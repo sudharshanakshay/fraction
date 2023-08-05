@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/repository/notification.repo.dart';
 import 'package:fraction/screens/auth_layout/register.dart';
 import 'package:fraction/screens/home_layout/add_expense_view/add_expense.dart';
 import 'package:fraction/screens/create_group_layout/create_group.dart';
 import 'package:fraction/screens/home_layout/group_info_view/group_info_view.dart';
 import 'package:fraction/screens/home_layout/home_layout.dart';
+import 'package:fraction/screens/home_layout/notification_view/notification_view.dart';
 import 'package:fraction/screens/profile_layout/profile_layout.dart';
 import 'package:fraction/screens/auth_layout/sign_in.dart';
 import 'package:fraction/services/auth/auth.services.dart';
@@ -32,6 +34,7 @@ void main() async {
     ChangeNotifierProvider(create: (context) => ExpenseService()),
     ChangeNotifierProvider(create: (context) => UserServices()),
     ChangeNotifierProvider(create: (context) => AuthServices()),
+    ChangeNotifierProvider(create: (context) => NotificationRepo()),
   ], child: const MyApp()));
 }
 
@@ -83,6 +86,9 @@ class MyApp extends StatelessWidget {
           '/groupInfo': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) =>
                   appState.loggedIn ? const GroupInfo() : const SignInPage()),
+          '/notification': (context) => Consumer<ApplicationState>(
+              builder: (context, appState, _) =>
+                  appState.loggedIn ? NotificationView() : const SignInPage()),
         });
   }
 }

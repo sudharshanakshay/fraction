@@ -25,10 +25,15 @@ class _MyHomePageState extends State<MyHomePage> {
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
             actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/notification');
+                  },
+                  icon: const Icon(Icons.notifications_active_outlined)),
               kDebugMode
                   ? IconButton(
                       onPressed: () {
-                        groupServiceState.signOut();
+                        // groupServiceState.signOut();
                       },
                       icon: const Icon(Icons.logout))
                   : Container(),
