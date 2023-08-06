@@ -47,7 +47,11 @@ class _NotificationViewState extends State<NotificationView> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                            onPressed: () {}, icon: const Icon(Icons.close)),
+                            onPressed: () {
+                              notificationRepo.dismissNotification(
+                                  docId: notificationRepo.data[index].docId);
+                            },
+                            icon: const Icon(Icons.close)),
                         IconButton(
                             onPressed: () async {
                               await confirmJoin().then((value) {
@@ -57,8 +61,9 @@ class _NotificationViewState extends State<NotificationView> {
                                           notificationRepo.data[index].message,
                                       currentUserEmail:
                                           appState.currentUserEmail,
-                                      currentUserName:
-                                          appState.currentUserName);
+                                      currentUserName: appState.currentUserName,
+                                      docId:
+                                          notificationRepo.data[index].docId);
                                 }
                               });
                             },

@@ -16,4 +16,11 @@ class NotificationDatabase {
         .where('to', isEqualTo: currentUserEmail)
         .snapshots();
   }
+
+  Future<void> deleteNotification({required String docId}) async {
+    _firebaseFirestoreRef
+        .collection(_notificationCollectionName)
+        .doc(docId)
+        .delete();
+  }
 }

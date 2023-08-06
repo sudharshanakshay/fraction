@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/model/notification.model.dart';
 import 'package:fraction/services/notification/notification.service.dart';
@@ -21,13 +22,19 @@ class NotificationRepo with ChangeNotifier {
         .getNotiifcations(currentUserEmail: currentUerEmail ?? '')
         .listen((event) {
       _data.clear();
-      for (var noti in event.docs) {
+      for (DocumentSnapshot notification in event.docs) {
+        final notificationBody = notification.data() as Map<String, dynamic>;
         _data.add(NotificationModel(
-            title: noti.data()['body']['title'],
-            message: noti.data()['body']['groupName'],
-            type: noti.data()['body']['type']));
+            title: notificationBody['body']['title'],
+            message: notificationBody['body']['groupName'],
+            type: notificationBody['body']['type'],
+            docId: notification.id));
         notifyListeners();
       }
     });
+  }
+
+  dismissNotification({required String docId}) {
+    _notificationService.deleteNotification(docId: docId);
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:fraction/database/notification.database.dart';
 
 class NotificationService {
@@ -8,17 +9,26 @@ class NotificationService {
   }
 
   Stream getNotiifcations({required String currentUserEmail}) {
-    // super.refreshCurrentUserEmail().then((_) => print(super.currentUserEmail));
-    // final prefs = await SharedPreferences.getInstance();
-    // print(super.currentUserEmail);
     try {
       return _notificationDatabaseRef.getNotiifcations(
           currentUserEmail: currentUserEmail);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+        print('service -- notification -- getNotification');
+      }
       return const Stream.empty();
     }
   }
 
-  dismissNotification() async {}
+  Future<void> deleteNotification({required String docId}) async {
+    try {
+      _notificationDatabaseRef.deleteNotification(docId: docId);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+        print('service -- notification -- dismissNotification');
+      }
+    }
+  }
 }

@@ -2,16 +2,19 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
+import 'package:fraction/database/notification.database.dart';
 import 'package:fraction/database/user.database.dart';
 import 'package:fraction/utils/constants.dart';
 
 class GroupServices extends ApplicationState {
   late GroupDatabase _groupDatabaseRef;
   late UserDatabase _userDatabaseRef;
+  late NotificationDatabase _notificationDatabaseRef;
 
   GroupServices() {
     _groupDatabaseRef = GroupDatabase();
     _userDatabaseRef = UserDatabase();
+    _notificationDatabaseRef = NotificationDatabase();
   }
 
   Future<String> createGroup(
@@ -41,15 +44,21 @@ class GroupServices extends ApplicationState {
     }
   }
 
-  Future<void> addMeToGroup(
-      {required String groupName,
-      required String currentUserEmail,
-      required String currentUserName}) async {
+  Future<void> addMeToGroup({
+    required String groupName,
+    required String currentUserEmail,
+    required String currentUserName,
+    required String docId,
+  }) async {
     try {
-      _groupDatabaseRef.addMeToGroup(
-          groupNameToAdd: groupName,
-          currentUserEmail: currentUserEmail,
-          currentUserName: currentUserName);
+      _groupDatabaseRef
+          .addMeToGroup(
+              groupNameToAdd: groupName,
+              currentUserEmail: currentUserEmail,
+              currentUserName: currentUserName)
+          .whenComplete(() {
+        _notificationDatabaseRef.deleteNotification(docId: docId);
+      });
     } catch (e) {
       if (kDebugMode) {
         print(e);
