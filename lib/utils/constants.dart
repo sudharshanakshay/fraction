@@ -7,4 +7,7 @@ class Constants {
 
   final String _cancel = 'Cancel';
   get cancel => _cancel;
+
+  final String _Ok = 'Ok';
+  get Ok => _Ok;
 }

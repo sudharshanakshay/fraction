@@ -1,43 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/model/notification.model.dart';
-import 'package:fraction/utils/tools.dart';
+import 'package:fraction/services/notification/notification.service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class NotificationRepo extends ChangeNotifier {
+class NotificationRepo with ChangeNotifier {
   final List<NotificationModel> _data = [];
   List<NotificationModel> get data => _data;
 
+  late NotificationService _notificationService;
+
   NotificationRepo() {
+    _notificationService = NotificationService();
     checkForAvailableNotifications();
   }
 
   checkForAvailableNotifications() async {
-    FirebaseFirestore.instance
-        .collection('notification')
-        .where('to', isEqualTo: 'mario@gmail.com')
-        .snapshots()
+    final prefs = await SharedPreferences.getInstance();
+    final currentUerEmail = prefs.getString('currentUserEmail');
+    _notificationService
+        .getNotiifcations(currentUserEmail: currentUerEmail ?? '')
         .listen((event) {
       _data.clear();
       for (var noti in event.docs) {
         _data.add(NotificationModel(
             title: noti.data()['body']['title'],
-            message: Tools()
-                .sliptElements(element: noti.data()['body']['groupName'])[0],
+            message: noti.data()['body']['groupName'],
             type: noti.data()['body']['type']));
         notifyListeners();
       }
     });
   }
 }
-
-
-// .then((value) {
-//       print(value.docs);
-//       for (var noti in value.docs) {
-//         _data.add(NotificationModel(
-//             title: noti.data()['title'],
-//             body: noti.data()['body'],
-//             type: noti.data()['type']));
-//         notifyListeners();
-//       }
-//     });

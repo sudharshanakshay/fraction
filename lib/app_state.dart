@@ -10,16 +10,26 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
-  late FirebaseFirestore firebaseFirestoreRef;
+  late FirebaseFirestore _firebaseFirestoreRef;
   late String _userCollectionName;
   late String _groupCollectionName;
 
+  // static final Map<String, ApplicationState> _cache =
+  //     <String, ApplicationState>{};
+
   ApplicationState() {
-    firebaseFirestoreRef = FirebaseFirestore.instance;
+    _firebaseFirestoreRef = FirebaseFirestore.instance;
     _userCollectionName = DatabaseUtils().userCollectionName;
     _groupCollectionName = DatabaseUtils().groupCollectionName;
     init();
+    refreshCurrentUserEmail();
   }
+
+  // ApplicationState._internal({required String name}) {}
+
+  // factory ApplicationState() {
+  //   return _cache['appState']!;
+  // }
 
   bool _loggedIn = false;
   bool get loggedIn => _loggedIn;
@@ -56,15 +66,39 @@ class ApplicationState extends ChangeNotifier {
     ]);
 
     FirebaseAuth.instance.userChanges().listen((user) async {
+      final prefs = await SharedPreferences.getInstance();
       if (user != null) {
         _loggedIn = true;
         _currentUserEmail = user.email!;
+        prefs.setString('currentUserEmail', user.email!);
         await initGroupAndExpenseInstances();
       } else {
         _loggedIn = false;
       }
       notifyListeners();
+      // await setCurrentUserName();
     });
+  }
+
+  // Future<void> setCurrentUserName() async {
+  //   if (_currentUserName.isEmpty && _currentUserEmail.isNotEmpty) {
+  //     final prefs = await SharedPreferences.getInstance();
+
+  //     // _currentUserName = prefs.getString('currentUserName') ??
+  //     _userCollectionRef.doc(_currentUserEmail).get().then((value) {
+  //       print(value.data()!['userName']);
+  //     });
+  //   }
+  // }
+
+  Future<void> refreshCurrentUserEmail() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_currentUserEmail.isEmpty) {
+      if (prefs.getString('currentUserEmail') != null) {
+        _currentUserEmail = prefs.getString('currentUserEmail') ?? '';
+        notifyListeners();
+      }
+    }
   }
 
   Future<void> initGroupAndExpenseInstances() async {
@@ -94,7 +128,7 @@ class ApplicationState extends ChangeNotifier {
 
   Future<void> setGroupAndExpenseInstances() async {
     // -- get values from user database ----
-    firebaseFirestoreRef
+    _firebaseFirestoreRef
         .collection(_userCollectionName)
         .doc(_currentUserEmail)
         .get()
@@ -110,7 +144,7 @@ class ApplicationState extends ChangeNotifier {
           for (String groupName in currentProfileDetails['groupNames']) {
             // ---- get values from group database ----
 
-            firebaseFirestoreRef
+            _firebaseFirestoreRef
                 .collection(_groupCollectionName)
                 .doc(groupName)
                 .get()

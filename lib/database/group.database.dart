@@ -53,8 +53,44 @@ class GroupDatabase {
         .then((value) => groupNameWithIdentity);
   }
 
+  Future<void> addMeToGroup(
+      {required String groupNameToAdd,
+      required String currentUserEmail,
+      required currentUserName}) async {
+    final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
+
+    _firebaseFirestoreRef.collection(_groupCollectionName).get().then((value) {
+      print(groupNameToAdd);
+      for (var groupDoc in value.docs) {
+        if (groupDoc.id == groupNameToAdd) {
+          final data = {
+            'groupMembers': {
+              currentUserEmailR: {
+                'memberEmail': currentUserEmail,
+                'memberName': currentUserName,
+                'totalExpense': 1
+              }
+            }
+          };
+
+          _firebaseFirestoreRef
+              .collection(_groupCollectionName)
+              .doc(groupNameToAdd)
+              .set(data, SetOptions(merge: true))
+              .whenComplete(() {
+            print('group added');
+          });
+        } else {
+          if (kDebugMode) {
+            // print('group name doesnt exists');
+          }
+        }
+      }
+    });
+  }
+
   Stream getGroupDetials({required groupName}) {
-    return FirebaseFirestore.instance
+    return _firebaseFirestoreRef
         .collection(_groupCollectionName)
         .doc(groupName)
         .snapshots();

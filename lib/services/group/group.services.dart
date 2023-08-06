@@ -41,6 +41,22 @@ class GroupServices extends ApplicationState {
     }
   }
 
+  Future<void> addMeToGroup(
+      {required String groupName,
+      required String currentUserEmail,
+      required String currentUserName}) async {
+    try {
+      _groupDatabaseRef.addMeToGroup(
+          groupNameToAdd: groupName,
+          currentUserEmail: currentUserEmail,
+          currentUserName: currentUserName);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Stream getGroupDetials() {
     try {
       return _groupDatabaseRef.getGroupDetials(

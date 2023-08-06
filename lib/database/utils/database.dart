@@ -7,4 +7,7 @@ class DatabaseUtils {
 
   final String _expenseCollectionName = 'expense';
   get expenseCollectionName => _expenseCollectionName;
+
+  final String _notificationCollectionName = 'notification';
+  get notificationCollectionName => _notificationCollectionName;
 }
