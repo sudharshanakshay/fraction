@@ -188,6 +188,8 @@ class ApplicationState extends ChangeNotifier {
 
   void signOut() async {
     FirebaseAuth.instance.signOut();
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
     // await clearProfileDetailsFromLocalStorage()
     //     .whenComplete(() => FirebaseAuth.instance.signOut());
   }

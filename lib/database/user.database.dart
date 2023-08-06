@@ -46,7 +46,7 @@ class UserDatabase {
       final profileInfo = doc.data()! as Map<String, dynamic>;
       return profileInfo['groupNames']!.isNotEmpty
           ? profileInfo['groupNames']![0]
-          : null;
+          : '';
     });
   }
 

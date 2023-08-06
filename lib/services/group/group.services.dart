@@ -53,10 +53,14 @@ class GroupServices extends ApplicationState {
     try {
       _groupDatabaseRef
           .addMeToGroup(
-              groupNameToAdd: groupName,
-              currentUserEmail: currentUserEmail,
-              currentUserName: currentUserName)
+              groupNameToAdd: groupName.trim(),
+              currentUserEmail: currentUserEmail.trim(),
+              currentUserName: currentUserName.trim())
           .whenComplete(() {
+        _userDatabaseRef.insertGroupNameToProfile(
+            currentUserEmail: super.currentUserEmail,
+            groupNameToAdd: groupName.trim());
+
         _notificationDatabaseRef.deleteNotification(docId: docId);
       });
     } catch (e) {

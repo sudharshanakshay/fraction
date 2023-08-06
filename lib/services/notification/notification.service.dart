@@ -21,6 +21,24 @@ class NotificationService {
     }
   }
 
+  Future<void> addNotification(
+      {required String from,
+      required String to,
+      required String title,
+      required String message}) async {
+    try {
+      _notificationDatabaseRef.addNotification(
+          from: from.trim(),
+          to: to.trim(),
+          title: title.trim(),
+          message: message.trim());
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+    }
+  }
+
   Future<void> deleteNotification({required String docId}) async {
     try {
       _notificationDatabaseRef.deleteNotification(docId: docId);

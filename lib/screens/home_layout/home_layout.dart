@@ -33,7 +33,7 @@ class _MyHomePageState extends State<MyHomePage> {
               kDebugMode
                   ? IconButton(
                       onPressed: () {
-                        // groupServiceState.signOut();
+                        groupServiceState.signOut();
                       },
                       icon: const Icon(Icons.logout))
                   : Container(),

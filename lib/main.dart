@@ -54,9 +54,11 @@ class MyApp extends StatelessWidget {
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
                 ? const SignInPage()
-                : const MyHomePage(
-                    title: 'Fraction',
-                  )),
+                : appState.hasOneGroup
+                    ? const MyHomePage(
+                        title: 'Fraction',
+                      )
+                    : const CreateGroupLayout()),
         routes: {
           '/logIn': (context) => Consumer<ApplicationState>(
                 builder: (context, value, child) => value.loggedIn

@@ -17,6 +17,20 @@ class NotificationDatabase {
         .snapshots();
   }
 
+  Future<void> addNotification(
+      {required String from,
+      required String to,
+      required String title,
+      required String message}) async {
+    final data = {
+      'from': from,
+      'to': to,
+      'body': {'title': title, 'message': message, 'type': ''}
+    };
+
+    _firebaseFirestoreRef.collection(_notificationCollectionName).add(data);
+  }
+
   Future<void> deleteNotification({required String docId}) async {
     _firebaseFirestoreRef
         .collection(_notificationCollectionName)
