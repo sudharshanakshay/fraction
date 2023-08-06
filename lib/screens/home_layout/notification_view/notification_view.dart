@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/repository/notification.repo.dart';
 import 'package:fraction/services/group/group.services.dart';
+import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +25,10 @@ class _NotificationViewState extends State<NotificationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Fraction'),
+      ),
       body: SingleChildScrollView(
         child: Consumer<ApplicationState>(
           builder: (context, appState, child) => Consumer<NotificationRepo>(
@@ -32,28 +37,34 @@ class _NotificationViewState extends State<NotificationView> {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: notificationRepo.data.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(notificationRepo.data[index].title),
-                  subtitle: Text(notificationRepo.data[index].message),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                          onPressed: () {}, icon: const Icon(Icons.close)),
-                      IconButton(
-                          onPressed: () async {
-                            await confirmJoin().then((value) {
-                              if (value == Constants().Ok) {
-                                _groupServicesRef.addMeToGroup(
-                                    groupName:
-                                        notificationRepo.data[index].message,
-                                    currentUserEmail: appState.currentUserEmail,
-                                    currentUserName: appState.currentUserName);
-                              }
-                            });
-                          },
-                          icon: const Icon(Icons.check)),
-                    ],
+                return Container(
+                  margin: const EdgeInsets.only(top: 4.0),
+                  color: AppColors().notificationListTileColor,
+                  child: ListTile(
+                    title: Text(notificationRepo.data[index].title),
+                    subtitle: Text(notificationRepo.data[index].message),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                            onPressed: () {}, icon: const Icon(Icons.close)),
+                        IconButton(
+                            onPressed: () async {
+                              await confirmJoin().then((value) {
+                                if (value == Constants().Ok) {
+                                  _groupServicesRef.addMeToGroup(
+                                      groupName:
+                                          notificationRepo.data[index].message,
+                                      currentUserEmail:
+                                          appState.currentUserEmail,
+                                      currentUserName:
+                                          appState.currentUserName);
+                                }
+                              });
+                            },
+                            icon: const Icon(Icons.check)),
+                      ],
+                    ),
                   ),
                 );
               },

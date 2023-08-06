@@ -7,6 +7,7 @@ class AppColors {
   Color get textInputColor => Colors.blueAccent;
   Color get tags => Colors.blue.shade100;
   Color get appDrawerHeaderBackgroudColor => Color.fromARGB(255, 154, 172, 232);
+  Color get notificationListTileColor => Colors.grey.shade100;
 }
 
 final rng = Random();
