@@ -58,7 +58,7 @@ class NotificationRepo with ChangeNotifier {
     });
   }
 
-  inviteMember({required String to}) async {
+  Future<void> inviteMember({required String to}) async {
     final prefs = await SharedPreferences.getInstance();
     final currentUerEmail = prefs.getString('currentUserEmail');
     final currentUserGroup = prefs.getString('currentUserGroup');

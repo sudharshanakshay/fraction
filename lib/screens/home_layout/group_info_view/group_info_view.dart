@@ -164,9 +164,37 @@ class _GroupInfoState extends State<GroupInfo> {
           height: 10,
         ),
         FilledButton(
-            onPressed: () {
-              _notificationRepoRef.inviteMember(
-                  to: _memberEmailController.text);
+            onPressed: () async {
+              _notificationRepoRef
+                  .inviteMember(to: _memberEmailController.text)
+                  .whenComplete(() {
+                _memberEmailController.clear();
+                setState(() {
+                  inviteToggle = true;
+                });
+                showDialog(
+                    context: context,
+                    builder: (context) {
+                      return const AlertDialog(
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('Invited'),
+                            Flexible(
+                              child: FractionallySizedBox(
+                                widthFactor: 0.1,
+                              ),
+                            ),
+                            Icon(
+                              Icons.check_circle_rounded,
+                              color: Colors.green,
+                            ),
+                          ],
+                        ),
+                      );
+                    });
+              });
             },
             child: const Text('Invite')),
       ],
