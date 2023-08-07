@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
