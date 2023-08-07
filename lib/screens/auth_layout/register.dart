@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/screens/auth_layout/widgets/email_input.widget.dart';
+import 'package:fraction/screens/auth_layout/widgets/name_input.widget.dart';
+import 'package:fraction/screens/auth_layout/widgets/password_input.widget.dart';
 import 'package:fraction/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth/auth.services.dart';
-import '../../widgets/custom_input_form_field.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -29,14 +31,10 @@ class _RegisterPageState extends State<RegisterPage> {
                 'Welcome to Fraction',
                 style: TextStyle(fontSize: 20),
               ),
-              CustomInputFormField(
-                  controller: _nameStringController, label: 'Name'),
-              CustomInputFormField(
-                  controller: _emailStringController, label: 'Email'),
-              CustomInputFormField(
-                  controller: _passwordStringController,
-                  label: 'Password',
-                  obsecure: true),
+              NameInputWidget(nameStringController: _nameStringController),
+              EmailInputWidget(emailStringController: _emailStringController),
+              PasswordInputWidget(
+                  passwordController: _passwordStringController),
               FractionallySizedBox(
                 widthFactor: 0.8,
                 child: FilledButton(

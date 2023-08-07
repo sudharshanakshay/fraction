@@ -4,8 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/database/user.database.dart';
 import 'package:fraction/database/utils/database.dart';
+import 'package:fraction/services/user/user.services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
@@ -114,9 +114,7 @@ class ApplicationState extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     if (_currentUserGroup.isEmpty) {
       _currentUserGroup = prefs.getString(_currentUserGroupName) ??
-          await UserDatabase()
-              .getOneUserGroupName(currentUserEmail: _currentUserEmail)
-              .then((String value) {
+          await UserServices().getOneGroupName().then((String value) {
             prefs.setString(_currentUserGroupName, value);
             return value;
           });

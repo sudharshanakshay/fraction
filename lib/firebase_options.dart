@@ -44,39 +44,41 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyChPZ6hJ1igOER8azGhDYOOdc0exN0T2Do',
-    appId: '1:1060305160473:web:fac0275e88561465d7dd88',
-    messagingSenderId: '1060305160473',
-    projectId: 'fraction-2',
-    authDomain: 'fraction-2.firebaseapp.com',
-    storageBucket: 'fraction-2.appspot.com',
+    apiKey: 'AIzaSyAzTRHRD6NPDrmed2xEnfzy0sWeOAQw3nI',
+    appId: '1:602053818051:web:786b42afefc221eef25476',
+    messagingSenderId: '602053818051',
+    projectId: 'fraction-c7e1e',
+    authDomain: 'fraction-c7e1e.firebaseapp.com',
+    storageBucket: 'fraction-c7e1e.appspot.com',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyC0rb0dprPTBU2oeXOgSgB5i750Bir_g6E',
-    appId: '1:1060305160473:android:af07f9cf9478e83bd7dd88',
-    messagingSenderId: '1060305160473',
-    projectId: 'fraction-2',
-    storageBucket: 'fraction-2.appspot.com',
+    apiKey: 'AIzaSyD_2kkecX_bSKY43Olj3e5Ma8yeMpIaQDA',
+    appId: '1:602053818051:android:a39989c75acc7ad2f25476',
+    messagingSenderId: '602053818051',
+    projectId: 'fraction-c7e1e',
+    storageBucket: 'fraction-c7e1e.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBeg3jyrXzxcXouOms6CBBxhRk6Cx9D2ao',
-    appId: '1:1060305160473:ios:63f572c12c8e629ed7dd88',
-    messagingSenderId: '1060305160473',
-    projectId: 'fraction-2',
-    storageBucket: 'fraction-2.appspot.com',
-    iosClientId: '1060305160473-b2219qafdgagstomo5f9tr80lea9kp0s.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBD2Oc1s-CR2vdW8sQLY1i8nHmkcIoQzjQ',
+    appId: '1:602053818051:ios:43f790140c22bf5af25476',
+    messagingSenderId: '602053818051',
+    projectId: 'fraction-c7e1e',
+    storageBucket: 'fraction-c7e1e.appspot.com',
+    androidClientId: '602053818051-crf6ps5k3gri5ih2r8jjpn4nlde96e6l.apps.googleusercontent.com',
+    iosClientId: '602053818051-3q005fq3hveepg69i1u2op0ih07da3df.apps.googleusercontent.com',
     iosBundleId: 'com.example.fraction',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyBeg3jyrXzxcXouOms6CBBxhRk6Cx9D2ao',
-    appId: '1:1060305160473:ios:97e21ebbf22ba5eed7dd88',
-    messagingSenderId: '1060305160473',
-    projectId: 'fraction-2',
-    storageBucket: 'fraction-2.appspot.com',
-    iosClientId: '1060305160473-4ea5ug1hbpso5pe489t176mdptscshcb.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBD2Oc1s-CR2vdW8sQLY1i8nHmkcIoQzjQ',
+    appId: '1:602053818051:ios:29cb9fe6e6e84d91f25476',
+    messagingSenderId: '602053818051',
+    projectId: 'fraction-c7e1e',
+    storageBucket: 'fraction-c7e1e.appspot.com',
+    androidClientId: '602053818051-crf6ps5k3gri5ih2r8jjpn4nlde96e6l.apps.googleusercontent.com',
+    iosClientId: '602053818051-o0sg9s2v75thdf12cpmjo4aq2vtrsl6v.apps.googleusercontent.com',
     iosBundleId: 'com.example.fraction.RunnerTests',
   );
 }

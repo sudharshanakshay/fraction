@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/screens/auth_layout/widgets/email_input.widget.dart';
+import 'package:fraction/screens/auth_layout/widgets/password_input.widget.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 import 'package:provider/provider.dart';
-import '../../widgets/custom_input_form_field.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
@@ -13,38 +14,48 @@ class SignInPage extends StatefulWidget {
 class _SignInPageState extends State<SignInPage> {
   final _emailStringController = TextEditingController();
   final _passwordStringController = TextEditingController();
+  late GlobalKey<FormState> _signInFormKey;
+
+  @override
+  void initState() {
+    _signInFormKey = GlobalKey<FormState>();
+    super.initState();
+  }
 
   @override
   build(context) {
     return Consumer<AuthServices>(
       builder: (context, authServiceState, child) => Scaffold(
-        body: Center(
+        body: Form(
+          key: _signInFormKey,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
+              const Row(),
               const Text(
                 'Welcome to Fraction',
                 style: TextStyle(fontSize: 20),
               ),
-              CustomInputFormField(
-                controller: _emailStringController,
-                label: 'Username, email',
+
+              EmailInputWidget(
+                emailStringController: _emailStringController,
               ),
-              CustomInputFormField(
-                controller: _passwordStringController,
-                label: 'Password',
-                obsecure: true,
+
+              PasswordInputWidget(
+                passwordController: _passwordStringController,
               ),
-              FractionallySizedBox(
-                widthFactor: 0.8,
-                child: FilledButton(
-                    onPressed: () {
+
+              FilledButton(
+                  onPressed: () {
+                    if (_signInFormKey.currentState!.validate()) {
+                      const snakBar = SnackBar(content: Text('logging in ...'));
+                      ScaffoldMessenger.of(context).showSnackBar(snakBar);
                       authServiceState.emailSignInUser(
                           _emailStringController.text,
                           _passwordStringController.text);
-                    },
-                    child: const Text('Log in')),
-              ),
+                    }
+                  },
+                  child: const Text('Log in')),
               const Text('or'),
               TextButton(
                   onPressed: () {
