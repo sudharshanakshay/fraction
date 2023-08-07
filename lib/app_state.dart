@@ -3,13 +3,15 @@ import 'package:firebase_auth/firebase_auth.dart'
     hide EmailAuthProvider, PhoneAuthProvider;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fraction/database/user.database.dart';
 import 'package:fraction/database/utils/database.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
+  final String _currentUserGroupName = 'currentUserGroupName';
+
   late FirebaseFirestore _firebaseFirestoreRef;
   late String _userCollectionName;
   late String _groupCollectionName;
@@ -111,18 +113,16 @@ class ApplicationState extends ChangeNotifier {
   Future<void> setCurrentUserGroup() async {
     final prefs = await SharedPreferences.getInstance();
     if (_currentUserGroup.isEmpty) {
-      if (prefs.getString('currentUserGroup') == null) {
-        if (_currentUserEmail.isNotEmpty) {
-          String groupNameFromUserProfile = await UserDatabase()
-              .getOneUserGroupName(currentUserEmail: _currentUserEmail);
-          prefs.setString('currentUserGroup', groupNameFromUserProfile);
-          _currentUserGroup = groupNameFromUserProfile;
-          notifyListeners();
-        }
-      } else {
-        _currentUserGroup = prefs.getString('currentUserGroup') ?? '';
-        notifyListeners();
-      }
+      _currentUserGroup = prefs.getString(_currentUserGroupName) ??
+          await UserDatabase()
+              .getOneUserGroupName(currentUserEmail: _currentUserEmail)
+              .then((String value) {
+            prefs.setString(_currentUserGroupName, value);
+            return value;
+          });
+
+      notifyListeners();
+      print(_currentUserGroup);
     }
   }
 
@@ -181,16 +181,27 @@ class ApplicationState extends ChangeNotifier {
     _currentUserGroup = currentUserGroup;
     notifyListeners();
 
-    await prefs.setString('currentUserGroup', currentUserGroup);
+    await prefs.setString(_currentUserGroupName, currentUserGroup);
   }
 
   // ------------- option, sign-out -------------
 
-  void signOut() async {
-    FirebaseAuth.instance.signOut();
+  Future<void> signOut() async {
     final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
-    // await clearProfileDetailsFromLocalStorage()
-    //     .whenComplete(() => FirebaseAuth.instance.signOut());
+    // await prefs.remove('currentUserEmail');
+    // await prefs.remove(_currentUserGroupName);
+    // await prefs.remove('currentUserEmail');
+    prefs.clear().then((value) {
+      if (value) {
+        FirebaseAuth.instance.signOut();
+        if (kDebugMode) {
+          print('---- prefs clear complete ----');
+        }
+      } else {
+        if (kDebugMode) {
+          print('---- error  clearing ----');
+        }
+      }
+    });
   }
 }

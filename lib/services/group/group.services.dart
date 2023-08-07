@@ -75,7 +75,9 @@ class GroupServices extends ApplicationState {
       return _groupDatabaseRef.getGroupDetials(
           groupName: super.currentUserGroup);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return const Stream.empty();
     }
   }
@@ -120,7 +122,9 @@ class GroupServices extends ApplicationState {
               nextClearOffDate: nextClearOffDate)
           .whenComplete(() async {
         await super.initGroupAndExpenseInstances().whenComplete(() {
-          print(super.currentExpenseInstance.toDate().toString());
+          if (kDebugMode) {
+            print(super.currentExpenseInstance.toDate().toString());
+          }
         });
       });
     } catch (e) {

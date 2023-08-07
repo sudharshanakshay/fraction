@@ -52,7 +52,11 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           SvgPicture.asset(profileIconPath),
-                          SvgPicture.asset(settingsIconPath),
+                          IconButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/profile');
+                              },
+                              icon: SvgPicture.asset(settingsIconPath)),
                         ],
                       ),
                       const SizedBox(

@@ -69,12 +69,4 @@ class AuthServices extends ApplicationState {
       }
     }
   }
-
-// ------------- option, sign-out -------------
-
-  // void signOut() async {
-  //   FirebaseAuth.instance.signOut();
-  //   // await clearProfileDetailsFromLocalStorage()
-  //   //     .whenComplete(() => FirebaseAuth.instance.signOut());
-  // }
 }

@@ -30,13 +30,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     Navigator.pushNamed(context, '/notification');
                   },
                   icon: const Icon(Icons.notifications_active_outlined)),
-              kDebugMode
-                  ? IconButton(
-                      onPressed: () {
-                        groupServiceState.signOut();
-                      },
-                      icon: const Icon(Icons.logout))
-                  : Container(),
               IconButton(
                 onPressed: () {
                   if (kDebugMode) {
