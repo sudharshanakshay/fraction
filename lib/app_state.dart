@@ -120,7 +120,9 @@ class ApplicationState extends ChangeNotifier {
           });
 
       notifyListeners();
-      print(_currentUserGroup);
+      if (kDebugMode) {
+        print(_currentUserGroup);
+      }
     }
   }
 
@@ -137,9 +139,10 @@ class ApplicationState extends ChangeNotifier {
         _currentUserName = currentProfileDetails['userName'];
         notifyListeners();
 
-        if (currentProfileDetails['groupNames'].length != 0) {
+        final groupList = currentProfileDetails['groupNames'] as List;
+        if (groupList.isNotEmpty) {
           _hasOneGroup = true;
-          for (String groupName in currentProfileDetails['groupNames']) {
+          for (String groupName in groupList) {
             // ---- get values from group database ----
 
             _firebaseFirestoreRef

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class CreateGroupLayout extends StatefulWidget {
   const CreateGroupLayout({super.key});
@@ -14,7 +15,6 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
   late TextEditingController _groupNameController;
   late TextEditingController _clearOffDateController;
   late GlobalKey<FormState> _formKey;
-  DateTime? _selectedDate;
 
   @override
   void initState() {
@@ -38,8 +38,19 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
     return null;
   }
 
+  setClearOffDateController({required dateToSet}) {
+    _clearOffDateController.text =
+        DateFormat.MMMd().format(dateToSet).toString();
+  }
+
   @override
   Widget build(BuildContext context) {
+    DateTime today = DateTime.now();
+    DateTime selectedDate =
+        DateTime(today.year, today.month + 1, today.day, today.hour);
+    setClearOffDateController(dateToSet: selectedDate);
+    DateTime lastDate = DateTime(today.year + 1);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -87,9 +98,10 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
                         child: TextFormField(
                           controller: _clearOffDateController,
                           keyboardType: TextInputType.datetime,
+                          readOnly: true,
                           decoration: const InputDecoration(
                               label: Text('Clear off date'),
-                              hintText: 'yyyy-mm-dd',
+                              // hintText: 'yyyy-mm-dd',
                               hintStyle: TextStyle(color: Colors.grey)),
                         ),
                       )),
@@ -97,18 +109,17 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
                           onPressed: () async {
                             await showDatePicker(
                                     context: context,
-                                    initialDate:
-                                        _selectedDate ?? DateTime.now(),
-                                    firstDate: DateTime.now(),
-                                    lastDate: DateTime(DateTime.now().year + 1))
+                                    initialDate: selectedDate,
+                                    firstDate: today,
+                                    lastDate: lastDate)
                                 .then((value) {
                               if (value != null) {
-                                _selectedDate = value;
-                                _clearOffDateController.text = value.toString();
+                                selectedDate = value;
+                                setClearOffDateController(dateToSet: value);
                               }
                             });
                           },
-                          icon: const Icon(Icons.calendar_today)),
+                          icon: const Icon(Icons.calendar_month)),
                     ],
                   ),
                   const SizedBox(
@@ -119,7 +130,7 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
                         if (_formKey.currentState!.validate()) {
                           if (groupServiceState.createGroup(
                                   inputGroupName: _groupNameController.text,
-                                  nextClearOffTimeStamp: (_selectedDate)) ==
+                                  nextClearOffTimeStamp: selectedDate) ==
                               Constants().success) {
                             Navigator.pop(context);
                           }
