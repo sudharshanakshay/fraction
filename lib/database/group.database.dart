@@ -1,100 +1,194 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 
-const _groupCollectionName = 'group';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
+import 'package:fraction/database/utils/database.dart';
+import 'package:fraction/model/group.dart';
+
+class GroupDatabase {
+  late String _groupCollectionName;
+  late FirebaseFirestore _firebaseFirestoreRef;
+
+  GroupDatabase() {
+    _groupCollectionName = DatabaseUtils().groupCollectionName;
+    _firebaseFirestoreRef = FirebaseFirestore.instance;
+  }
 
 // -- group is created as follows, groupName%creatorEmail%timeStamp --
 // -- '%' represents key separation & --
 // -- '#' represents '.' in a key --
 // -- whenever user creates group, user is added to that group by default --
-Future<String> createGroup(
-    {required groupName, required adminName, required adminEmail}) {
-  final adminEmailR = adminEmail.replaceAll('.', '#');
-  final data = {
-    'groupName': groupName,
-    'groupMembers': {
-      adminEmailR: {
-        'memberName': adminName,
-        'memberEmail': adminEmail,
-        'totalExpense': 0
+  Future<String> createGroup(
+      {required String groupName,
+      required String adminName,
+      required String adminEmail,
+      required DateTime nextClearOffTimeStamp}) {
+    final adminEmailR = adminEmail.replaceAll('.', '#');
+    final data = {
+      'createdOn': DateTime.now(),
+      'expenseInstance': DateTime.now(),
+      'nextClearOffTimeStamp': nextClearOffTimeStamp,
+      'groupName': groupName,
+      'totalExpense': 0,
+      'groupMembers': {
+        adminEmailR: {
+          'memberName': adminName,
+          'memberEmail': adminEmail,
+          'totalExpense': 0
+        }
       }
+    };
+
+    final String groupNameWithIdentity =
+        '$groupName%$adminEmail%${DateTime.now().toString().replaceAll(RegExp(r'[\s]'), '%')}';
+
+    if (kDebugMode) {
+      print('group info: $data');
     }
-  };
 
-  final String groupNameWithIdentity = groupName +
-      '%' +
-      adminEmail +
-      '%' +
-      DateTime.now().toString().replaceAll(RegExp(r'[\s]'), '%');
+    return _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupNameWithIdentity)
+        .set(data)
+        .then((value) => groupNameWithIdentity);
+  }
 
-  return FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .doc(groupNameWithIdentity)
-      .set(data)
-      .then((value) => groupNameWithIdentity);
-}
+  Future<void> addMeToGroup(
+      {required String groupNameToAdd,
+      required String currentUserEmail,
+      required currentUserName}) async {
+    final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
 
-// -- add member to the group requires, groupName to add & member details --
-Future<void> addMemberToGroup(
-    {required String currentGroupName,
-    required String memberName,
-    required String memberEmail}) {
-  final memberEmailR = memberEmail.replaceAll('.', '#');
-  final data = {
-    'memberName': memberName,
-    'memberEmail': memberEmail,
-    'totalExpense': 0
-  };
-  return FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .doc(currentGroupName)
-      .update({"groupMembers.$memberEmailR": data});
-}
+    _firebaseFirestoreRef.collection(_groupCollectionName).get().then((value) {
+      print(groupNameToAdd);
+      for (var groupDoc in value.docs) {
+        if (groupDoc.id == groupNameToAdd) {
+          final data = {
+            'groupMembers': {
+              currentUserEmailR: {
+                'memberEmail': currentUserEmail,
+                'memberName': currentUserName,
+                'totalExpense': 1
+              }
+            }
+          };
 
-// -- update group member details, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
-void updateGroupMemberExpense(
-    {required groupName, required memberEmail, required int expenseDiff}) {
-  final memberEmailR = memberEmail.replaceAll('.', '#');
-  final data = {
-    'groupMembers.$memberEmailR.totalExpense': FieldValue.increment(expenseDiff)
-  };
-  FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .doc(groupName)
-      .update(data);
-}
-
-// -- retrive all group members --
-Future getGroupMembers({required groupName}) {
-  return FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .doc(groupName)
-      .get()
-      .then((DocumentSnapshot doc) {
-    if (doc.exists) {
-      List groupMembers = [];
-      final data = doc.data()! as Map<String, dynamic>;
-      for (var memberEmail in data['groupMembers']) {
-        // print(memberEmail['userEmail']);
-        groupMembers.add(memberEmail['userEmail']);
+          _firebaseFirestoreRef
+              .collection(_groupCollectionName)
+              .doc(groupNameToAdd)
+              .set(data, SetOptions(merge: true))
+              .whenComplete(() {
+            print('group added');
+          });
+        } else {
+          if (kDebugMode) {
+            // print('group name doesnt exists');
+          }
+        }
       }
-      return groupMembers;
-    } else {
-      throw 'no group member exists';
-    }
-  });
-}
+    });
+  }
 
-// -- group collection stream  --
-Stream<QuerySnapshot> groupCollectionStream() {
-  return FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .snapshots();
-}
+  Stream getGroupDetials({required groupName}) {
+    return _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .snapshots();
+  }
 
-// -- retrive group details --
-Stream<DocumentSnapshot> getGroupDetails({required groupName}) {
-  return FirebaseFirestore.instance
-      .collection(_groupCollectionName)
-      .doc(groupName)
-      .snapshots();
+  Stream getMyTotalExpense({required currentUserEmail, required groupName}) {
+    final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
+
+    return _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .snapshots()
+        .asyncExpand((doc) {
+      return Stream.value(
+          doc.data()!['groupMembers'][currentUserEmailR]['totalExpense']);
+    });
+  }
+
+  Future<List?> getMemberDetails({required currentUserGroup}) {
+    return _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(currentUserGroup)
+        .withConverter<GroupModel>(
+            fromFirestore: (snapShot, _) =>
+                GroupModel.fromJson(snapShot.data()!),
+            toFirestore: (groupModel, _) => groupModel.toJson())
+        .get()
+        .then((doc) {
+      return doc.data()?.toList();
+    });
+  }
+
+  // -- add member to the group requires, groupName to add & member details --
+  Future<void> insertMemberToGroup(
+      {required String currentGroupName,
+      required String memberName,
+      required String memberEmail}) {
+    final memberEmailR = memberEmail.replaceAll('.', '#');
+    final data = {
+      'memberName': memberName,
+      'memberEmail': memberEmail,
+      'totalExpense': 0
+    };
+    return _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(currentGroupName)
+        .update({"groupMembers.$memberEmailR": data});
+  }
+
+  // -- update group member details, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
+  void updateGroupMemberExpense(
+      {required groupName, required memberEmail, required int expenseDiff}) {
+    final memberEmailR = memberEmail.replaceAll('.', '#');
+    final data = {
+      'totalExpense': FieldValue.increment(expenseDiff),
+      'groupMembers.$memberEmailR.totalExpense':
+          FieldValue.increment(expenseDiff)
+    };
+    _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .update(data);
+  }
+
+  Future<void> clearOff(
+      {required String groupName, required DateTime nextClearOffDate}) async {
+    final Map<String, dynamic> groupMembers = {};
+
+    await _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        final groupDetails = doc.data() as Map<String, dynamic>;
+        final memberDetails =
+            groupDetails['groupMembers'] as Map<String, dynamic>;
+        memberDetails.forEach((key, value) {
+          final Map<String, dynamic> groupMember = {
+            key: {'totalExpense': 0}
+          };
+          groupMembers.addAll(groupMember);
+        });
+      }
+    });
+
+    final data = {
+      'expenseInstance': DateTime.now(),
+      'groupMembers': groupMembers,
+      'totalExpense': 0,
+      'nextClearOffTimeStamp': nextClearOffDate
+    };
+
+    // print(data);
+
+    _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .set(data, SetOptions(merge: true));
+  }
 }
