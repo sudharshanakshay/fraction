@@ -1,28 +1,30 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
-// import 'package:fraction/database/notification.database.dart';
+import 'package:fraction/database/notification.database.dart';
 import 'package:fraction/database/user.database.dart';
 import 'package:fraction/utils/constants.dart';
 
 class GroupServices {
   late GroupDatabase _groupDatabaseRef;
   late UserDatabase _userDatabaseRef;
-  // late NotificationDatabase _notificationDatabaseRef;
+  late NotificationDatabase _notificationDatabaseRef;
 
   GroupServices() {
     _groupDatabaseRef = GroupDatabase();
     _userDatabaseRef = UserDatabase();
-    // _notificationDatabaseRef = NotificationDatabase();
+    _notificationDatabaseRef = NotificationDatabase();
   }
 
   Future<String> createGroup(
       {required String currentUserName,
       required String currentUserEmail,
       required inputGroupName,
-      required nextClearOffTimeStamp}) async {
+      required nextClearOffTimeStamp,
+      ApplicationState? applicationState}) async {
     try {
-      _groupDatabaseRef
+      return _groupDatabaseRef
           .createGroup(
               groupName: inputGroupName,
               adminName: currentUserName,
@@ -33,11 +35,13 @@ class GroupServices {
             .insertGroupNameToProfile(
                 currentUserEmail: currentUserEmail,
                 groupNameToAdd: groupNameCreatedWithIdentity)
-            .whenComplete(() async {
-          // super.initGroupAndExpenseInstances();
+            .whenComplete(() {
+          if (applicationState != null) {
+            applicationState.refreshGroupNamesAndExpenseInstances();
+          }
         });
+        return groupNameCreatedWithIdentity;
       });
-      return Constants().success;
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -46,12 +50,12 @@ class GroupServices {
     }
   }
 
-  Future<void> addMeToGroup({
-    required String groupName,
-    required String currentUserEmail,
-    required String currentUserName,
-    required String docId,
-  }) async {
+  Future<void> addMeToGroup(
+      {required String groupName,
+      required String currentUserEmail,
+      required String currentUserName,
+      required String docId,
+      ApplicationState? applicationState}) async {
     try {
       if (groupName.isNotEmpty) {
         _groupDatabaseRef
@@ -60,11 +64,16 @@ class GroupServices {
                 currentUserEmail: currentUserEmail.trim(),
                 currentUserName: currentUserName.trim())
             .whenComplete(() {
-          _userDatabaseRef.insertGroupNameToProfile(
-              currentUserEmail: currentUserEmail,
-              groupNameToAdd: groupName.trim());
-
-          // _notificationDatabaseRef.deleteNotification(docId: docId);
+          _userDatabaseRef
+              .insertGroupNameToProfile(
+                  currentUserEmail: currentUserEmail,
+                  groupNameToAdd: groupName.trim())
+              .whenComplete(() {
+            if (applicationState != null) {
+              applicationState.refreshGroupNamesAndExpenseInstances();
+              _notificationDatabaseRef.deleteNotification(docId: docId);
+            }
+          });
         });
       }
     } catch (e) {

@@ -18,19 +18,24 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailStringController = TextEditingController();
   final _passwordStringController = TextEditingController();
 
+  late GlobalKey<FormState> _registerInFormKey;
+
   @override
   void initState() {
     _authServices = AuthServices();
+    _registerInFormKey = GlobalKey<FormState>();
     super.initState();
   }
 
   @override
   build(context) {
     return Scaffold(
-      body: Center(
+      body: Form(
+        key: _registerInFormKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            const Row(),
             const Text(
               'Welcome to Fraction',
               style: TextStyle(fontSize: 20),
@@ -42,10 +47,15 @@ class _RegisterPageState extends State<RegisterPage> {
               widthFactor: 0.8,
               child: FilledButton(
                   onPressed: () {
-                    _authServices.emailRegisterUser(
-                        _nameStringController.text,
-                        _emailStringController.text,
-                        _passwordStringController.text);
+                    if (_registerInFormKey.currentState!.validate()) {
+                      const snakBar =
+                          SnackBar(content: Text('registering ...'));
+                      ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                      _authServices.emailRegisterUser(
+                          _nameStringController.text,
+                          _emailStringController.text,
+                          _passwordStringController.text);
+                    }
                   },
                   child: const DetailAndIcon(Icons.navigate_next, 'Register')),
             ),

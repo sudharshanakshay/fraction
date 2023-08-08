@@ -72,14 +72,16 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
                   ),
                 ),
               ),
-              // ListView.builder(
-              //   shrinkWrap: true,
-              //   physics: const NeverScrollableScrollPhysics(),
-              //   itemCount: profileState.groupsAndExpenseInstances.length,
-              //   itemBuilder: (BuildContext context, int index) {
-              //     return const Text('hello');
-              //   },
-              // ),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  FilledButton(
+                      onPressed: () {
+                        Navigator.popAndPushNamed(context, '/createGroup');
+                      },
+                      child: const Text('create group')),
+                ],
+              ),
               StreamBuilder(
                   stream: _userServices.groupStream(
                       currentUserEmail: appState.currentUserEmail),
@@ -90,15 +92,19 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: snapShot.data.length,
                         itemBuilder: (context, int index) {
-                          return ListTile(
-                            title: Text(Tools().sliptElements(
-                                element: snapShot.data[index])[0]),
-                            onTap: () {
-                              appState.setCurrentUserGroup(
-                                  currentUserGroup: snapShot.data[index]);
+                          return Container(
+                            margin: const EdgeInsets.only(top: 4.0),
+                            // color: AppColors().groupListTileColor,
+                            child: ListTile(
+                              title: Text(Tools().sliptElements(
+                                  element: snapShot.data[index])[0]),
+                              onTap: () {
+                                appState.setCurrentUserGroup(
+                                    currentUserGroup: snapShot.data[index]);
 
-                              Navigator.pop(context);
-                            },
+                                Navigator.pop(context);
+                              },
+                            ),
                           );
                         },
                       );
@@ -106,11 +112,6 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
                       return Container();
                     }
                   }),
-              FilledButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/createGroup');
-                  },
-                  child: const Text('create group'))
             ],
           ),
         ),

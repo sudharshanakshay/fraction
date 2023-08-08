@@ -55,14 +55,14 @@ class _GroupInfoState extends State<GroupInfo> {
                 : Container(),
             IconButton(
               onPressed: () async {
-                if (kDebugMode) {
-                  print('');
-                }
-                await confirmClearOff().then((value) {
+                await confirmClearOff().then((value) async {
                   if (value != Constants().cancel && value != null) {
-                    _groupServices.clearOff(
-                        nextClearOffDate: value as DateTime,
-                        currentUserGroup: appState.currentUserGroup);
+                    _groupServices
+                        .clearOff(
+                            nextClearOffDate: value as DateTime,
+                            currentUserGroup: appState.currentUserGroup)
+                        .whenComplete(() =>
+                            appState.refreshGroupNamesAndExpenseInstances());
                   }
                 });
               },

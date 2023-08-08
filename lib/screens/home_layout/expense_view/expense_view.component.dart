@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/screens/home_layout/expense_view/widget/expense_pallet.dart';
@@ -26,29 +25,17 @@ class _ExpenseViewState extends State<ExpenseView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
-      if (kDebugMode) {
-        print('build expense view');
-      }
       if (appState.groupAndExpenseInstances[appState.currentUserGroup] ==
           null) {
-        if (kDebugMode) {
-          print('instance null if-1');
-        }
         // ---- time to initialize expense group instances ----
-        return const Text('loading now _');
+        return const Text('Tap on any group _');
       } else {
-        if (kDebugMode) {
-          print('return streamBuilder for expense view');
-        }
         // ---- once the initialize of expense group instances is done ----
         return StreamBuilder(
             stream: _expenseService.getExpenseCollection(
                 currentUserGroup: appState.currentUserGroup,
                 currentExpenseInstance: appState.currentExpenseInstance),
             builder: (context, snapshot) {
-              if (kDebugMode) {
-                print('inside stream builder');
-              }
               if (!snapshot.hasData) {
                 return const Column(
                   children: [
@@ -61,10 +48,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                   title: Text('no expense to display _ '),
                 );
               }
-              // print(snapshot.data!.docs[0]);
-              if (kDebugMode) {
-                print('1');
-              }
+
               return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

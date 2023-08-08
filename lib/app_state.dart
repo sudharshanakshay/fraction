@@ -110,6 +110,7 @@ class ApplicationState extends ChangeNotifier {
                 });
               }
             } else {
+              print('user has no group');
               _hasOneGroup = false;
               notifyListeners();
             }
@@ -117,40 +118,38 @@ class ApplicationState extends ChangeNotifier {
         });
 
         // ---- set currentGroupNme ----
-        if (_currentUserGroup.isEmpty) {
-          if (prefs.getString(_currentUserGroupName) != null &&
-              prefs.getString(_currentUserGroupName)!.isNotEmpty) {
-            print('prefs : currentUserGroup is not null');
-            print(prefs.getString(_currentUserGroupName));
-            _currentUserGroup = prefs.getString(_currentUserGroupName)!;
-            // notifyListeners();
-          } else {
-            print('prefs : currentUserGroup is null or empty');
-            _firebaseFirestoreRef
-                .collection(_userCollectionName)
-                .doc(currentUserEmail)
-                .get()
-                .then((DocumentSnapshot doc) {
-              final profileInfo = doc.data() as Map<String, dynamic>;
-              _currentUserName = profileInfo['userName'];
-              final groupInfo = profileInfo['groupNames'] as List;
-              if (groupInfo.isNotEmpty) {
-                print(
-                    'group info recieved from FirebaseFirestore & groupNames is not empty');
-                print(groupInfo[0]);
+        if (prefs.getString(_currentUserGroupName) != null &&
+            prefs.getString(_currentUserGroupName)!.isNotEmpty) {
+          print('prefs : currentUserGroup is not null');
+          print(prefs.getString(_currentUserGroupName));
+          _currentUserGroup = prefs.getString(_currentUserGroupName)!;
+          // notifyListeners();
+        } else {
+          print('prefs : currentUserGroup is null or empty');
+          _firebaseFirestoreRef
+              .collection(_userCollectionName)
+              .doc(currentUserEmail)
+              .get()
+              .then((DocumentSnapshot doc) {
+            final profileInfo = doc.data() as Map<String, dynamic>;
+            _currentUserName = profileInfo['userName'];
+            final groupInfo = profileInfo['groupNames'] as List;
+            if (groupInfo.isNotEmpty) {
+              print(
+                  'group info recieved from FirebaseFirestore & groupNames is not empty');
+              print(groupInfo[0]);
 
-                prefs.setString(_currentUserGroupName, groupInfo[0]);
-                _currentUserGroup = groupInfo[0];
-                notifyListeners();
-              } else {
-                _hasOneGroup = false;
-                // notifyListeners();
-              }
-            });
-
-            if (kDebugMode) {
-              print(_currentUserGroup);
+              prefs.setString(_currentUserGroupName, groupInfo[0]);
+              _currentUserGroup = groupInfo[0];
+              notifyListeners();
+            } else {
+              _hasOneGroup = false;
+              notifyListeners();
             }
+          });
+
+          if (kDebugMode) {
+            print(_currentUserGroup);
           }
         }
       } else {
@@ -185,13 +184,13 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  Future<void> initGroupAndExpenseInstances() async {
-    setGroupAndExpenseInstances();
-    await initCurrentUserGroup();
+  Future<void> refreshGroupNamesAndExpenseInstances() async {
+    await setGroupAndExpenseInstances()
+        .whenComplete(() async => await initCurrentUserGroup());
   }
 
-  void setGroupAndExpenseInstances() {
-    // -- get values from user database ----
+  Future<void> setGroupAndExpenseInstances() async {
+    // ---- set current user group instances ----
     _firebaseFirestoreRef
         .collection(_userCollectionName)
         .doc(_currentUserEmail)
@@ -214,15 +213,23 @@ class ApplicationState extends ChangeNotifier {
                 .doc(groupName)
                 .get()
                 .then((doc) {
-              final value = doc.data()!['expenseInstance'];
-              Map<String, Timestamp> data = {groupName: value};
+              if (doc.exists) {
+                if (kDebugMode) {
+                  print(
+                      '(app_state 1) : expense instance : ${doc.data()!['expenseInstance']}');
+                }
+                final value = doc.data()!['expenseInstance'];
+                Map<String, Timestamp> data = {groupName: value};
 
-              // ---- set the group name & instance value from the groups database ----
-              _groupsAndExpenseInstances.addAll(data);
-              // print('group added');
+                // ---- set the group name & instance value from the groups database ----
+                _groupsAndExpenseInstances.addAll(data);
+                notifyListeners();
+                // print('group added');
+              }
             });
           }
         } else {
+          print('user has no group');
           _hasOneGroup = false;
           notifyListeners();
         }
@@ -233,19 +240,30 @@ class ApplicationState extends ChangeNotifier {
   // ---- set currentUserGroup ----
   Future<void> initCurrentUserGroup() async {
     final prefs = await SharedPreferences.getInstance();
+    // ---- set currentGroupNme ----
     if (_currentUserGroup.isEmpty) {
-      if (prefs.getString(_currentUserGroupName) != null) {
+      if (prefs.getString(_currentUserGroupName) != null &&
+          prefs.getString(_currentUserGroupName)!.isNotEmpty) {
+        print('prefs : currentUserGroup is not null');
+        print(prefs.getString(_currentUserGroupName));
         _currentUserGroup = prefs.getString(_currentUserGroupName)!;
-        notifyListeners();
+        // notifyListeners();
       } else {
+        print('prefs : currentUserGroup is null or empty');
         _firebaseFirestoreRef
             .collection(_userCollectionName)
             .doc(currentUserEmail)
             .get()
             .then((DocumentSnapshot doc) {
           final profileInfo = doc.data() as Map<String, dynamic>;
-          final groupInfo = profileInfo['groupNames'] as List<String>;
+          _currentUserName = profileInfo['userName'];
+          final groupInfo = profileInfo['groupNames'] as List;
           if (groupInfo.isNotEmpty) {
+            print(
+                'group info recieved from FirebaseFirestore & groupNames is not empty');
+            print(groupInfo[0]);
+
+            prefs.setString(_currentUserGroupName, groupInfo[0]);
             _currentUserGroup = groupInfo[0];
             notifyListeners();
           } else {

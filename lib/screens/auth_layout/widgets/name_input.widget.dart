@@ -27,7 +27,7 @@ class NameInputWidget extends StatelessWidget {
           child: TextFormField(
             controller: nameStringController,
             validator: (value) => validateName(value),
-            keyboardType: TextInputType.emailAddress,
+            keyboardType: TextInputType.name,
             decoration: const InputDecoration(
               label: Text('Name'),
               border: InputBorder.none,

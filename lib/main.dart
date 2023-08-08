@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fraction/repository/notification.repo.dart';
 import 'package:fraction/screens/auth_layout/register.dart';
 import 'package:fraction/screens/home_layout/add_expense_view/add_expense.dart';
-import 'package:fraction/screens/create_group_layout/create_group.dart';
+import 'package:fraction/screens/home_layout/create_group_view/create_group.dart';
 import 'package:fraction/screens/home_layout/group_info_view/group_info_view.dart';
 import 'package:fraction/screens/home_layout/home_layout.dart';
 import 'package:fraction/screens/home_layout/notification_view/notification_view.dart';
@@ -46,11 +46,9 @@ class MyApp extends StatelessWidget {
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
                 ? const SignInPage()
-                : appState.hasOneGroup
-                    ? const MyHomePage(
-                        title: 'Fraction',
-                      )
-                    : const CreateGroupLayout()),
+                : const MyHomePage(
+                    title: 'Fraction',
+                  )),
         routes: {
           '/logIn': (context) => Consumer<ApplicationState>(
                 builder: (context, value, child) => value.loggedIn
@@ -75,7 +73,7 @@ class MyApp extends StatelessWidget {
                   : const SignInPage()),
           '/createGroup': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
-                  ? const CreateGroupLayout()
+                  ? const CreateGroupView()
                   : const SignInPage()),
           '/groupInfo': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) =>

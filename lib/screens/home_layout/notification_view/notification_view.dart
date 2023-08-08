@@ -62,8 +62,8 @@ class _NotificationViewState extends State<NotificationView> {
                                       currentUserEmail:
                                           appState.currentUserEmail,
                                       currentUserName: appState.currentUserName,
-                                      docId:
-                                          notificationRepo.data[index].docId);
+                                      docId: notificationRepo.data[index].docId,
+                                      applicationState: appState);
                                 }
                               });
                             },

@@ -5,14 +5,14 @@ import 'package:fraction/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class CreateGroupLayout extends StatefulWidget {
-  const CreateGroupLayout({super.key});
+class CreateGroupView extends StatefulWidget {
+  const CreateGroupView({super.key});
 
   @override
-  createState() => _CreateGroupLayoutState();
+  createState() => _CreateGroupViewState();
 }
 
-class _CreateGroupLayoutState extends State<CreateGroupLayout> {
+class _CreateGroupViewState extends State<CreateGroupView> {
   late GroupServices _groupServices;
   late TextEditingController _groupNameController;
   late TextEditingController _clearOffDateController;
@@ -131,15 +131,21 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
                   FilledButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (_groupServices.createGroup(
+                          // appState.refreshGroupNamesAndExpenseInstances();
+                          _groupServices
+                              .createGroup(
                                   inputGroupName: _groupNameController.text,
                                   nextClearOffTimeStamp: selectedDate,
                                   currentUserName: appState.currentUserName,
-                                  currentUserEmail:
-                                      appState.currentUserEmail) ==
-                              Constants().success) {
-                            Navigator.pop(context);
-                          }
+                                  currentUserEmail: appState.currentUserEmail,
+                                  applicationState: appState)
+                              .then((String result) {
+                            if (result != Constants().failed) {
+                              appState.setCurrentUserGroup(
+                                  currentUserGroup: result);
+                              Navigator.pop(context);
+                            }
+                          });
                         }
                       },
                       child: const Text('Create')),
