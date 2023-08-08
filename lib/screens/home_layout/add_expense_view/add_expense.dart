@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/app_state.dart';
+import 'package:fraction/services/expense/expense.services.dart';
 import 'package:provider/provider.dart';
-import '../../../services/expense/expense.services.dart';
 
 class AddExpenseLayout extends StatefulWidget {
   const AddExpenseLayout({Key? key}) : super(key: key);
@@ -10,12 +11,14 @@ class AddExpenseLayout extends StatefulWidget {
 }
 
 class _AddExpenseLayoutState extends State<AddExpenseLayout> {
+  late ExpenseService _expenseService;
   late TextEditingController _descriptionTextController;
   late TextEditingController _costTextController;
   late GlobalKey<FormState> _formKey;
 
   @override
   void initState() {
+    _expenseService = ExpenseService();
     _descriptionTextController = TextEditingController();
     _costTextController = TextEditingController();
     _formKey = GlobalKey<FormState>();
@@ -43,8 +46,8 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Add Expense'),
       ),
-      body: Consumer<ExpenseService>(
-        builder: (context, expenseServiceState, _) => Center(
+      body: Consumer<ApplicationState>(
+        builder: (context, appState, _) => Center(
           child: Form(
             key: _formKey,
             child: Column(
@@ -78,11 +81,21 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
                           const snakBar =
                               SnackBar(content: Text('adding expense ...'));
                           ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                          expenseServiceState
-                              .addExpense(
+                          if (appState.groupAndExpenseInstances[
+                                  appState.currentUserGroup] !=
+                              null) {
+                            _expenseService
+                                .addExpense(
                                   description: _descriptionTextController.text,
-                                  cost: _costTextController.text)
-                              .whenComplete(() => Navigator.pop(context));
+                                  cost: _costTextController.text,
+                                  currentUserName: appState.currentUserName,
+                                  currentUserEmail: appState.currentUserEmail,
+                                  currentUserGroup: appState.currentUserGroup,
+                                  currentExpenseInstance:
+                                      appState.currentExpenseInstance,
+                                )
+                                .whenComplete(() => Navigator.pop(context));
+                          }
                         }
                       },
                       child: const Text('Save')),

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:intl/intl.dart';
@@ -11,12 +12,14 @@ class ExpensePallet extends StatefulWidget {
     required this.currentUserName,
     required this.currentUserEmail,
     required this.expenseServiceState,
+    required this.appState,
   });
 
   final QueryDocumentSnapshot expenseDoc;
   final String currentUserName;
   final String currentUserEmail;
   final ExpenseService expenseServiceState;
+  final ApplicationState appState;
 
   @override
   State<StatefulWidget> createState() => _ExpensePalletState();
@@ -103,31 +106,46 @@ class _ExpensePalletState extends State<ExpensePallet> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      if (widget.expenseDoc['tags'].length != 0)
-                        ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: widget.expenseDoc['tags'].length,
-                          itemBuilder: (context, index) {
-                            return Padding(
+                      widget.expenseDoc['tags'].length != 0
+                          ? Padding(
                               padding: const EdgeInsets.only(right: 8.0),
-                              child: SizedBox(
-                                height: 6.0,
-                                child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 4.0),
-                                    decoration: BoxDecoration(
-                                        color: AppColors().tags,
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    child: Text(
-                                      widget.expenseDoc['tags'][index],
-                                    )),
+                              child: Container(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
+                                decoration: BoxDecoration(
+                                    color: AppColors().tags,
+                                    borderRadius: BorderRadius.circular(12)),
+                                child: const Text('updated'),
                               ),
-                            );
-                          },
-                        ),
+                            )
+                          : Container(),
+                      // if (widget.expenseDoc['tags'].length != 0)
+
+                      // ListView.builder(
+                      //   shrinkWrap: true,
+                      //   scrollDirection: Axis.horizontal,
+                      //   physics: const NeverScrollableScrollPhysics(),
+                      //   itemCount: widget.expenseDoc['tags'].length,
+                      //   itemBuilder: (context, index) {
+                      //     return Padding(
+                      //       padding: const EdgeInsets.only(right: 8.0),
+                      //       child: SizedBox(
+                      //         height: 6.0,
+                      //         child: Container(
+                      //           padding: const EdgeInsets.symmetric(
+                      //               horizontal: 4.0),
+                      //           decoration: BoxDecoration(
+                      //               color: AppColors().tags,
+                      //               borderRadius: BorderRadius.circular(12)),
+                      //           child: Text(
+                      //             widget.expenseDoc['tags'][index],
+                      //           ),
+
+                      //         ),
+                      //       ),
+                      //     );
+                      // },
+                      // ),
                       Text(
                         '${widget.expenseDoc['cost']}/-',
                         style: const TextStyle(fontSize: 16),
@@ -157,6 +175,7 @@ class _ExpensePalletState extends State<ExpensePallet> {
                 )),
             TextField(
                 controller: _costTextController,
+                keyboardType: TextInputType.number,
                 decoration: const InputDecoration(
                   label: Text('Item Cost'),
                 ))
@@ -186,7 +205,13 @@ class _ExpensePalletState extends State<ExpensePallet> {
                               updatedDescription:
                                   _descriptionTextController.text,
                               updatedCost: _costTextController.text,
-                              previousCost: widget.expenseDoc['cost'])
+                              previousCost: widget.expenseDoc['cost'],
+                              currentUserEmail:
+                                  widget.appState.currentUserEmail,
+                              currentUserGroup:
+                                  widget.appState.currentUserGroup,
+                              currentExpenseInstance:
+                                  widget.appState.currentExpenseInstance)
                           .whenComplete(() => Navigator.pop(context));
                     },
                     child: const Text('update')),
@@ -202,7 +227,14 @@ class _ExpensePalletState extends State<ExpensePallet> {
                     await confirmDeleteExpense().then((msg) {
                       if (msg == 'OK') {
                         widget.expenseServiceState
-                            .deleteExpense(expenseDoc: widget.expenseDoc)
+                            .deleteExpense(
+                                expenseDoc: widget.expenseDoc,
+                                currentUserEmail:
+                                    widget.appState.currentUserEmail,
+                                currentUserGroup:
+                                    widget.appState.currentUserGroup,
+                                currentExpenseInstance:
+                                    widget.appState.currentExpenseInstance)
                             .whenComplete(() => Navigator.pop(context));
                       }
                     });

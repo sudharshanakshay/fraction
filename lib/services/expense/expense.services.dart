@@ -1,21 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fraction/app_state.dart';
 import 'package:fraction/database/expense.database.dart';
 import 'package:fraction/database/group.database.dart';
 
-class ExpenseService extends ApplicationState {
+class ExpenseService {
   late ExpenseDatabase _expenseDatabaseRef;
 
   ExpenseService() {
     _expenseDatabaseRef = ExpenseDatabase();
   }
 
-  Stream<QuerySnapshot> getExpenseCollection() {
+  Stream<QuerySnapshot> getExpenseCollection(
+      {required String currentUserGroup,
+      required Timestamp currentExpenseInstance}) {
     try {
       return _expenseDatabaseRef.getExpenseCollection(
-          currentGroupName: super.currentUserGroup,
-          currentExpenseInstance:
-              super.currentExpenseInstance.toDate().toString());
+          currentGroupName: currentUserGroup,
+          currentExpenseInstance: currentExpenseInstance.toDate().toString());
     } catch (e) {
       print(e);
       return const Stream.empty();
@@ -33,27 +33,34 @@ class ExpenseService extends ApplicationState {
   //   }
   // }
 
-  Future addExpense({required String description, required String cost}) async {
-    print(super.currentUserGroup);
+  Future addExpense(
+      {required String description,
+      required String cost,
+      required String currentUserName,
+      required String currentUserGroup,
+      required String currentUserEmail,
+      required Timestamp currentExpenseInstance}) async {
     _expenseDatabaseRef
         .addExpense(
-            currentUserName: super.currentUserName,
-            currentGroupName: super.currentUserGroup,
-            currentUserEmail: super.currentUserEmail,
+            currentUserName: currentUserName,
+            currentGroupName: currentUserGroup,
+            currentUserEmail: currentUserEmail,
             description: description,
             cost: int.parse(cost),
-            currentExpenseInstance:
-                super.currentExpenseInstance.toDate().toString())
+            currentExpenseInstance: currentExpenseInstance.toDate().toString())
         .whenComplete(() {
       GroupDatabase().updateGroupMemberExpense(
-        memberEmail: super.currentUserEmail,
-        groupName: super.currentUserGroup,
+        memberEmail: currentUserEmail,
+        groupName: currentUserGroup,
         expenseDiff: int.parse(cost),
       );
     });
   }
 
   Future updateExpense({
+    required String currentUserEmail,
+    required String currentUserGroup,
+    required Timestamp currentExpenseInstance,
     required String docId,
     required String updatedDescription,
     required String updatedCost,
@@ -62,37 +69,41 @@ class ExpenseService extends ApplicationState {
     try {
       _expenseDatabaseRef
           .updateExpense(
-        currentGroupName: super.currentUserGroup,
+        currentGroupName: currentUserGroup,
         docId: docId,
         updatedCost: int.parse(updatedCost),
         updatedDescription: updatedDescription,
-        currentExpenseInstance:
-            super.currentExpenseInstance.toDate().toString(),
+        currentExpenseInstance: currentExpenseInstance.toDate().toString(),
       )
           .whenComplete(() {
         if (int.parse(updatedCost) - previousCost != 0) {
           GroupDatabase().updateGroupMemberExpense(
-              groupName: super.currentUserGroup,
-              memberEmail: super.currentUserEmail,
+              groupName: currentUserGroup,
+              memberEmail: currentUserEmail,
               expenseDiff: int.parse(updatedCost) - previousCost);
         }
       });
     } catch (e) {}
   }
 
-  Future deleteExpense({required expenseDoc}) async {
-    if (super.currentUserEmail == expenseDoc['emailAddress']) {
+  Future deleteExpense({
+    required expenseDoc,
+    required String currentUserEmail,
+    required String currentUserGroup,
+    required Timestamp currentExpenseInstance,
+  }) async {
+    if (currentUserEmail == expenseDoc['emailAddress']) {
       _expenseDatabaseRef
           .deleteMyExpense(
-              currentUserEmail: super.currentUserEmail,
-              currentGroupName: super.currentUserGroup,
+              currentUserEmail: currentUserEmail,
+              currentGroupName: currentUserGroup,
               docId: expenseDoc.id,
               currentExpenseInstance:
-                  super.currentExpenseInstance.toDate().toString())
+                  currentExpenseInstance.toDate().toString())
           .whenComplete(() {
         GroupDatabase().updateGroupMemberExpense(
-            groupName: super.currentUserGroup,
-            memberEmail: super.currentUserEmail,
+            groupName: currentUserGroup,
+            memberEmail: currentUserEmail,
             expenseDiff: -expenseDoc['cost']);
       });
     }

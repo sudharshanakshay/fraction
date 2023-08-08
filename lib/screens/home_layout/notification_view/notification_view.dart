@@ -18,7 +18,7 @@ class _NotificationViewState extends State<NotificationView> {
 
   @override
   void initState() {
-    _groupServicesRef = Provider.of<GroupServices>(context, listen: false);
+    _groupServicesRef = GroupServices();
     super.initState();
   }
 

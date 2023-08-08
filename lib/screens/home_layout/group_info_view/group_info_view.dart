@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/repository/notification.repo.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/utils/constants.dart';
@@ -17,6 +18,7 @@ class GroupInfo extends StatefulWidget {
 }
 
 class _GroupInfoState extends State<GroupInfo> {
+  late GroupServices _groupServices;
   final String clearOffIconPath = 'assets/icons/ClearOffIcon.svg';
   late DateTime next30day;
   late NotificationRepo _notificationRepoRef;
@@ -25,6 +27,7 @@ class _GroupInfoState extends State<GroupInfo> {
 
   @override
   void initState() {
+    _groupServices = GroupServices();
     _notificationRepoRef =
         Provider.of<NotificationRepo>(context, listen: false);
     _memberEmailController = TextEditingController();
@@ -39,12 +42,12 @@ class _GroupInfoState extends State<GroupInfo> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GroupServices>(builder: (context, groupServiceState, _) {
+    return Consumer<ApplicationState>(builder: (context, appState, _) {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(
-              'Fraction : ${Tools().sliptElements(element: groupServiceState.currentUserGroup)[0]}',
+              'Fraction : ${Tools().sliptElements(element: appState.currentUserGroup)[0]}',
               style: const TextStyle(fontSize: 20)),
           actions: [
             kDebugMode
@@ -57,8 +60,9 @@ class _GroupInfoState extends State<GroupInfo> {
                 }
                 await confirmClearOff().then((value) {
                   if (value != Constants().cancel && value != null) {
-                    groupServiceState.clearOff(
-                        nextClearOffDate: value as DateTime);
+                    _groupServices.clearOff(
+                        nextClearOffDate: value as DateTime,
+                        currentUserGroup: appState.currentUserGroup);
                   }
                 });
               },
@@ -77,7 +81,7 @@ class _GroupInfoState extends State<GroupInfo> {
                 StreamBuilder<List>(
                     stream: FirebaseFirestore.instance
                         .collection('group')
-                        .doc(groupServiceState.currentUserGroup)
+                        .doc(appState.currentUserGroup)
                         .snapshots()
                         .asyncExpand((doc) {
                       try {

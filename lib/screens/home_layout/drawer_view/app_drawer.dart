@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fraction/services/expense/expense.services.dart';
-import 'package:fraction/services/group/group.services.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/services/user/user.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/tools.dart';
@@ -17,23 +16,21 @@ class FractionAppDrawer extends StatefulWidget {
 class _FractionAppDrawerState extends State<FractionAppDrawer> {
   final String profileIconPath = 'assets/icons/profileIcon.svg';
   final String settingsIconPath = 'assets/icons/SettingsIcon.svg';
-  late ExpenseService _expenseService;
-  late GroupServices _groupService;
+  late UserServices _userServices;
 
   late TextEditingController _newGroupNameController;
 
   @override
   void initState() {
-    _expenseService = Provider.of<ExpenseService>(context, listen: false);
-    _groupService = Provider.of<GroupServices>(context, listen: false);
     _newGroupNameController = TextEditingController();
+    _userServices = UserServices();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserServices>(
-      builder: (context, profileState, child) => Drawer(
+    return Consumer<ApplicationState>(
+      builder: (context, appState, child) => Drawer(
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -62,13 +59,13 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
                       const SizedBox(
                         height: 16.0,
                       ),
-                      Text(profileState.currentUserName,
+                      Text(appState.currentUserName,
                           style: const TextStyle(
                               fontSize: 16, color: Colors.white)),
                       const SizedBox(
                         height: 16.0,
                       ),
-                      Text(profileState.currentUserEmail,
+                      Text(appState.currentUserEmail,
                           style: const TextStyle(
                               fontSize: 12, color: Colors.white)),
                     ],
@@ -84,7 +81,8 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
               //   },
               // ),
               StreamBuilder(
-                  stream: profileState.groupStream(),
+                  stream: _userServices.groupStream(
+                      currentUserEmail: appState.currentUserEmail),
                   builder: (context, snapShot) {
                     if (snapShot.hasData) {
                       return ListView.builder(
@@ -96,10 +94,9 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
                             title: Text(Tools().sliptElements(
                                 element: snapShot.data[index])[0]),
                             onTap: () {
-                              _expenseService.setcurrentUserGroup(
+                              appState.setCurrentUserGroup(
                                   currentUserGroup: snapShot.data[index]);
-                              _groupService.setcurrentUserGroup(
-                                  currentUserGroup: snapShot.data[index]);
+
                               Navigator.pop(context);
                             },
                           );

@@ -1,38 +1,40 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/app_state.dart';
 import 'package:fraction/database/group.database.dart';
-import 'package:fraction/database/notification.database.dart';
+// import 'package:fraction/database/notification.database.dart';
 import 'package:fraction/database/user.database.dart';
 import 'package:fraction/utils/constants.dart';
 
-class GroupServices extends ApplicationState {
+class GroupServices {
   late GroupDatabase _groupDatabaseRef;
   late UserDatabase _userDatabaseRef;
-  late NotificationDatabase _notificationDatabaseRef;
+  // late NotificationDatabase _notificationDatabaseRef;
 
   GroupServices() {
     _groupDatabaseRef = GroupDatabase();
     _userDatabaseRef = UserDatabase();
-    _notificationDatabaseRef = NotificationDatabase();
+    // _notificationDatabaseRef = NotificationDatabase();
   }
 
   Future<String> createGroup(
-      {required inputGroupName, required nextClearOffTimeStamp}) async {
+      {required String currentUserName,
+      required String currentUserEmail,
+      required inputGroupName,
+      required nextClearOffTimeStamp}) async {
     try {
       _groupDatabaseRef
           .createGroup(
               groupName: inputGroupName,
-              adminName: super.currentUserName,
-              adminEmail: super.currentUserEmail,
+              adminName: currentUserName,
+              adminEmail: currentUserEmail,
               nextClearOffTimeStamp: nextClearOffTimeStamp)
           .then((String groupNameCreatedWithIdentity) {
         _userDatabaseRef
             .insertGroupNameToProfile(
-                currentUserEmail: super.currentUserEmail,
+                currentUserEmail: currentUserEmail,
                 groupNameToAdd: groupNameCreatedWithIdentity)
             .whenComplete(() async {
-          super.initGroupAndExpenseInstances();
+          // super.initGroupAndExpenseInstances();
         });
       });
       return Constants().success;
@@ -59,7 +61,7 @@ class GroupServices extends ApplicationState {
                 currentUserName: currentUserName.trim())
             .whenComplete(() {
           _userDatabaseRef.insertGroupNameToProfile(
-              currentUserEmail: super.currentUserEmail,
+              currentUserEmail: currentUserEmail,
               groupNameToAdd: groupName.trim());
 
           // _notificationDatabaseRef.deleteNotification(docId: docId);
@@ -72,10 +74,9 @@ class GroupServices extends ApplicationState {
     }
   }
 
-  Stream getGroupDetials() {
+  Stream getGroupDetials({required currentUserGroup}) {
     try {
-      return _groupDatabaseRef.getGroupDetials(
-          groupName: super.currentUserGroup);
+      return _groupDatabaseRef.getGroupDetials(groupName: currentUserGroup);
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -84,22 +85,24 @@ class GroupServices extends ApplicationState {
     }
   }
 
-  Stream getMyTotalExpense() {
+  Stream getMyTotalExpense(
+      {required String currentUserEmail, required String currentUserGroup}) {
     try {
       return _groupDatabaseRef.getMyTotalExpense(
-          currentUserEmail: super.currentUserEmail,
-          groupName: super.currentUserGroup);
+          currentUserEmail: currentUserEmail, groupName: currentUserGroup);
     } catch (e) {
       return const Stream.empty();
     }
   }
 
-  StreamController broadCastMyTotalExpense() {
+  StreamController broadCastMyTotalExpense({
+    required String currentUserGroup,
+    required String currentUserEmail,
+  }) {
     StreamController streamController = StreamController.broadcast();
     try {
       streamController.addStream(_groupDatabaseRef.getMyTotalExpense(
-          currentUserEmail: super.currentUserEmail,
-          groupName: super.currentUserGroup));
+          currentUserEmail: currentUserEmail, groupName: currentUserGroup));
     } catch (e) {
       print(e);
     }
@@ -107,27 +110,28 @@ class GroupServices extends ApplicationState {
     return streamController;
   }
 
-  Future<List?> getMemberDetails() {
+  Future<List?> getMemberDetails({required String currentUserGroup}) {
     try {
       return _groupDatabaseRef.getMemberDetails(
-          currentUserGroup: super.currentUserGroup);
+          currentUserGroup: currentUserGroup);
     } catch (e) {
       return Future.value();
     }
   }
 
-  Future<void> clearOff({required DateTime nextClearOffDate}) async {
+  Future<void> clearOff(
+      {required DateTime nextClearOffDate,
+      required String currentUserGroup}) async {
     try {
       _groupDatabaseRef
           .clearOff(
-              groupName: super.currentUserGroup,
-              nextClearOffDate: nextClearOffDate)
+              groupName: currentUserGroup, nextClearOffDate: nextClearOffDate)
           .whenComplete(() async {
-        await super.initGroupAndExpenseInstances().whenComplete(() {
-          if (kDebugMode) {
-            print(super.currentExpenseInstance.toDate().toString());
-          }
-        });
+        // await super.initGroupAndExpenseInstances().whenComplete(() {
+        //   if (kDebugMode) {
+        //     // print(super.currentExpenseInstance.toDate().toString());
+        //   }
+        // });
       });
     } catch (e) {
       if (kDebugMode) {

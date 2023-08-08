@@ -1,26 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class Dashboard extends StatelessWidget {
-  const Dashboard({super.key, required this.context});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
-  final BuildContext context;
+  @override
+  State<StatefulWidget> createState() => _DashboardState();
+}
+
+class _DashboardState extends State<Dashboard> {
   final String moreMembersIcon = 'assets/icons/moreMembersIcon.svg';
+
+  late GroupServices _groupService;
+
+  @override
+  void initState() {
+    _groupService = GroupServices();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<GroupServices>(
-      builder: (context, groupServiceState, _) {
+    return Consumer<ApplicationState>(
+      builder: (context, appState, _) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: StreamBuilder(
-              stream: groupServiceState.getGroupDetials(),
+              stream: _groupService.getGroupDetials(
+                  currentUserGroup: appState.currentUserGroup),
               builder: (context, groupDetailsSnapshot) {
                 if (groupDetailsSnapshot.hasData) {
+                  // print(groupDetailsSnapshot.data);
                   return Container(
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
@@ -37,7 +52,10 @@ class Dashboard extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             StreamBuilder(
-                                stream: groupServiceState.getMyTotalExpense(),
+                                stream: _groupService.getMyTotalExpense(
+                                    currentUserEmail: appState.currentUserEmail,
+                                    currentUserGroup:
+                                        appState.currentUserGroup),
                                 builder: (context, myTotalExpenseSnapshot) {
                                   if (myTotalExpenseSnapshot.hasData) {
                                     return Row(
@@ -80,13 +98,14 @@ class Dashboard extends StatelessWidget {
                         Row(
                           children: <Widget>[
                             Text(Tools().sliptElements(
-                                element:
-                                    groupServiceState.currentUserGroup)[0]),
+                                element: appState.currentUserGroup)[0]),
                             IconButton(
                               icon: SvgPicture.asset(moreMembersIcon),
                               onPressed: () async {
                                 final someValue =
-                                    await groupServiceState.getMemberDetails();
+                                    await _groupService.getMemberDetails(
+                                        currentUserGroup:
+                                            appState.currentUserGroup);
                                 // for (var element in someValue!) {
 
                                 // }

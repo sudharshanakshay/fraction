@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:provider/provider.dart';
@@ -12,12 +13,14 @@ class CreateGroupLayout extends StatefulWidget {
 }
 
 class _CreateGroupLayoutState extends State<CreateGroupLayout> {
+  late GroupServices _groupServices;
   late TextEditingController _groupNameController;
   late TextEditingController _clearOffDateController;
   late GlobalKey<FormState> _formKey;
 
   @override
   void initState() {
+    _groupServices = GroupServices();
     _groupNameController = TextEditingController();
     _clearOffDateController = TextEditingController();
     _formKey = GlobalKey<FormState>();
@@ -56,8 +59,8 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Fracton'),
       ),
-      body: Consumer<GroupServices>(
-        builder: (context, groupServiceState, _) {
+      body: Consumer<ApplicationState>(
+        builder: (context, appState, _) {
           return Form(
             key: _formKey,
             child: SingleChildScrollView(
@@ -128,9 +131,12 @@ class _CreateGroupLayoutState extends State<CreateGroupLayout> {
                   FilledButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          if (groupServiceState.createGroup(
+                          if (_groupServices.createGroup(
                                   inputGroupName: _groupNameController.text,
-                                  nextClearOffTimeStamp: selectedDate) ==
+                                  nextClearOffTimeStamp: selectedDate,
+                                  currentUserName: appState.currentUserName,
+                                  currentUserEmail:
+                                      appState.currentUserEmail) ==
                               Constants().success) {
                             Navigator.pop(context);
                           }
