@@ -51,18 +51,20 @@ class GroupServices extends ApplicationState {
     required String docId,
   }) async {
     try {
-      _groupDatabaseRef
-          .addMeToGroup(
-              groupNameToAdd: groupName.trim(),
-              currentUserEmail: currentUserEmail.trim(),
-              currentUserName: currentUserName.trim())
-          .whenComplete(() {
-        _userDatabaseRef.insertGroupNameToProfile(
-            currentUserEmail: super.currentUserEmail,
-            groupNameToAdd: groupName.trim());
+      if (groupName.isNotEmpty) {
+        _groupDatabaseRef
+            .addMeToGroup(
+                groupNameToAdd: groupName.trim(),
+                currentUserEmail: currentUserEmail.trim(),
+                currentUserName: currentUserName.trim())
+            .whenComplete(() {
+          _userDatabaseRef.insertGroupNameToProfile(
+              currentUserEmail: super.currentUserEmail,
+              groupNameToAdd: groupName.trim());
 
-        _notificationDatabaseRef.deleteNotification(docId: docId);
-      });
+          // _notificationDatabaseRef.deleteNotification(docId: docId);
+        });
+      }
     } catch (e) {
       if (kDebugMode) {
         print(e);

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/services/notification/notification.service.dart';
+import 'package:fraction/utils/values.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NotificationRepoModel {
@@ -61,7 +62,7 @@ class NotificationRepo with ChangeNotifier {
   Future<void> inviteMember({required String to}) async {
     final prefs = await SharedPreferences.getInstance();
     final currentUerEmail = prefs.getString('currentUserEmail');
-    final currentUserGroup = prefs.getString('currentUserGroup');
+    final currentUserGroup = prefs.getString(currentUserGroupName);
     const title = 'you are invited to join the group';
     _notificationService.addNotification(
         from: currentUerEmail ?? '',
