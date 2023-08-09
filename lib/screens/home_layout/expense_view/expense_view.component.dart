@@ -13,12 +13,13 @@ class ExpenseView extends StatefulWidget {
 }
 
 class _ExpenseViewState extends State<ExpenseView> {
-  String timeNow = '';
   late ExpenseService _expenseService;
+  late String _expenseTime;
 
   @override
   void initState() {
     _expenseService = ExpenseService();
+    _expenseTime = '';
     super.initState();
   }
 
@@ -31,6 +32,7 @@ class _ExpenseViewState extends State<ExpenseView> {
         return const Text('Tap on any group _');
       } else {
         // ---- once the initialize of expense group instances is done ----
+
         return StreamBuilder(
             stream: _expenseService.getExpenseCollection(
                 currentUserGroup: appState.currentUserGroup,
@@ -48,15 +50,21 @@ class _ExpenseViewState extends State<ExpenseView> {
                   title: Text('no expense to display _ '),
                 );
               }
-
+              _expenseTime = '';
               return ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: snapshot.data?.docs.length,
                   itemBuilder: (BuildContext context, int index) {
-                    if (timeNow != snapshot.data!.docs[index]['timeStamp']) {
-                      timeNow =
-                          snapshot.data!.docs[index]['timeStamp'].toString();
+                    if (_expenseTime !=
+                        DateFormat.MMMMEEEEd()
+                            .format(snapshot.data!.docs[index]['timeStamp']
+                                .toDate())
+                            .toString()) {
+                      _expenseTime = DateFormat.MMMMEEEEd()
+                          .format(
+                              snapshot.data!.docs[index]['timeStamp'].toDate())
+                          .toString();
                       return Column(
                         mainAxisSize: MainAxisSize.max,
                         children: [
@@ -66,10 +74,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(
-                                    DateFormat.MMMMEEEEd().format(snapshot
-                                        .data!.docs[index]['timeStamp']
-                                        .toDate()),
+                                child: Text(_expenseTime,
                                     style: const TextStyle(fontSize: 20)),
                               ),
                             ],
