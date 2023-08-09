@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/repository/notification.repo.dart';
 import 'package:fraction/services/group/group.services.dart';
-import 'package:fraction/utils/color.dart';
+import 'package:fraction/services/user/user.services.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +20,7 @@ class GroupInfo extends StatefulWidget {
 
 class _GroupInfoState extends State<GroupInfo> {
   late GroupServices _groupServices;
+  late UserServices _userServices;
   final String clearOffIconPath = 'assets/icons/ClearOffIcon.svg';
   late DateTime next30day;
   late NotificationRepo _notificationRepoRef;
@@ -29,6 +30,7 @@ class _GroupInfoState extends State<GroupInfo> {
   @override
   void initState() {
     _groupServices = GroupServices();
+    _userServices = UserServices();
     _notificationRepoRef =
         Provider.of<NotificationRepo>(context, listen: false);
     _memberEmailController = TextEditingController();
@@ -50,29 +52,6 @@ class _GroupInfoState extends State<GroupInfo> {
           title: Text(
               'Fraction : ${Tools().sliptElements(element: appState.currentUserGroup)[0]}',
               style: const TextStyle(fontSize: 20)),
-          actions: [
-            kDebugMode
-                ? IconButton(onPressed: () {}, icon: const Icon(Icons.print))
-                : Container(),
-            IconButton(
-              onPressed: () async {
-                await confirmClearOff().then((value) async {
-                  if (value != Constants().cancel && value != null) {
-                    _groupServices
-                        .clearOff(
-                            nextClearOffDate: value as DateTime,
-                            currentUserGroup: appState.currentUserGroup)
-                        .whenComplete(() =>
-                            appState.refreshGroupNamesAndExpenseInstances());
-                  }
-                });
-              },
-              icon: SvgPicture.asset(clearOffIconPath),
-            ),
-            const SizedBox(
-              width: 8.0,
-            )
-          ],
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -143,17 +122,28 @@ class _GroupInfoState extends State<GroupInfo> {
                 child: Column(
                   children: [
                     ListTile(
-                      leading: SvgPicture.asset(
-                        clearOffIconPath,
-                        color: Colors.blueAccent,
-                      ),
-                      title: const Text(
-                        'Clear off',
-                        style:
-                            TextStyle(fontSize: 16.0, color: Colors.blueAccent),
-                      ),
-                      onTap: () {},
-                    ),
+                        leading: SvgPicture.asset(
+                          clearOffIconPath,
+                          color: Colors.blueAccent,
+                        ),
+                        title: const Text(
+                          'Clear off',
+                          style: TextStyle(
+                              fontSize: 16.0, color: Colors.blueAccent),
+                        ),
+                        onTap: () async {
+                          await confirmClearOff().then((value) async {
+                            if (value != Constants().cancel && value != null) {
+                              _groupServices
+                                  .clearOff(
+                                      nextClearOffDate: value as DateTime,
+                                      currentUserGroup:
+                                          appState.currentUserGroup)
+                                  .whenComplete(() => appState
+                                      .refreshGroupNamesAndExpenseInstances());
+                            }
+                          });
+                        }),
                     ListTile(
                       leading: const Icon(
                         Icons.exit_to_app_outlined,
@@ -163,7 +153,22 @@ class _GroupInfoState extends State<GroupInfo> {
                         'Exit group',
                         style: TextStyle(fontSize: 16.0, color: Colors.red),
                       ),
-                      onTap: () {},
+                      onTap: () async {
+                        await confirmExitGroup().then((value) async {
+                          if (value != Constants().cancel && value != null) {
+                            _userServices
+                                .exitGroup(
+                                    currentUserEmail: appState.currentUserEmail,
+                                    currentUserGroup: appState.currentUserGroup)
+                                .whenComplete(() => appState
+                                    .refreshGroupNamesAndExpenseInstances()
+                                    .whenComplete(() => appState
+                                        .initCurrentUserGroup(bypassState: true)
+                                        .whenComplete(
+                                            () => Navigator.pop(context))));
+                          }
+                        });
+                      },
                     ),
                     const SizedBox(
                       height: 40,
@@ -243,6 +248,35 @@ class _GroupInfoState extends State<GroupInfo> {
             },
             child: const Text('Invite')),
       ],
+    );
+  }
+
+  Future<String?> confirmExitGroup() {
+    return showDialog<String>(
+      context: context,
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Exit group'),
+        content: const Text(
+            'exiting group will remore you from the group, but your expense data will persist _'),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'OK'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(6.0)),
+              child: const Text(
+                'OK',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, 'Cancel'),
+            child: const Text('Cancel'),
+          ),
+        ],
+      ),
     );
   }
 

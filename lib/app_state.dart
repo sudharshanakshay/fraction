@@ -238,11 +238,12 @@ class ApplicationState extends ChangeNotifier {
   }
 
   // ---- set currentUserGroup ----
-  Future<void> initCurrentUserGroup() async {
+  Future<void> initCurrentUserGroup({bypassState = false}) async {
     final prefs = await SharedPreferences.getInstance();
     // ---- set currentGroupNme ----
-    if (_currentUserGroup.isEmpty) {
-      if (prefs.getString(_currentUserGroupName) != null &&
+    if (!bypassState || _currentUserGroup.isEmpty) {
+      if (!bypassState &&
+          prefs.getString(_currentUserGroupName) != null &&
           prefs.getString(_currentUserGroupName)!.isNotEmpty) {
         print('prefs : currentUserGroup is not null');
         print(prefs.getString(_currentUserGroupName));

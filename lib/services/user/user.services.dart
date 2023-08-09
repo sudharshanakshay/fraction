@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:fraction/database/user.database.dart';
 
 class UserServices {
@@ -28,6 +29,20 @@ class UserServices {
     } catch (e) {
       // To-Do
       // display error to UI
+    }
+  }
+
+  Future<void> exitGroup(
+      {required String currentUserEmail,
+      required String currentUserGroup}) async {
+    try {
+      _userDatabaseRef.exitGroup(
+          currentUserEmail: currentUserEmail,
+          currentUserGroup: currentUserGroup);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
     }
   }
 }
