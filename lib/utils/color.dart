@@ -9,6 +9,7 @@ class AppColors {
   Color get appDrawerHeaderBackgroudColor => Color.fromARGB(255, 154, 172, 232);
   Color get notificationListTileColor => Colors.grey.shade100;
   Color get groupListTileColor => Colors.grey.shade100;
+  Color get exitGroupTileColor => Colors.red.shade100;
 }
 
 final rng = Random();

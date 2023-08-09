@@ -5,6 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/repository/notification.repo.dart';
 import 'package:fraction/services/group/group.services.dart';
+import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
@@ -75,62 +76,102 @@ class _GroupInfoState extends State<GroupInfo> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                StreamBuilder<List>(
-                    stream: FirebaseFirestore.instance
-                        .collection('group')
-                        .doc(appState.currentUserGroup)
-                        .snapshots()
-                        .asyncExpand((doc) {
-                      try {
-                        List memberDetails = [];
-                        if (doc.exists && doc.data()!.isNotEmpty) {
-                          var groupMemberDetails = doc.data()!['groupMembers']
-                              as Map<String, dynamic>;
-                          groupMemberDetails.forEach((key, value) {
-                            memberDetails.add(value);
-                          });
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  StreamBuilder<List>(
+                      stream: FirebaseFirestore.instance
+                          .collection('group')
+                          .doc(appState.currentUserGroup)
+                          .snapshots()
+                          .asyncExpand((doc) {
+                        try {
+                          List memberDetails = [];
+                          if (doc.exists && doc.data()!.isNotEmpty) {
+                            var groupMemberDetails = doc.data()!['groupMembers']
+                                as Map<String, dynamic>;
+                            groupMemberDetails.forEach((key, value) {
+                              memberDetails.add(value);
+                            });
+                          }
+                          return Stream.value(memberDetails);
+                        } catch (e) {
+                          return const Stream.empty();
                         }
-                        return Stream.value(memberDetails);
-                      } catch (e) {
-                        return const Stream.empty();
-                      }
-                    }),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return AccountPallet(
-                                        streamSnapshot: snapshot, index: index);
-                                  },
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          childAspectRatio: (1 / .4)),
+                      }),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: GridView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: snapshot.data!.length,
+                                    itemBuilder:
+                                        (BuildContext context, int index) {
+                                      return AccountPallet(
+                                          streamSnapshot: snapshot,
+                                          index: index);
+                                    },
+                                    gridDelegate:
+                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 2,
+                                            childAspectRatio: (1 / .4)),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    }),
-                inviteToggle ? inviteMemberToggle() : inviteMemberView(),
-              ],
-            ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return Container();
+                        }
+                      }),
+                  inviteToggle ? inviteMemberToggle() : inviteMemberView(),
+                ],
+              ),
+              Container(
+                color: const Color(0x00640000),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: SvgPicture.asset(
+                        clearOffIconPath,
+                        color: Colors.blueAccent,
+                      ),
+                      title: const Text(
+                        'Clear off',
+                        style:
+                            TextStyle(fontSize: 16.0, color: Colors.blueAccent),
+                      ),
+                      onTap: () {},
+                    ),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.exit_to_app_outlined,
+                        color: Colors.red,
+                      ),
+                      title: const Text(
+                        'Exit group',
+                        style: TextStyle(fontSize: 16.0, color: Colors.red),
+                      ),
+                      onTap: () {},
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       );

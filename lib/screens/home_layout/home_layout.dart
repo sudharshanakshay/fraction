@@ -53,7 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         Dashboard(),
                         ExpenseView(),
                         SizedBox(
-                          height: 70,
+                          height: 80,
                         )
                       ],
                     ),

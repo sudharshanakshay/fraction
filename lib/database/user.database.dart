@@ -68,4 +68,15 @@ class UserDatabase {
       }
     });
   }
+
+  Future<void> exitGroup(
+      {required String currentUserEmail,
+      required String currentUserGroup}) async {
+    _firebaseFirestoreRef
+        .collection(_userCollectionName)
+        .doc(currentUserEmail)
+        .update({
+      'groupNames': FieldValue.arrayRemove([currentUserGroup])
+    });
+  }
 }
