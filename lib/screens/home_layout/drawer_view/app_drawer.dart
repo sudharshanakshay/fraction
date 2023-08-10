@@ -31,6 +31,12 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(
       builder: (context, appState, child) => Drawer(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(6),
+            bottomRight: Radius.circular(6),
+          ),
+        ),
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[

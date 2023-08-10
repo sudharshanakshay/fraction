@@ -16,11 +16,14 @@ class ExpenseView extends StatefulWidget {
 class _ExpenseViewState extends State<ExpenseView> {
   late ExpenseService _expenseService;
   late String _expenseTime;
+  late String _today;
 
   @override
   void initState() {
     _expenseService = ExpenseService();
     _expenseTime = '';
+    _today = DateFormat.MMMMEEEEd().format(DateTime.now()).toString();
+
     super.initState();
   }
 
@@ -77,8 +80,12 @@ class _ExpenseViewState extends State<ExpenseView> {
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Text(_expenseTime,
-                                    style: const TextStyle(fontSize: 20)),
+                                child: _expenseTime == _today
+                                    ? Text(
+                                        'Today, ${DateFormat.MMMMd().format(snapshot.data!.docs[index]['timeStamp'].toDate()).toString()}',
+                                        style: const TextStyle(fontSize: 20))
+                                    : Text(_expenseTime,
+                                        style: const TextStyle(fontSize: 20)),
                               ),
                             ],
                           ),
