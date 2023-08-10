@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/screens/home_layout/expense_view/widget/expense_pallet.dart';
+import 'package:fraction/screens/home_layout/expense_view/widget/expense_shadow.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -29,7 +30,8 @@ class _ExpenseViewState extends State<ExpenseView> {
       if (appState.groupAndExpenseInstances[appState.currentUserGroup] ==
           null) {
         // ---- time to initialize expense group instances ----
-        return const Text('Tap on any group _');
+        // return const Text('fetching data _');
+        return const ExpenseShadow();
       } else {
         // ---- once the initialize of expense group instances is done ----
 
@@ -39,12 +41,13 @@ class _ExpenseViewState extends State<ExpenseView> {
                 currentExpenseInstance: appState.currentExpenseInstance),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const Column(
-                  children: [
-                    Icon(Icons.refresh_outlined),
-                    Text('loading now _')
-                  ],
-                );
+                return const ExpenseShadow();
+                // return const Column(
+                //   children: [
+                //     Icon(Icons.refresh_outlined),
+                //     Text('loading now ...')
+                //   ],
+                // );
               } else if (snapshot.data!.docs.isEmpty) {
                 return const ListTile(
                   title: Text('no expense to display _ '),
