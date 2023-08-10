@@ -159,13 +159,9 @@ class _GroupInfoState extends State<GroupInfo> {
                             _userServices
                                 .exitGroup(
                                     currentUserEmail: appState.currentUserEmail,
-                                    currentUserGroup: appState.currentUserGroup)
-                                .whenComplete(() => appState
-                                    .refreshGroupNamesAndExpenseInstances()
-                                    .whenComplete(() => appState
-                                        .initCurrentUserGroup(bypassState: true)
-                                        .whenComplete(
-                                            () => Navigator.pop(context))));
+                                    currentUserGroup: appState.currentUserGroup,
+                                    appState: appState)
+                                .whenComplete(() => Navigator.pop(context));
                           }
                         });
                       },

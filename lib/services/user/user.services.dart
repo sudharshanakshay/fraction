@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:fraction/app_state.dart';
 import 'package:fraction/database/user.database.dart';
 
 class UserServices {
@@ -34,11 +35,14 @@ class UserServices {
 
   Future<void> exitGroup(
       {required String currentUserEmail,
-      required String currentUserGroup}) async {
+      required String currentUserGroup,
+      required ApplicationState appState}) async {
     try {
-      _userDatabaseRef.exitGroup(
-          currentUserEmail: currentUserEmail,
-          currentUserGroup: currentUserGroup);
+      _userDatabaseRef
+          .exitGroup(
+              currentUserEmail: currentUserEmail,
+              currentUserGroup: currentUserGroup)
+          .whenComplete(() => appState.initCurrentUserGroup(bypassState: true));
     } catch (e) {
       if (kDebugMode) {
         print(e);

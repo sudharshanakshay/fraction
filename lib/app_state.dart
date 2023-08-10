@@ -95,10 +95,6 @@ class ApplicationState extends ChangeNotifier {
                     .get()
                     .then((doc) {
                   if (doc.exists) {
-                    if (kDebugMode) {
-                      print(
-                          '(app_state 1) : expense instance : ${doc.data()!['expenseInstance']}');
-                    }
                     final value = doc.data()!['expenseInstance'];
                     Map<String, Timestamp> data = {groupName: value};
 
@@ -110,7 +106,9 @@ class ApplicationState extends ChangeNotifier {
                 });
               }
             } else {
-              print('user has no group');
+              if (kDebugMode) {
+                print('user has no group');
+              }
               _hasOneGroup = false;
               notifyListeners();
             }
@@ -120,12 +118,17 @@ class ApplicationState extends ChangeNotifier {
         // ---- set currentGroupNme ----
         if (prefs.getString(_currentUserGroupName) != null &&
             prefs.getString(_currentUserGroupName)!.isNotEmpty) {
-          print('prefs : currentUserGroup is not null');
-          print(prefs.getString(_currentUserGroupName));
+          if (kDebugMode) {
+            print('prefs : currentUserGroup is neither null or empty');
+            print(prefs.getString(_currentUserGroupName));
+          }
+
           _currentUserGroup = prefs.getString(_currentUserGroupName)!;
           // notifyListeners();
         } else {
-          print('prefs : currentUserGroup is null or empty');
+          if (kDebugMode) {
+            print('prefs : currentUserGroup is either null or empty');
+          }
           _firebaseFirestoreRef
               .collection(_userCollectionName)
               .doc(currentUserEmail)
@@ -135,10 +138,6 @@ class ApplicationState extends ChangeNotifier {
             _currentUserName = profileInfo['userName'];
             final groupInfo = profileInfo['groupNames'] as List;
             if (groupInfo.isNotEmpty) {
-              print(
-                  'group info recieved from FirebaseFirestore & groupNames is not empty');
-              print(groupInfo[0]);
-
               prefs.setString(_currentUserGroupName, groupInfo[0]);
               _currentUserGroup = groupInfo[0];
               notifyListeners();
@@ -155,9 +154,12 @@ class ApplicationState extends ChangeNotifier {
       } else {
         _loggedIn = false;
       }
-      print('currentUserGroup : $_currentUserGroup');
-      print('currentUserName : $_currentUserName');
-      print('currentUserEmail : $_currentUserEmail');
+      if (kDebugMode) {
+        print('currentUserGroup : $_currentUserGroup');
+        print('currentUserName : $_currentUserName');
+        print('currentUserEmail : $_currentUserEmail');
+      }
+
       notifyListeners();
     });
   }
@@ -214,22 +216,19 @@ class ApplicationState extends ChangeNotifier {
                 .get()
                 .then((doc) {
               if (doc.exists) {
-                if (kDebugMode) {
-                  print(
-                      '(app_state 1) : expense instance : ${doc.data()!['expenseInstance']}');
-                }
                 final value = doc.data()!['expenseInstance'];
                 Map<String, Timestamp> data = {groupName: value};
 
                 // ---- set the group name & instance value from the groups database ----
                 _groupsAndExpenseInstances.addAll(data);
                 notifyListeners();
-                // print('group added');
               }
             });
           }
         } else {
-          print('user has no group');
+          if (kDebugMode) {
+            print('user has no group');
+          }
           _hasOneGroup = false;
           notifyListeners();
         }
@@ -239,18 +238,24 @@ class ApplicationState extends ChangeNotifier {
 
   // ---- set currentUserGroup ----
   Future<void> initCurrentUserGroup({bypassState = false}) async {
-    final prefs = await SharedPreferences.getInstance();
     // ---- set currentGroupNme ----
-    if (!bypassState || _currentUserGroup.isEmpty) {
+    if (bypassState || _currentUserGroup.isEmpty) {
+      final prefs = await SharedPreferences.getInstance();
+
       if (!bypassState &&
           prefs.getString(_currentUserGroupName) != null &&
           prefs.getString(_currentUserGroupName)!.isNotEmpty) {
-        print('prefs : currentUserGroup is not null');
-        print(prefs.getString(_currentUserGroupName));
+        final prefs = await SharedPreferences.getInstance();
+
+        if (kDebugMode) {
+          print('prefs : currentUserGroup is neither null or empty');
+          print(prefs.getString(_currentUserGroupName));
+        }
         _currentUserGroup = prefs.getString(_currentUserGroupName)!;
-        // notifyListeners();
       } else {
-        print('prefs : currentUserGroup is null or empty');
+        if (kDebugMode) {
+          print('prefs : currentUserGroup is either null or empty');
+        }
         _firebaseFirestoreRef
             .collection(_userCollectionName)
             .doc(currentUserEmail)
@@ -260,10 +265,6 @@ class ApplicationState extends ChangeNotifier {
           _currentUserName = profileInfo['userName'];
           final groupInfo = profileInfo['groupNames'] as List;
           if (groupInfo.isNotEmpty) {
-            print(
-                'group info recieved from FirebaseFirestore & groupNames is not empty');
-            print(groupInfo[0]);
-
             prefs.setString(_currentUserGroupName, groupInfo[0]);
             _currentUserGroup = groupInfo[0];
             notifyListeners();
@@ -280,17 +281,8 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  printGroupMap() {
-    _groupsAndExpenseInstances.forEach((key, value) {
-      if (kDebugMode) {
-        print('key : $key -- value: ${value.toDate()}');
-      }
-    });
-  }
-
   // ---- set currentUserGroup variable ----
   Future<void> setCurrentUserGroup({required String currentUserGroup}) async {
-    print('set group is called');
     final prefs = await SharedPreferences.getInstance();
 
     _currentUserGroup = currentUserGroup;
@@ -303,9 +295,7 @@ class ApplicationState extends ChangeNotifier {
 
   Future<void> signOut() async {
     final prefs = await SharedPreferences.getInstance();
-    // await prefs.remove('currentUserEmail');
-    // await prefs.remove(_currentUserGroupName);
-    // await prefs.remove('currentUserEmail');
+
     prefs.clear().then((value) {
       if (value) {
         FirebaseAuth.instance.signOut();
