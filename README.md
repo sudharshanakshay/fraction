@@ -1,18 +1,13 @@
-# Fraction
+# <img src="./logo/fraction_app_logox400x300.png" height='50' width='70'/> Fraction App
 
-A new Flutter project.
+Tired of awkward money conversations? Well, Say hello to our expense management app! Splitting bills with friends has never been easier. Calculate, tract, and settle shared expenses hassle-free. Spend less time on calculations, and more time making memories together!
 
-## Getting Started
+### 📊💰 Manage shared expenses effortlessly with our app!
 
-This project is intended for managing group expenses.
-use case : managing bachelor room expense, where user can keep note all the expenses &
-  can be cleard off by month end by sharing the total expense by the between them. 
+1. 🔄👥 Create multiple groups for seamless expense tracking.
 
-A few resources to get you started if this is your first Flutter project:
+2. 🗓️⏱️ Set clear-off dates to simplify expense settlement.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## 🚀🌟 Join our open-source project and contribute to its growth!
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### 🤝🌐 We invite you to collaborate and enhance the app on GitHub.
