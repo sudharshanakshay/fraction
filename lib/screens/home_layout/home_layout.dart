@@ -23,13 +23,15 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
-            actions: appState.hasOneGroup
-                ? [
-                    IconButton(
+            actions: 
+            IconButton(
                         onPressed: () {
                           Navigator.pushNamed(context, '/notification');
                         },
                         icon: const Icon(Icons.notifications_active_outlined)),
+            ,appState.hasOneGroup
+                ? [
+                    
                     IconButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/groupInfo');
