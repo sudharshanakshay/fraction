@@ -23,27 +23,25 @@ class _MyHomePageState extends State<MyHomePage> {
           appBar: AppBar(
             backgroundColor: Theme.of(context).colorScheme.inversePrimary,
             title: Text(widget.title),
-            actions: 
-            IconButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/notification');
-                        },
-                        icon: const Icon(Icons.notifications_active_outlined)),
-            ,appState.hasOneGroup
-                ? [
-                    
-                    IconButton(
+            actions: [
+              IconButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/notification');
+                  },
+                  icon: const Icon(Icons.notifications_active_outlined)),
+              appState.hasOneGroup
+                  ? IconButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/groupInfo');
                       },
                       // icon: SvgPicture.asset(_settingsIconPath),
                       icon: const Icon(Icons.navigate_next),
-                    ),
-                    const SizedBox(
-                      width: 8.0,
                     )
-                  ]
-                : [],
+                  : Container(),
+              const SizedBox(
+                width: 8.0,
+              )
+            ],
           ),
           drawer: const FractionAppDrawer(),
           body: appState.hasOneGroup
