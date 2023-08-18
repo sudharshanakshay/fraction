@@ -68,7 +68,7 @@ class GroupDatabase {
               currentUserEmailR: {
                 'memberEmail': currentUserEmail,
                 'memberName': currentUserName,
-                'totalExpense': 1
+                'totalExpense': 0
               }
             }
           };
