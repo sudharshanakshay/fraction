@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
@@ -50,129 +49,135 @@ class _GroupInfoState extends State<GroupInfo> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(
-              'Fraction : ${Tools().sliptElements(element: appState.currentUserGroup)[0]}',
+              Tools().sliptElements(element: appState.currentUserGroup)[0],
               style: const TextStyle(fontSize: 20)),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  StreamBuilder<List>(
-                      stream: FirebaseFirestore.instance
-                          .collection('group')
-                          .doc(appState.currentUserGroup)
-                          .snapshots()
-                          .asyncExpand((doc) {
-                        try {
-                          List memberDetails = [];
-                          if (doc.exists && doc.data()!.isNotEmpty) {
-                            var groupMemberDetails = doc.data()!['groupMembers']
-                                as Map<String, dynamic>;
-                            groupMemberDetails.forEach((key, value) {
-                              memberDetails.add(value);
-                            });
-                          }
-                          return Stream.value(memberDetails);
-                        } catch (e) {
-                          return const Stream.empty();
-                        }
-                      }),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: GridView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: snapshot.data!.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return AccountPallet(
-                                          streamSnapshot: snapshot,
-                                          index: index);
-                                    },
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            childAspectRatio: (1 / .4)),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return Container();
-                        }
-                      }),
-                  inviteToggle ? inviteMemberToggle() : inviteMemberView(),
-                ],
-              ),
-              Container(
-                color: const Color(0x00640000),
-                child: Column(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    ListTile(
-                        leading: SvgPicture.asset(
-                          clearOffIconPath,
-                          color: Colors.blueAccent,
-                        ),
-                        title: const Text(
-                          'Clear off',
-                          style: TextStyle(
-                              fontSize: 16.0, color: Colors.blueAccent),
-                        ),
-                        onTap: () async {
-                          await confirmClearOff().then((value) async {
-                            if (value != Constants().cancel && value != null) {
-                              _groupServices
-                                  .clearOff(
-                                      nextClearOffDate: value as DateTime,
-                                      currentUserGroup:
-                                          appState.currentUserGroup)
-                                  .whenComplete(() => appState
-                                      .refreshGroupNamesAndExpenseInstances());
+                    StreamBuilder<List>(
+                        stream: FirebaseFirestore.instance
+                            .collection('group')
+                            .doc(appState.currentUserGroup)
+                            .snapshots()
+                            .asyncExpand((doc) {
+                          try {
+                            List memberDetails = [];
+                            if (doc.exists && doc.data()!.isNotEmpty) {
+                              var groupMemberDetails =
+                                  doc.data()!['groupMembers']
+                                      as Map<String, dynamic>;
+                              groupMemberDetails.forEach((key, value) {
+                                memberDetails.add(value);
+                              });
                             }
-                          });
-                        }),
-                    ListTile(
-                      leading: const Icon(
-                        Icons.exit_to_app_outlined,
-                        color: Colors.red,
-                      ),
-                      title: const Text(
-                        'Exit group',
-                        style: TextStyle(fontSize: 16.0, color: Colors.red),
-                      ),
-                      onTap: () async {
-                        await confirmExitGroup().then((value) async {
-                          if (value != Constants().cancel && value != null) {
-                            _userServices
-                                .exitGroup(
-                                    currentUserEmail: appState.currentUserEmail,
-                                    currentUserGroup: appState.currentUserGroup,
-                                    appState: appState)
-                                .whenComplete(() => Navigator.pop(context));
+                            return Stream.value(memberDetails);
+                          } catch (e) {
+                            return const Stream.empty();
                           }
-                        });
-                      },
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
+                        }),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return SingleChildScrollView(
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                    child: GridView.builder(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return AccountPallet(
+                                            streamSnapshot: snapshot,
+                                            index: index);
+                                      },
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              childAspectRatio: (1 / .4)),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else {
+                            return Container();
+                          }
+                        }),
+                    inviteToggle ? inviteMemberToggle() : inviteMemberView(),
                   ],
                 ),
-              ),
-            ],
+                Container(
+                  color: const Color(0x00640000),
+                  child: Column(
+                    children: [
+                      ListTile(
+                          leading: SvgPicture.asset(
+                            clearOffIconPath,
+                            color: Colors.blueAccent,
+                          ),
+                          title: const Text(
+                            'Clear off',
+                            style: TextStyle(
+                                fontSize: 16.0, color: Colors.blueAccent),
+                          ),
+                          onTap: () async {
+                            await confirmClearOff().then((value) async {
+                              if (value != Constants().cancel &&
+                                  value != null) {
+                                _groupServices
+                                    .clearOff(
+                                        nextClearOffDate: value as DateTime,
+                                        currentUserGroup:
+                                            appState.currentUserGroup)
+                                    .whenComplete(() => appState
+                                        .refreshGroupNamesAndExpenseInstances());
+                              }
+                            });
+                          }),
+                      ListTile(
+                        leading: const Icon(
+                          Icons.exit_to_app_outlined,
+                          color: Colors.red,
+                        ),
+                        title: const Text(
+                          'Exit group',
+                          style: TextStyle(fontSize: 16.0, color: Colors.red),
+                        ),
+                        onTap: () async {
+                          await confirmExitGroup().then((value) async {
+                            if (value != Constants().cancel && value != null) {
+                              _userServices
+                                  .exitGroup(
+                                      currentUserEmail:
+                                          appState.currentUserEmail,
+                                      currentUserGroup:
+                                          appState.currentUserGroup,
+                                      appState: appState)
+                                  .whenComplete(() => Navigator.pop(context));
+                            }
+                          });
+                        },
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
