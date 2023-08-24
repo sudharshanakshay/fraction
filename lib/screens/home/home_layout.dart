@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/screens/home/views/dashboard/dashboard.component.dart';
 import 'package:fraction/screens/drawer/app_drawer.dart';
-import 'package:fraction/screens/home/views/view_expense/expense_view.component.dart';
+import 'package:fraction/screens/home/views/view_expense/view_expense.dart';
+import 'package:fraction/screens/home/widgets/add_expense/add_expense.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -80,10 +81,19 @@ class _MyHomePageState extends State<MyHomePage> {
               ? FloatingActionButton(
                   child: const Icon(Icons.add),
                   onPressed: () {
-                    Navigator.pushNamed(context, '/addExpense');
+                    showAddExpenseDialog();
+                    // Navigator.pushNamed(context, '/addExpense');
                   },
                 )
               : Container());
     });
+  }
+
+  Future showAddExpenseDialog() {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const Dialog.fullscreen(child: AddExpense());
+        });
   }
 }
