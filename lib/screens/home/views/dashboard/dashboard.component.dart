@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/screens/home/views/dashboard/widgets/dashboard_shadow.dart';
 import 'package:fraction/services/group/group.services.dart';
+import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -44,7 +45,9 @@ class _DashboardState extends State<Dashboard> {
                   decoration: BoxDecoration(
                       border: Border.all(
                         width: 2,
-                        color: Colors.blue.shade100,
+                        color: appState.toggleRandomDashboardColor
+                            ? getRandomColor()
+                            : Colors.blue.shade100,
                       ),
                       borderRadius: BorderRadius.circular(6)),
                   child: Column(

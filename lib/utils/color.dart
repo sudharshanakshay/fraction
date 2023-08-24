@@ -37,6 +37,6 @@ const randomColors_shade200 = [
   Color(0xFFA5D6A7), // green
   Color(0xFFFFE082), // amber
   Color(0xFFCE93D8), // purple
-  Color(0xFF90CAF9), // blue
+  // Color(0xFF90CAF9), // blue
   Color(0xFFEF9A9A), // red
 ];

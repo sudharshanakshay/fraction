@@ -8,6 +8,7 @@ import 'package:fraction/screens/home/home.screen.dart';
 import 'package:fraction/screens/notification/notification.screen.dart';
 import 'package:fraction/screens/profile/profile.screen.dart';
 import 'package:fraction/screens/auth/sign_in.screen.dart';
+import 'package:fraction/screens/settings/settings.screen.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 
@@ -66,6 +67,10 @@ class MyApp extends StatelessWidget {
           '/profile': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
                   ? const ProfileScreen()
+                  : const SignInScreen()),
+          '/settings': (context) => Consumer<ApplicationState>(
+              builder: (context, appState, _) => appState.loggedIn
+                  ? const SettingsScreen()
                   : const SignInScreen()),
           '/createGroup': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
