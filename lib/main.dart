@@ -1,13 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/repository/notification.repo.dart';
-import 'package:fraction/screens/auth/register.dart';
-import 'package:fraction/screens/create_group/create_group.dart';
+import 'package:fraction/screens/auth/register.screen.dart';
+import 'package:fraction/screens/create_group/create_group.screen.dart';
 import 'package:fraction/screens/home/views/group_info/group_info_view.dart';
-import 'package:fraction/screens/home/home_layout.dart';
-import 'package:fraction/screens/notification_view/notification_view.dart';
-import 'package:fraction/screens/profile/profile_layout.dart';
-import 'package:fraction/screens/auth/sign_in.dart';
+import 'package:fraction/screens/home/home.screen.dart';
+import 'package:fraction/screens/notification/notification.screen.dart';
+import 'package:fraction/screens/profile/profile.screen.dart';
+import 'package:fraction/screens/auth/sign_in.screen.dart';
+import 'package:fraction/screens/settings/settings.screen.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 
@@ -44,39 +45,44 @@ class MyApp extends StatelessWidget {
         // home: const CreateGroupLayout(),
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
-                ? const SignInPage()
-                : const MyHomePage(
+                ? const SignInScreen()
+                : const HomeScreen(
                     title: 'Fraction',
                   )),
         routes: {
           '/logIn': (context) => Consumer<ApplicationState>(
                 builder: (context, value, child) => value.loggedIn
-                    ? const MyHomePage(title: 'Fraction')
-                    : const SignInPage(),
+                    ? const HomeScreen(title: 'Fraction')
+                    : const SignInScreen(),
               ),
           '/register': (context) => Consumer<ApplicationState>(
                 builder: (context, value, child) => value.loggedIn
-                    ? const MyHomePage(title: 'Fraction')
-                    : const RegisterPage(),
+                    ? const HomeScreen(title: 'Fraction')
+                    : const RegisterScreen(),
               ),
           '/home': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
-                  ? const MyHomePage(title: 'Fraction')
-                  : const SignInPage()),
+                  ? const HomeScreen(title: 'Fraction')
+                  : const SignInScreen()),
           '/profile': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) =>
-                  appState.loggedIn ? const Profile() : const SignInPage()),
+              builder: (context, appState, _) => appState.loggedIn
+                  ? const ProfileScreen()
+                  : const SignInScreen()),
+          '/settings': (context) => Consumer<ApplicationState>(
+              builder: (context, appState, _) => appState.loggedIn
+                  ? const SettingsScreen()
+                  : const SignInScreen()),
           '/createGroup': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
-                  ? const CreateGroupView()
-                  : const SignInPage()),
+                  ? const CreateGroupScreen()
+                  : const SignInScreen()),
           '/groupInfo': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) =>
-                  appState.loggedIn ? const GroupInfo() : const SignInPage()),
+                  appState.loggedIn ? const GroupInfo() : const SignInScreen()),
           '/notification': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
-                  ? const NotificationView()
-                  : const SignInPage()),
+                  ? const NotificationScreen()
+                  : const SignInScreen()),
         });
   }
 }

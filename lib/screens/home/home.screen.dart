@@ -6,16 +6,16 @@ import 'package:fraction/screens/home/views/view_expense/view_expense.dart';
 import 'package:fraction/screens/home/widgets/add_expense/add_expense.dart';
 import 'package:provider/provider.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   // final String _settingsIconPath = 'assets/icons/SettingsIcon.svg';
   @override
   Widget build(BuildContext context) {

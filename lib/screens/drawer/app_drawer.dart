@@ -57,7 +57,7 @@ class _FractionAppDrawerState extends State<FractionAppDrawer> {
                           SvgPicture.asset(profileIconPath),
                           IconButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, '/profile');
+                                Navigator.pushNamed(context, '/settings');
                               },
                               icon: SvgPicture.asset(settingsIconPath)),
                         ],

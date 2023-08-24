@@ -3,14 +3,14 @@ import 'package:fraction/screens/auth/widgets/email_input.widget.dart';
 import 'package:fraction/screens/auth/widgets/password_input.widget.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({Key? key}) : super(key: key);
+class SignInScreen extends StatefulWidget {
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => _SignInPageState();
+  State<StatefulWidget> createState() => _SignInScreenState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignInScreenState extends State<SignInScreen> {
   late AuthServices _authServices;
   final _emailStringController = TextEditingController();
   final _passwordStringController = TextEditingController();

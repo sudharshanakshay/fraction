@@ -10,6 +10,7 @@ import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
   final String _currentUserGroupName = 'currentUserGroupName';
+  final String _settingsUseRandomDashboardColorName = 's-drc';
 
   late FirebaseFirestore _firebaseFirestoreRef;
   late String _userCollectionName;
@@ -53,6 +54,9 @@ class ApplicationState extends ChangeNotifier {
 
   Timestamp get currentExpenseInstance =>
       _groupsAndExpenseInstances[_currentUserGroup]!;
+
+  bool _toggleRandomDashboardColor = false;
+  get toggleRandomDashboardColor => _toggleRandomDashboardColor;
 
   // ------------- Firebase Initailization -------------
 
@@ -150,6 +154,11 @@ class ApplicationState extends ChangeNotifier {
           if (kDebugMode) {
             print(_currentUserGroup);
           }
+        }
+
+        if (prefs.getBool(_settingsUseRandomDashboardColorName) != null) {
+          _toggleRandomDashboardColor =
+              prefs.getBool(_settingsUseRandomDashboardColorName) ?? false;
         }
       } else {
         _loggedIn = false;
@@ -281,6 +290,18 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
+  Future<void> setRandomDashboardColor({required bool value}) async {
+    final prefs = await SharedPreferences.getInstance();
+    _toggleRandomDashboardColor = value;
+    prefs.setBool(_settingsUseRandomDashboardColorName, value);
+  }
+
+  Future<void> refreshRandomDashboardColor() async {
+    final prefs = await SharedPreferences.getInstance();
+    _toggleRandomDashboardColor =
+        prefs.getBool(_settingsUseRandomDashboardColorName) ?? false;
+  }
+
   // ---- set currentUserGroup variable ----
   Future<void> setCurrentUserGroup({required String currentUserGroup}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -304,7 +325,7 @@ class ApplicationState extends ChangeNotifier {
         }
       } else {
         if (kDebugMode) {
-          print('---- error  clearing ----');
+          print('---- error clearing ----');
         }
       }
     });
