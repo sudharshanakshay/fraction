@@ -1,13 +1,13 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/repository/notification.repo.dart';
-import 'package:fraction/screens/auth/register.dart';
-import 'package:fraction/screens/create_group/create_group.dart';
+import 'package:fraction/screens/auth/register.screen.dart';
+import 'package:fraction/screens/create_group/create_group.screen.dart';
 import 'package:fraction/screens/home/views/group_info/group_info_view.dart';
-import 'package:fraction/screens/home/home_layout.dart';
-import 'package:fraction/screens/notification_view/notification_view.dart';
-import 'package:fraction/screens/profile/profile_layout.dart';
-import 'package:fraction/screens/auth/sign_in.dart';
+import 'package:fraction/screens/home/home.screen.dart';
+import 'package:fraction/screens/notification/notification.screen.dart';
+import 'package:fraction/screens/profile/profile.screen.dart';
+import 'package:fraction/screens/auth/sign_in.screen.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 
