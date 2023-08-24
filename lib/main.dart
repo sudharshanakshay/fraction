@@ -2,7 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/repository/notification.repo.dart';
 import 'package:fraction/screens/auth/register.dart';
-import 'package:fraction/screens/home/views/add_expense/add_expense.dart';
 import 'package:fraction/screens/create_group/create_group.dart';
 import 'package:fraction/screens/home/views/group_info/group_info_view.dart';
 import 'package:fraction/screens/home/home_layout.dart';
@@ -67,10 +66,6 @@ class MyApp extends StatelessWidget {
           '/profile': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) =>
                   appState.loggedIn ? const Profile() : const SignInPage()),
-          '/addExpense': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) => appState.loggedIn
-                  ? const AddExpenseLayout()
-                  : const SignInPage()),
           '/createGroup': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
                   ? const CreateGroupView()
@@ -79,8 +74,9 @@ class MyApp extends StatelessWidget {
               builder: (context, appState, _) =>
                   appState.loggedIn ? const GroupInfo() : const SignInPage()),
           '/notification': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) =>
-                  appState.loggedIn ? NotificationView() : const SignInPage()),
+              builder: (context, appState, _) => appState.loggedIn
+                  ? const NotificationView()
+                  : const SignInPage()),
         });
   }
 }
