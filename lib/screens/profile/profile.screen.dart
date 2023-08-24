@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:provider/provider.dart';
 
-class Profile extends StatefulWidget {
-  const Profile({super.key});
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({super.key});
 
   @override
-  createState() => _ProfileState();
+  createState() => _ProfileScreenState();
 }
 
-class _ProfileState extends State<Profile> {
+class _ProfileScreenState extends State<ProfileScreen> {
   late ApplicationState _applicationState;
 
   @override

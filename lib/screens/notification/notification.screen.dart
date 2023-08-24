@@ -6,14 +6,14 @@ import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:provider/provider.dart';
 
-class NotificationView extends StatefulWidget {
-  const NotificationView({super.key});
+class NotificationScreen extends StatefulWidget {
+  const NotificationScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _NotificationViewState();
+  State<StatefulWidget> createState() => _NotificationScreenState();
 }
 
-class _NotificationViewState extends State<NotificationView> {
+class _NotificationScreenState extends State<NotificationScreen> {
   late GroupServices _groupServicesRef;
 
   @override

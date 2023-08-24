@@ -44,39 +44,40 @@ class MyApp extends StatelessWidget {
         // home: const CreateGroupLayout(),
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
-                ? const SignInPage()
-                : const MyHomePage(
+                ? const SignInScreen()
+                : const HomeScreen(
                     title: 'Fraction',
                   )),
         routes: {
           '/logIn': (context) => Consumer<ApplicationState>(
                 builder: (context, value, child) => value.loggedIn
-                    ? const MyHomePage(title: 'Fraction')
-                    : const SignInPage(),
+                    ? const HomeScreen(title: 'Fraction')
+                    : const SignInScreen(),
               ),
           '/register': (context) => Consumer<ApplicationState>(
                 builder: (context, value, child) => value.loggedIn
-                    ? const MyHomePage(title: 'Fraction')
-                    : const RegisterPage(),
+                    ? const HomeScreen(title: 'Fraction')
+                    : const RegisterScreen(),
               ),
           '/home': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
-                  ? const MyHomePage(title: 'Fraction')
-                  : const SignInPage()),
+                  ? const HomeScreen(title: 'Fraction')
+                  : const SignInScreen()),
           '/profile': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) =>
-                  appState.loggedIn ? const Profile() : const SignInPage()),
+              builder: (context, appState, _) => appState.loggedIn
+                  ? const ProfileScreen()
+                  : const SignInScreen()),
           '/createGroup': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
-                  ? const CreateGroupView()
-                  : const SignInPage()),
+                  ? const CreateGroupScreen()
+                  : const SignInScreen()),
           '/groupInfo': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) =>
-                  appState.loggedIn ? const GroupInfo() : const SignInPage()),
+                  appState.loggedIn ? const GroupInfo() : const SignInScreen()),
           '/notification': (context) => Consumer<ApplicationState>(
               builder: (context, appState, _) => appState.loggedIn
-                  ? const NotificationView()
-                  : const SignInPage()),
+                  ? const NotificationScreen()
+                  : const SignInScreen()),
         });
   }
 }

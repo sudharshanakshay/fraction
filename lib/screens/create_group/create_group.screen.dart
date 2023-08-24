@@ -5,14 +5,14 @@ import 'package:fraction/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class CreateGroupView extends StatefulWidget {
-  const CreateGroupView({super.key});
+class CreateGroupScreen extends StatefulWidget {
+  const CreateGroupScreen({super.key});
 
   @override
-  createState() => _CreateGroupViewState();
+  createState() => _CreateGroupScreenState();
 }
 
-class _CreateGroupViewState extends State<CreateGroupView> {
+class _CreateGroupScreenState extends State<CreateGroupScreen> {
   late GroupServices _groupServices;
   late TextEditingController _groupNameController;
   late TextEditingController _clearOffDateController;
