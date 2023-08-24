@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/screens/home/views/dashboard/dashboard.component.dart';
 import 'package:fraction/screens/drawer/app_drawer.dart';
-import 'package:fraction/screens/home/views/view_expense/expense_view.component.dart';
+import 'package:fraction/screens/home/views/view_expense/view_expense.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatefulWidget {

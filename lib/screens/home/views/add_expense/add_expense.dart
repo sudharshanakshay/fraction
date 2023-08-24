@@ -48,65 +48,68 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
       ),
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) => Center(
-          child: Form(
-            key: _formKey,
-            child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  // ---- (UI input) description ----
-                  FractionallySizedBox(
-                      widthFactor: 0.7,
-                      //heightFactor: 0.2,
-                      child: TextFormField(
-                          validator: (value) => validateNotEmptyDesc(value),
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          controller: _descriptionTextController,
-                          decoration: const InputDecoration(
-                            label: Text('Item Name'),
-                          ))),
-                  const SizedBox(height: 10),
+          child: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    // ---- (UI input) description ----
+                    FractionallySizedBox(
+                        widthFactor: 0.7,
+                        //heightFactor: 0.2,
+                        child: TextFormField(
+                            validator: (value) => validateNotEmptyDesc(value),
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            controller: _descriptionTextController,
+                            decoration: const InputDecoration(
+                              label: Text('Item Name'),
+                            ))),
+                    const SizedBox(height: 10),
 
-                  // ---- (UI input) cost ----
-                  FractionallySizedBox(
-                      widthFactor: 0.7,
-                      //heightFactor: 0.2,
-                      child: TextFormField(
-                          validator: (value) => validateNotEmptyCost(value),
-                          controller: _costTextController,
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            label: Text('Item Cost'),
-                          ))),
-                  const SizedBox(height: 10),
+                    // ---- (UI input) cost ----
+                    FractionallySizedBox(
+                        widthFactor: 0.7,
+                        //heightFactor: 0.2,
+                        child: TextFormField(
+                            validator: (value) => validateNotEmptyCost(value),
+                            controller: _costTextController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              label: Text('Item Cost'),
+                            ))),
+                    const SizedBox(height: 10),
 
-                  // ---- (UI button) add expense ----
-                  FilledButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          const snakBar =
-                              SnackBar(content: Text('adding expense ...'));
-                          ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                          if (appState.groupAndExpenseInstances[
-                                  appState.currentUserGroup] !=
-                              null) {
-                            _expenseService
-                                .addExpense(
-                                  description: _descriptionTextController.text,
-                                  cost: _costTextController.text,
-                                  currentUserName: appState.currentUserName,
-                                  currentUserEmail: appState.currentUserEmail,
-                                  currentUserGroup: appState.currentUserGroup,
-                                  currentExpenseInstance:
-                                      appState.currentExpenseInstance,
-                                )
-                                .whenComplete(() => Navigator.pop(context));
+                    // ---- (UI button) add expense ----
+                    FilledButton(
+                        onPressed: () async {
+                          if (_formKey.currentState!.validate()) {
+                            const snakBar =
+                                SnackBar(content: Text('adding expense ...'));
+                            ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                            if (appState.groupAndExpenseInstances[
+                                    appState.currentUserGroup] !=
+                                null) {
+                              _expenseService
+                                  .addExpense(
+                                    description:
+                                        _descriptionTextController.text,
+                                    cost: _costTextController.text,
+                                    currentUserName: appState.currentUserName,
+                                    currentUserEmail: appState.currentUserEmail,
+                                    currentUserGroup: appState.currentUserGroup,
+                                    currentExpenseInstance:
+                                        appState.currentExpenseInstance,
+                                  )
+                                  .whenComplete(() => Navigator.pop(context));
+                            }
                           }
-                        }
-                      },
-                      child: const Text('Save')),
-                ]),
+                        },
+                        child: const Text('Save')),
+                  ]),
+            ),
           ),
         ),
       ),
