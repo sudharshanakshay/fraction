@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:fraction/database/user.database.dart';
+import 'package:fraction/api/user.api.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthServices {

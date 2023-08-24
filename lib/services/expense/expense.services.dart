@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fraction/database/expense.database.dart';
-import 'package:fraction/database/group.database.dart';
+import 'package:fraction/api/expense.api.dart';
+import 'package:fraction/api/group.api.dart';
 
 class ExpenseService {
   late ExpenseDatabase _expenseDatabaseRef;
