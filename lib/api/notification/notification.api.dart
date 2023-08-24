@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fraction/database/utils/database.dart';
+import 'package:fraction/api/utils/api.dart';
 
 class NotificationDatabase {
   late FirebaseFirestore _firebaseFirestoreRef;

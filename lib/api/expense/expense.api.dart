@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/database/utils/database.dart';
+import 'package:fraction/api/utils/api.dart';
 
 class ExpenseDatabase extends DatabaseUtils {
   // final _expenseCollectionName = 'expense';

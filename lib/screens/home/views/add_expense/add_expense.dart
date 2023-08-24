@@ -54,16 +54,21 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
+                  // ---- (UI input) description ----
                   FractionallySizedBox(
                       widthFactor: 0.7,
                       //heightFactor: 0.2,
                       child: TextFormField(
                           validator: (value) => validateNotEmptyDesc(value),
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
                           controller: _descriptionTextController,
                           decoration: const InputDecoration(
                             label: Text('Item Name'),
                           ))),
                   const SizedBox(height: 10),
+
+                  // ---- (UI input) cost ----
                   FractionallySizedBox(
                       widthFactor: 0.7,
                       //heightFactor: 0.2,
@@ -75,6 +80,8 @@ class _AddExpenseLayoutState extends State<AddExpenseLayout> {
                             label: Text('Item Cost'),
                           ))),
                   const SizedBox(height: 10),
+
+                  // ---- (UI button) add expense ----
                   FilledButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
