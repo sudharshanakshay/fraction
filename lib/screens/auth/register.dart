@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/auth_layout/widgets/email_input.widget.dart';
-import 'package:fraction/screens/auth_layout/widgets/name_input.widget.dart';
-import 'package:fraction/screens/auth_layout/widgets/password_input.widget.dart';
+import 'package:fraction/screens/auth/widgets/email_input.widget.dart';
+import 'package:fraction/screens/auth/widgets/name_input.widget.dart';
+import 'package:fraction/screens/auth/widgets/password_input.widget.dart';
 import 'package:fraction/widgets/widgets.dart';
 import '../../services/auth/auth.services.dart';
 

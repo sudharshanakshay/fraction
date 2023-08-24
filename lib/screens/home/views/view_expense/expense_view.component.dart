@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/screens/home_layout/expense_view/widget/expense_pallet.dart';
-import 'package:fraction/screens/home_layout/expense_view/widget/expense_shadow.dart';
+import 'package:fraction/screens/home/views/view_expense/widget/expense_pallet.dart';
+import 'package:fraction/screens/home/views/view_expense/widget/expense_shadow.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
