@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/presentation/screens/create_group/create_group.screen.dart';
 import 'package:fraction/presentation/screens/drawer/app_drawer.dart';
 import 'package:fraction/presentation/screens/home/expense_group/expense_group.screen.dart';
 import 'package:fraction/services/user/user.services.dart';
@@ -31,6 +32,13 @@ class _HomeScreenState extends State<HomeScreen> {
         appBar: AppBar(
           title: Text(widget.title),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/notification');
+                },
+                icon: const Icon(Icons.notifications_active_outlined)),
+          ],
         ),
         drawer: const FractionAppDrawer(),
         body: StreamBuilder(
@@ -71,8 +79,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ? FloatingActionButton(
                 child: const Icon(Icons.chat_bubble),
                 onPressed: () {
-                  // showAddExpenseDialog();
-                  // Navigator.pushNamed(context, '/addExpense');
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CreateGroupScreen()));
                 },
               )
             : Container(),

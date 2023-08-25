@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/presentation/screens/home/expense_group/dashboard/dashboard.component.dart';
-import 'package:fraction/presentation/screens/drawer/app_drawer.dart';
 import 'package:fraction/presentation/screens/home/expense_group/view_expense/view_expense.dart';
 import 'package:fraction/presentation/screens/home/expense_group/add_expense/add_expense.dart';
+import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 
 class ExpenseGroup extends StatefulWidget {
@@ -23,20 +23,28 @@ class _ExpenseGroupState extends State<ExpenseGroup> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(widget.title),
+          // leading: IconButton(
+          //   icon: const Icon(Icons.navigate_before),
+          //   onPressed: () {
+          //     Navigator.pop(context);
+          //   },
+          // ),
+          title: Text(
+              Tools().sliptElements(element: appState.currentUserGroup)[0],
+              style: const TextStyle(fontSize: 20)),
           actions: [
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/notification');
-                },
-                icon: const Icon(Icons.notifications_active_outlined)),
+            // IconButton(
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, '/notification');
+            //     },
+            //     icon: const Icon(Icons.notifications_active_outlined)),
             appState.hasOneGroup
                 ? IconButton(
                     onPressed: () {
                       Navigator.pushNamed(context, '/groupInfo');
                     },
                     // icon: SvgPicture.asset(_settingsIconPath),
-                    icon: const Icon(Icons.navigate_next),
+                    icon: const Icon(Icons.bar_chart_outlined),
                   )
                 : Container(),
             const SizedBox(
@@ -44,7 +52,7 @@ class _ExpenseGroupState extends State<ExpenseGroup> {
             )
           ],
         ),
-        drawer: const FractionAppDrawer(),
+        // drawer: const FractionAppDrawer(),
         body: appState.hasOneGroup
             ? const SingleChildScrollView(
                 child: Padding(
