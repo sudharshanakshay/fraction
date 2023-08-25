@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:fraction/presentation/screens/home/home.screen.dart';
 import 'package:fraction/presentation/screens/notification/models/notification.repo.dart';
-import 'package:fraction/presentation/screens/home/expense_group/expense_group.screen.dart';
 import 'package:fraction/presentation/screens/auth/sign_in.screen.dart';
 import 'package:fraction/routes.dart';
 import 'package:fraction/utils/color.dart';
@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
                 ? const SignInScreen()
-                : const ExpenseGroup(
+                : const HomeScreen(
                     title: 'Fraction',
                   )),
         routes: appRoutes);
