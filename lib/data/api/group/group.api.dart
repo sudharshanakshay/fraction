@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/api/utils/api.dart';
-import 'package:fraction/model/group.dart';
+import 'package:fraction/data/api/utils/api.dart';
+import 'package:fraction/data/model/group.dart';
 
 class GroupDatabase {
   late String _groupCollectionName;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/repository/notification.repo.dart';
+import 'package:fraction/presentation/screens/notification/models/notification.repo.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/constants.dart';

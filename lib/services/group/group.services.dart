@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/api/group/group.api.dart';
-import 'package:fraction/api/notification/notification.api.dart';
-import 'package:fraction/api/user/user.api.dart';
+import 'package:fraction/data/api/group/group.api.dart';
+import 'package:fraction/data/api/notification/notification.api.dart';
+import 'package:fraction/data/api/user/user.api.dart';
 import 'package:fraction/utils/constants.dart';
 
 class GroupServices {

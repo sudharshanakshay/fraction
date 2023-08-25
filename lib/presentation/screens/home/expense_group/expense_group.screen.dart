@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/screens/home/views/dashboard/dashboard.component.dart';
-import 'package:fraction/screens/drawer/app_drawer.dart';
-import 'package:fraction/screens/home/views/view_expense/view_expense.dart';
-import 'package:fraction/screens/home/widgets/add_expense/add_expense.dart';
+import 'package:fraction/presentation/screens/home/expense_group/dashboard/dashboard.component.dart';
+import 'package:fraction/presentation/screens/drawer/app_drawer.dart';
+import 'package:fraction/presentation/screens/home/expense_group/view_expense/view_expense.dart';
+import 'package:fraction/presentation/screens/home/expense_group/add_expense/add_expense.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
+class ExpenseGroup extends StatefulWidget {
+  const ExpenseGroup({super.key, required this.title});
 
   final String title;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ExpenseGroup> createState() => _ExpenseGroupState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ExpenseGroupState extends State<ExpenseGroup> {
   // final String _settingsIconPath = 'assets/icons/SettingsIcon.svg';
   @override
   Widget build(BuildContext context) {

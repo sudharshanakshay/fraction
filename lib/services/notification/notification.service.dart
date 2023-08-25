@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:fraction/api/notification/notification.api.dart';
+import 'package:fraction/data/api/notification/notification.api.dart';
 
 class NotificationService {
   late NotificationDatabase _notificationDatabaseRef;

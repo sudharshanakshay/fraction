@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ExpenseShadow extends StatelessWidget {
-  const ExpenseShadow({super.key});
+class ExpenseListItemShadow extends StatelessWidget {
+  const ExpenseListItemShadow({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/repository/notification.repo.dart';
+import 'package:fraction/presentation/screens/notification/models/notification.repo.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/user/user.services.dart';
 import 'package:fraction/utils/constants.dart';
