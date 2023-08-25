@@ -5,8 +5,8 @@ import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:intl/intl.dart';
 
-class ExpensePallet extends StatefulWidget {
-  const ExpensePallet({
+class ExpenseListItem extends StatefulWidget {
+  const ExpenseListItem({
     super.key,
     required this.expenseDoc,
     required this.currentUserName,
@@ -22,10 +22,10 @@ class ExpensePallet extends StatefulWidget {
   final ApplicationState appState;
 
   @override
-  State<StatefulWidget> createState() => _ExpensePalletState();
+  State<StatefulWidget> createState() => _ExpenseListItemState();
 }
 
-class _ExpensePalletState extends State<ExpensePallet> {
+class _ExpenseListItemState extends State<ExpenseListItem> {
   final _descriptionTextController = TextEditingController();
   final _costTextController = TextEditingController();
 
@@ -119,33 +119,6 @@ class _ExpensePalletState extends State<ExpensePallet> {
                               ),
                             )
                           : Container(),
-                      // if (widget.expenseDoc['tags'].length != 0)
-
-                      // ListView.builder(
-                      //   shrinkWrap: true,
-                      //   scrollDirection: Axis.horizontal,
-                      //   physics: const NeverScrollableScrollPhysics(),
-                      //   itemCount: widget.expenseDoc['tags'].length,
-                      //   itemBuilder: (context, index) {
-                      //     return Padding(
-                      //       padding: const EdgeInsets.only(right: 8.0),
-                      //       child: SizedBox(
-                      //         height: 6.0,
-                      //         child: Container(
-                      //           padding: const EdgeInsets.symmetric(
-                      //               horizontal: 4.0),
-                      //           decoration: BoxDecoration(
-                      //               color: AppColors().tags,
-                      //               borderRadius: BorderRadius.circular(12)),
-                      //           child: Text(
-                      //             widget.expenseDoc['tags'][index],
-                      //           ),
-
-                      //         ),
-                      //       ),
-                      //     );
-                      // },
-                      // ),
                       Text(
                         '${widget.expenseDoc['cost']}/-',
                         style: const TextStyle(fontSize: 16),

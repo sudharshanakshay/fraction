@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/auth/widgets/email_input.widget.dart';
-import 'package:fraction/screens/auth/widgets/password_input.widget.dart';
+import 'package:fraction/presentation/screens/auth/widgets/email_input.widget.dart';
+import 'package:fraction/presentation/screens/auth/widgets/password_input.widget.dart';
 import 'package:fraction/services/auth/auth.services.dart';
 
 class SignInScreen extends StatefulWidget {

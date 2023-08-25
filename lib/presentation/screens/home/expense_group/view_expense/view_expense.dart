@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/screens/home/views/view_expense/widget/expense_pallet.dart';
-import 'package:fraction/screens/home/views/view_expense/widget/expense_shadow.dart';
+import 'package:fraction/presentation/screens/home/expense_group/view_expense/widget/expense_list_item.dart';
+import 'package:fraction/presentation/screens/home/expense_group/view_expense/widget/expense_list_item_shadow.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +34,7 @@ class _ExpenseViewState extends State<ExpenseView> {
           null) {
         // ---- time to initialize expense group instances ----
         // return const Text('fetching data _');
-        return const ExpenseShadow();
+        return const ExpenseListItemShadow();
       } else {
         // ---- once the initialize of expense group instances is done ----
 
@@ -44,13 +44,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                 currentExpenseInstance: appState.currentExpenseInstance),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
-                return const ExpenseShadow();
-                // return const Column(
-                //   children: [
-                //     Icon(Icons.refresh_outlined),
-                //     Text('loading now ...')
-                //   ],
-                // );
+                return const ExpenseListItemShadow();
               } else if (snapshot.data!.docs.isEmpty) {
                 return const ListTile(
                   title: Text('no expense to display _ '),
@@ -75,6 +69,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             mainAxisSize: MainAxisSize.max,
                             children: [
                               Padding(
@@ -91,7 +86,9 @@ class _ExpenseViewState extends State<ExpenseView> {
                           ),
                           FractionallySizedBox(
                             widthFactor: 1,
-                            child: ExpensePallet(
+
+                            // --- Expense list Item ----
+                            child: ExpenseListItem(
                               currentUserEmail: appState.currentUserEmail,
                               currentUserName: snapshot.data!.docs[index]
                                   ['userName'],
@@ -104,7 +101,8 @@ class _ExpenseViewState extends State<ExpenseView> {
                       );
                     }
 
-                    return ExpensePallet(
+                    // --- Expense list Item ----
+                    return ExpenseListItem(
                       currentUserEmail: appState.currentUserEmail,
                       currentUserName: snapshot.data!.docs[index]['userName'],
                       expenseServiceState: _expenseService,

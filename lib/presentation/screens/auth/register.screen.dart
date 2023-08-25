@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fraction/screens/auth/widgets/email_input.widget.dart';
-import 'package:fraction/screens/auth/widgets/name_input.widget.dart';
-import 'package:fraction/screens/auth/widgets/password_input.widget.dart';
-import 'package:fraction/widgets/widgets.dart';
-import '../../services/auth/auth.services.dart';
+import 'package:fraction/presentation/screens/auth/widgets/email_input.widget.dart';
+import 'package:fraction/presentation/screens/auth/widgets/name_input.widget.dart';
+import 'package:fraction/presentation/screens/auth/widgets/password_input.widget.dart';
+import 'package:fraction/presentation/widgets/widgets.dart';
+import '../../../services/auth/auth.services.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);

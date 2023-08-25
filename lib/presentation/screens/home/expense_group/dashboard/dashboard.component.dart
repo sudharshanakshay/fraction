@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/screens/home/views/dashboard/widgets/dashboard_shadow.dart';
+import 'package:fraction/presentation/screens/home/expense_group/dashboard/widgets/dashboard_shadow.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:fraction/utils/tools.dart';

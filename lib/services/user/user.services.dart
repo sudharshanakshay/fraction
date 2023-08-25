@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/api/user/user.api.dart';
+import 'package:fraction/data/api/user/user.api.dart';
 
 class UserServices {
   late UserDatabase _userDatabaseRef;
