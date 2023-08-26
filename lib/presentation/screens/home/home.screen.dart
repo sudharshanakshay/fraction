@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 icon: const Icon(Icons.notifications_active_outlined)),
           ],
         ),
-        drawer: const FractionAppDrawer(),
+        drawer: const AppDrawer(),
         body: StreamBuilder(
             stream: _userServices.groupStream(
                 currentUserEmail: appState.currentUserEmail),
