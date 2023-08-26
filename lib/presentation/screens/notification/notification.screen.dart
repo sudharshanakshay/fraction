@@ -27,7 +27,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Fraction'),
+        title: const Text('Notifications'),
       ),
       body: SingleChildScrollView(
         child: Consumer<ApplicationState>(

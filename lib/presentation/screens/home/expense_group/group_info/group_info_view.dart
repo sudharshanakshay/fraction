@@ -48,12 +48,6 @@ class _GroupInfoState extends State<GroupInfo> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          // leading: IconButton(
-          //   icon: const Icon(Icons.navigate_before),
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
           title: Text(
               Tools().sliptElements(element: appState.currentUserGroup)[0],
               style: const TextStyle(fontSize: 20)),
