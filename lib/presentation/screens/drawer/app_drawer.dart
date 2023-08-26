@@ -40,7 +40,10 @@ class _AppDrawerState extends State<AppDrawer> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              // ---- (ui, root column for AppDrawer screen) ----
+
               Container(
+                // ---- (ui, container for AppDrawer Header) ----
                 decoration: BoxDecoration(
                     color: AppColors().appDrawerHeaderBackgroudColor,
                     borderRadius: BorderRadius.circular(6.0)),
@@ -50,6 +53,7 @@ class _AppDrawerState extends State<AppDrawer> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      // ---- (ui, column for enclosing Header elements) ----
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         mainAxisSize: MainAxisSize.max,
@@ -62,16 +66,26 @@ class _AppDrawerState extends State<AppDrawer> {
                               icon: SvgPicture.asset(settingsIconPath)),
                         ],
                       ),
+
                       const SizedBox(
+                        // ---- (ui, top margin of 16) ----
                         height: 16.0,
                       ),
-                      Text(appState.currentUserName,
+
+                      Text(
+                          // ---- (ui, User Name) ----
+                          appState.currentUserName,
                           style: const TextStyle(
                               fontSize: 16, color: Colors.white)),
+
                       const SizedBox(
+                        // ---- (ui, top margin of 16) ----
                         height: 16.0,
                       ),
-                      Text(appState.currentUserEmail,
+
+                      Text(
+                          // ---- (ui, User Email) ----
+                          appState.currentUserEmail,
                           style: const TextStyle(
                               fontSize: 12, color: Colors.white)),
                     ],

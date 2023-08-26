@@ -41,40 +41,46 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         drawer: const AppDrawer(),
-        body: StreamBuilder(
-            stream: _userServices.groupStream(
-                currentUserEmail: appState.currentUserEmail),
-            builder: (context, snapShot) {
-              if (snapShot.hasData) {
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: snapShot.data.length,
-                  itemBuilder: (context, int index) {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 4.0),
-                      // color: AppColors().groupListTileColor,
-                      child: ListTile(
-                        title: Text(Tools()
-                            .sliptElements(element: snapShot.data[index])[0]),
-                        onTap: () {
-                          appState.setCurrentUserGroup(
-                              currentUserGroup: snapShot.data[index]);
+        body: Column(
+          children: [
+            // ---- (ui, home screen, expense grouplist) ----
+            StreamBuilder(
+                stream: _userServices.groupStream(
+                    currentUserEmail: appState.currentUserEmail),
+                builder: (context, snapShot) {
+                  if (snapShot.hasData) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: snapShot.data.length,
+                      itemBuilder: (context, int index) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 4.0),
+                          // color: AppColors().groupListTileColor,
+                          child: ListTile(
+                            title: Text(Tools().sliptElements(
+                                element: snapShot.data[index])[0]),
+                            onTap: () {
+                              appState.setCurrentUserGroup(
+                                  currentUserGroup: snapShot.data[index]);
 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ExpenseGroup(title: 'Fraction')));
-                        },
-                      ),
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const ExpenseGroup(
+                                          title: 'Fraction')));
+                            },
+                          ),
+                        );
+                      },
                     );
-                  },
-                );
-              } else {
-                return Container();
-              }
-            }),
+                  } else {
+                    return Container();
+                  }
+                }),
+          ],
+        ),
+        // ---- (ui, home screen, create new expense group ) ----
         floatingActionButton: appState.hasOneGroup
             ? FloatingActionButton(
                 child: const Icon(Icons.chat_bubble),

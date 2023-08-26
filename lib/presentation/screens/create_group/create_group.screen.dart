@@ -48,6 +48,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ---- values initialization for date picker ----
+
     DateTime today = DateTime.now();
     DateTime selectedDate =
         DateTime(today.year, today.month + 1, today.day, today.hour);
@@ -69,19 +71,26 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  // ---- (ui, root column for create group screen) ----
+
                   const SizedBox(
+                    // ---- (ui, create group screen, top margin of 8) ----
                     height: 8,
                   ),
+
                   const Text(
+                    // ---- (ui, heading for create group)----
                     'Create Expense Group',
                     style: TextStyle(fontSize: 20),
                   ),
+
                   const SizedBox(
-                    height: 10,
+                    // ---- (ui, top margin of 18) ----
+                    height: 18,
                   ),
 
-                  // ---- select group name ----
                   FractionallySizedBox(
+                    // ---- (ui, user input for group name ) ----
                     widthFactor: 0.74,
                     child: TextFormField(
                       controller: _groupNameController,
@@ -90,12 +99,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                           const InputDecoration(label: Text('Group Name')),
                     ),
                   ),
-                  // ---- select cleraOff TimeStamp ----
+
                   Row(
+                    // ---- (ui, user input for cleraOff TimeStamp) ----
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
                       Flexible(
+                          // ---- (ui, selected TimeStamp) ----
                           child: FractionallySizedBox(
                         widthFactor: 0.7,
                         child: TextFormField(
@@ -109,6 +120,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                         ),
                       )),
                       IconButton(
+                          // ---- (ui, date picker) ----
                           onPressed: () async {
                             await showDatePicker(
                                     context: context,
@@ -125,10 +137,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                           icon: const Icon(Icons.calendar_month)),
                     ],
                   ),
+
                   const SizedBox(
+                    // ---- (ui, top margin of 10) ----
                     height: 10,
                   ),
+
                   FilledButton(
+                      // ---- (ui, create group button) ----
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // appState.refreshGroupNamesAndExpenseInstances();

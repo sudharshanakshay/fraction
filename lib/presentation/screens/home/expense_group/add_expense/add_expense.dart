@@ -50,8 +50,6 @@ class _AddExpenseState extends State<AddExpense> {
             children: [
               SingleChildScrollView(
                 child: Column(
-                    // scrollDirection: Axis.vertical,
-                    // physics: const AlwaysScrollableScrollPhysics(),
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
@@ -70,8 +68,8 @@ class _AddExpenseState extends State<AddExpense> {
 
                       // ---- (UI) add expense title ----
 
-                      // ---- (UI input) description ----
                       FractionallySizedBox(
+                          // ---- (UI input) description ----
                           widthFactor: 0.7,
                           //heightFactor: 0.2,
                           child: TextFormField(
@@ -82,10 +80,13 @@ class _AddExpenseState extends State<AddExpense> {
                               decoration: const InputDecoration(
                                 label: Text('Item Name'),
                               ))),
-                      const SizedBox(height: 10),
 
-                      // ---- (UI input) cost ----
+                      const SizedBox(
+                          // ---- (ui, top margin of 10) ----
+                          height: 10),
+
                       FractionallySizedBox(
+                          // ---- (UI input) cost ----
                           widthFactor: 0.7,
                           //heightFactor: 0.2,
                           child: TextFormField(
