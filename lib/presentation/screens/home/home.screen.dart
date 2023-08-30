@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             subtitle: Text('updates', style: subListTileStyle),
                             trailing:
-                                Text('Aug 7', style: trailingListTileStyle),
+                                Text('Month 0', style: trailingListTileStyle),
                             onTap: () {
                               appState.setCurrentUserGroup(
                                   currentUserGroup: snapShot.data[index]);

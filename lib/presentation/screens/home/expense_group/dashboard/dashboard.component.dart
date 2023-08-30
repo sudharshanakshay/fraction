@@ -39,8 +39,12 @@ class _DashboardState extends State<Dashboard> {
                   return const DashboardShadow();
                 }
                 return Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 4.0),
+                  padding: const EdgeInsets.only(
+                    top: 6.0,
+                    bottom: 2.0,
+                    right: 12,
+                    left: 12,
+                  ),
                   decoration: BoxDecoration(
                       border: Border.all(
                         width: 2,
@@ -68,12 +72,16 @@ class _DashboardState extends State<Dashboard> {
                                       Container(
                                         padding: const EdgeInsets.all(4.0),
                                         decoration: const BoxDecoration(
-                                            border: Border(
-                                                left: BorderSide(
-                                                    width: 1.0,
-                                                    color: Colors.black))),
-                                        child: const Text('My Expense: ',
-                                            style: TextStyle(fontSize: 16)),
+                                            // border: Border(
+                                            //     left: BorderSide(
+                                            //         width: 1.0,
+                                            //         color: Colors.black)),
+                                            ),
+                                        child: Text('My Expense: ',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey.shade800)),
                                       ),
                                       Text(
                                           // ---- (ui, My Expense) ----
