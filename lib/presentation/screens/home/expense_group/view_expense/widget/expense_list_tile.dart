@@ -5,8 +5,8 @@ import 'package:fraction/services/expense/expense.services.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:intl/intl.dart';
 
-class ExpenseListItem extends StatefulWidget {
-  const ExpenseListItem({
+class ExpenseListTile extends StatefulWidget {
+  const ExpenseListTile({
     super.key,
     required this.expenseDoc,
     required this.currentUserName,
@@ -22,10 +22,10 @@ class ExpenseListItem extends StatefulWidget {
   final ApplicationState appState;
 
   @override
-  State<StatefulWidget> createState() => _ExpenseListItemState();
+  State<StatefulWidget> createState() => _ExpenseListTileState();
 }
 
-class _ExpenseListItemState extends State<ExpenseListItem> {
+class _ExpenseListTileState extends State<ExpenseListTile> {
   final _descriptionTextController = TextEditingController();
   final _costTextController = TextEditingController();
 
@@ -36,6 +36,15 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
           return manageExpense();
         });
   }
+
+  TextStyle titleListTileStyle =
+      TextStyle(fontSize: 16, color: Colors.grey.shade800);
+
+  TextStyle subListTileStyle =
+      TextStyle(fontSize: 12, color: Colors.grey.shade600);
+
+  TextStyle trailingListTileStyle =
+      TextStyle(fontSize: 16, color: Colors.grey.shade800);
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +64,7 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
                 decoration: BoxDecoration(
                   border: Border.all(
                     //eft: BorderSide(
-                    width: 2,
+                    width: 1.6,
                     // color: getRandomColor(),
                     color: Colors.blue.shade100,
                     //)
@@ -78,14 +87,13 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
                   },
                   // leading: const Icon(Icons.person),
                   title: Text(widget.expenseDoc['description'],
-                      style: const TextStyle(fontSize: 16)),
+                      style: titleListTileStyle),
                   // '${widget.streamSnapshot.data?.docs[widget.index]['description']}'),
                   //isThreeLine: true,
                   subtitle: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Text(widget.currentUserName,
-                          style: const TextStyle(fontSize: 12)),
+                      Text(widget.currentUserName, style: subListTileStyle),
                       // widget.streamSnapshot.data?.docs[widget.index]['userName']),
                       // const Text(','),
                       const Flexible(
@@ -94,9 +102,10 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
                         ),
                       ),
                       Text(
-                          DateFormat.jm()
-                              .format(widget.expenseDoc['timeStamp'].toDate()),
-                          style: const TextStyle(fontSize: 12)),
+                        DateFormat.jm()
+                            .format(widget.expenseDoc['timeStamp'].toDate()),
+                        style: subListTileStyle,
+                      ),
                       // Text(DateFormat.yMMMd().format(widget
                       //     .streamSnapshot.data?.docs[widget.index]['timeStamp']
                       //     .toDate())),
@@ -121,7 +130,7 @@ class _ExpenseListItemState extends State<ExpenseListItem> {
                           : Container(),
                       Text(
                         '${widget.expenseDoc['cost']}/-',
-                        style: const TextStyle(fontSize: 16),
+                        style: trailingListTileStyle,
                       ),
                     ],
                   ),

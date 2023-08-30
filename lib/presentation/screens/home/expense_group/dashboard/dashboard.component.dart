@@ -39,7 +39,8 @@ class _DashboardState extends State<Dashboard> {
                   return const DashboardShadow();
                 }
                 return Container(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 4.0),
                   decoration: BoxDecoration(
                       border: Border.all(
                         width: 2,
@@ -65,7 +66,7 @@ class _DashboardState extends State<Dashboard> {
                                   return Row(
                                     children: [
                                       Container(
-                                        padding: const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(4.0),
                                         decoration: const BoxDecoration(
                                             border: Border(
                                                 left: BorderSide(

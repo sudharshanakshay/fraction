@@ -25,6 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
+  TextStyle titleListTileStyle =
+      TextStyle(fontSize: 16, color: Colors.grey.shade800);
+
+  TextStyle subListTileStyle =
+      TextStyle(fontSize: 12, color: Colors.grey.shade600);
+
+  TextStyle trailingListTileStyle =
+      TextStyle(fontSize: 12, color: Colors.grey.shade600);
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(
@@ -58,8 +67,14 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(top: 4.0),
                           // color: AppColors().groupListTileColor,
                           child: ListTile(
-                            title: Text(Tools().sliptElements(
-                                element: snapShot.data[index])[0]),
+                            title: Text(
+                              Tools().sliptElements(
+                                  element: snapShot.data[index])[0],
+                              style: titleListTileStyle,
+                            ),
+                            subtitle: Text('updates', style: subListTileStyle),
+                            trailing:
+                                Text('Aug 7', style: trailingListTileStyle),
                             onTap: () {
                               appState.setCurrentUserGroup(
                                   currentUserGroup: snapShot.data[index]);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/presentation/screens/home/expense_group/view_expense/widget/expense_list_item.dart';
-import 'package:fraction/presentation/screens/home/expense_group/view_expense/widget/expense_list_item_shadow.dart';
+import 'package:fraction/presentation/screens/home/expense_group/view_expense/widget/expense_list_tile.dart';
+import 'package:fraction/presentation/screens/home/expense_group/view_expense/widget/expense_list_tile_shadow.dart';
 import 'package:fraction/services/expense/expense.services.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +26,9 @@ class _ExpenseViewState extends State<ExpenseView> {
 
     super.initState();
   }
+
+  TextStyle titleListTileStyle =
+      TextStyle(fontSize: 20, color: Colors.grey.shade800);
 
   @override
   Widget build(BuildContext context) {
@@ -78,9 +81,9 @@ class _ExpenseViewState extends State<ExpenseView> {
                                 child: _expenseTime == _today
                                     ? Text(
                                         'Today, ${DateFormat.MMMMd().format(snapshot.data!.docs[index]['timeStamp'].toDate()).toString()}',
-                                        style: const TextStyle(fontSize: 20))
+                                        style: titleListTileStyle)
                                     : Text(_expenseTime,
-                                        style: const TextStyle(fontSize: 20)),
+                                        style: titleListTileStyle),
                               ),
                             ],
                           ),
@@ -88,7 +91,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                             widthFactor: 1,
 
                             // --- Expense list Item ----
-                            child: ExpenseListItem(
+                            child: ExpenseListTile(
                               currentUserEmail: appState.currentUserEmail,
                               currentUserName: snapshot.data!.docs[index]
                                   ['userName'],
@@ -102,7 +105,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                     }
 
                     // --- Expense list Item ----
-                    return ExpenseListItem(
+                    return ExpenseListTile(
                       currentUserEmail: appState.currentUserEmail,
                       currentUserName: snapshot.data!.docs[index]['userName'],
                       expenseServiceState: _expenseService,
