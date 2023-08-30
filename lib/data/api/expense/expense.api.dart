@@ -12,7 +12,7 @@ class ExpenseDatabase extends DatabaseUtils {
     _expenseCollectionName = DatabaseUtils().expenseCollectionName;
   }
 
-  Stream<QuerySnapshot> getExpenseCollection(
+  Stream<QuerySnapshot> expenseCollectionStream(
       {required currentGroupName, required currentExpenseInstance}) {
     return _databaseRef
         .collection(_expenseCollectionName)
@@ -23,6 +23,17 @@ class ExpenseDatabase extends DatabaseUtils {
         .handleError((e) {
       throw (e);
     });
+  }
+
+  Future<QuerySnapshot> getExpenseCollection(
+      {required String currentGroupName,
+      required String currentExpenseInstance}) {
+    return _databaseRef
+        .collection(_expenseCollectionName)
+        .doc(currentGroupName)
+        .collection(currentExpenseInstance)
+        .orderBy('timeStamp', descending: true)
+        .get();
   }
 
   // Stream<QuerySnapshot> getMyExpenses(

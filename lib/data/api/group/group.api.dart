@@ -140,8 +140,8 @@ class GroupDatabase {
         .update({"groupMembers.$memberEmailR": data});
   }
 
-  // -- update group member details, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
-  Future<void> updateGroupMemberExpense(
+  // -- increment or decrement group member expense, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
+  Future<void> incrementOrDecrementGroupMemberExpense(
       {required groupName,
       required memberEmail,
       required int expenseDiff}) async {
@@ -151,6 +151,33 @@ class GroupDatabase {
       'groupMembers.$memberEmailR.totalExpense':
           FieldValue.increment(expenseDiff)
     };
+    _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .update(data);
+  }
+
+  // -- updare group member expense with new value --
+  Future<void> updateGroupMemberExpense(
+      {required String groupName,
+      required String memberEmail,
+      required int newExpenseSum}) async {
+    final memberEmailR = memberEmail.replaceAll('.', '#');
+    final data = {'groupMembers.$memberEmailR.totalExpense': newExpenseSum};
+
+    print(data);
+    _firebaseFirestoreRef
+        .collection(_groupCollectionName)
+        .doc(groupName)
+        .update(data);
+  }
+
+  // -- updare group's total expense with new value --
+  Future<void> updateGroupTotalExpense(
+      {required String groupName,
+      // required String memberEmail,
+      required int newExpenseSum}) async {
+    final data = {'totalExpense': newExpenseSum};
     _firebaseFirestoreRef
         .collection(_groupCollectionName)
         .doc(groupName)

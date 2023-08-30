@@ -15,7 +15,7 @@ class ExpenseService {
       {required String currentUserGroup,
       required Timestamp currentExpenseInstance}) {
     try {
-      return _expenseDatabaseRef.getExpenseCollection(
+      return _expenseDatabaseRef.expenseCollectionStream(
           currentGroupName: currentUserGroup,
           currentExpenseInstance: currentExpenseInstance.toDate().toString());
     } catch (e) {
@@ -52,7 +52,7 @@ class ExpenseService {
             currentExpenseInstance: currentExpenseInstance.toDate().toString())
         .then((DocumentReference documentReference) {
       _groupDatabase
-          .updateGroupMemberExpense(
+          .incrementOrDecrementGroupMemberExpense(
             memberEmail: currentUserEmail,
             groupName: currentUserGroup,
             expenseDiff: int.parse(cost),
@@ -85,7 +85,7 @@ class ExpenseService {
       )
           .whenComplete(() {
         if (int.parse(updatedCost) - previousCost != 0) {
-          _groupDatabase.updateGroupMemberExpense(
+          _groupDatabase.incrementOrDecrementGroupMemberExpense(
               groupName: currentUserGroup,
               memberEmail: currentUserEmail,
               expenseDiff: int.parse(updatedCost) - previousCost);
@@ -109,7 +109,7 @@ class ExpenseService {
               currentExpenseInstance:
                   currentExpenseInstance.toDate().toString())
           .whenComplete(() {
-        _groupDatabase.updateGroupMemberExpense(
+        _groupDatabase.incrementOrDecrementGroupMemberExpense(
             groupName: currentUserGroup,
             memberEmail: currentUserEmail,
             expenseDiff: -expenseDoc['cost']);

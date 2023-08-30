@@ -52,6 +52,18 @@ class _GroupInfoState extends State<GroupInfo> {
           title: Text(
               Tools().sliptElements(element: appState.currentUserGroup)[0],
               style: const TextStyle(fontSize: 20)),
+          actions: [
+            PopupMenuButton(
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                        child: const Text('Recalculate expenses'),
+                        onTap: () => _groupServices.refreshMemberExpenses(
+                            currentGroupName: appState.currentUserGroup,
+                            currentExpenseInstance:
+                                appState.currentExpenseInstance),
+                      ),
+                    ]),
+          ],
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -63,59 +75,9 @@ class _GroupInfoState extends State<GroupInfo> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    StreamBuilder<List>(
-                        stream: FirebaseFirestore.instance
-                            .collection('group')
-                            .doc(appState.currentUserGroup)
-                            .snapshots()
-                            .asyncExpand((doc) {
-                          try {
-                            List memberDetails = [];
-                            if (doc.exists && doc.data()!.isNotEmpty) {
-                              var groupMemberDetails =
-                                  doc.data()!['groupMembers']
-                                      as Map<String, dynamic>;
-                              groupMemberDetails.forEach((key, value) {
-                                memberDetails.add(value);
-                              });
-                            }
-                            return Stream.value(memberDetails);
-                          } catch (e) {
-                            return const Stream.empty();
-                          }
-                        }),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: GridView.builder(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      itemCount: snapshot.data!.length,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return AccountPallet(
-                                            streamSnapshot: snapshot,
-                                            index: index);
-                                      },
-                                      gridDelegate:
-                                          const SliverGridDelegateWithFixedCrossAxisCount(
-                                              crossAxisCount: 2,
-                                              childAspectRatio: (1 / .4)),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          } else {
-                            return Container();
-                          }
-                        }),
+                    MemberExpenseDetail(
+                      appState: appState,
+                    ),
                     inviteToggle ? inviteMemberToggle() : inviteMemberView(),
                   ],
                 ),
@@ -352,5 +314,65 @@ class _GroupInfoState extends State<GroupInfo> {
                 ),
               ],
             ));
+  }
+}
+
+class MemberExpenseDetail extends StatelessWidget {
+  const MemberExpenseDetail({
+    super.key,
+    required this.appState,
+  });
+
+  final ApplicationState appState;
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<List>(
+        stream: FirebaseFirestore.instance
+            .collection('group')
+            .doc(appState.currentUserGroup)
+            .snapshots()
+            .asyncExpand((doc) {
+          try {
+            List memberDetails = [];
+            if (doc.exists && doc.data()!.isNotEmpty) {
+              var groupMemberDetails =
+                  doc.data()!['groupMembers'] as Map<String, dynamic>;
+              groupMemberDetails.forEach((key, value) {
+                memberDetails.add(value);
+              });
+            }
+            return Stream.value(memberDetails);
+          } catch (e) {
+            return const Stream.empty();
+          }
+        }),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return AccountPallet(
+                            streamSnapshot: snapshot, index: index);
+                      },
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2, childAspectRatio: (1 / .4)),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Container();
+          }
+        });
   }
 }
