@@ -26,6 +26,13 @@ class _AddExpenseState extends State<AddExpense> {
     super.initState();
   }
 
+  @override
+  dispose() {
+    _descriptionTextController.dispose();
+    _costTextController.dispose();
+    super.dispose();
+  }
+
   validateNotEmptyDesc(value) {
     if (value == null || value.isEmpty) {
       return 'Please enter some text';
@@ -137,12 +144,5 @@ class _AddExpenseState extends State<AddExpense> {
         ),
       ),
     );
-  }
-
-  @override
-  dispose() {
-    _descriptionTextController.dispose();
-    _costTextController.dispose();
-    super.dispose();
   }
 }

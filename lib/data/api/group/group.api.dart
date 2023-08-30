@@ -141,8 +141,10 @@ class GroupDatabase {
   }
 
   // -- update group member details, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
-  void updateGroupMemberExpense(
-      {required groupName, required memberEmail, required int expenseDiff}) {
+  Future<void> updateGroupMemberExpense(
+      {required groupName,
+      required memberEmail,
+      required int expenseDiff}) async {
     final memberEmailR = memberEmail.replaceAll('.', '#');
     final data = {
       'totalExpense': FieldValue.increment(expenseDiff),

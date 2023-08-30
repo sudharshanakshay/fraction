@@ -4,7 +4,6 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/presentation/screens/home/expense_group/dashboard/widgets/dashboard_shadow.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/utils/color.dart';
-import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -39,7 +38,6 @@ class _DashboardState extends State<Dashboard> {
                 if (!groupDetailsSnapshot.hasData) {
                   return const DashboardShadow();
                 }
-                // print(groupDetailsSnapshot.data);
                 return Container(
                   padding: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
@@ -58,6 +56,7 @@ class _DashboardState extends State<Dashboard> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           StreamBuilder(
+                              // ---- (ui, My Expense) Stream Builder ----
                               stream: _groupService.getMyTotalExpense(
                                   currentUserEmail: appState.currentUserEmail,
                                   currentUserGroup: appState.currentUserGroup),
@@ -76,6 +75,7 @@ class _DashboardState extends State<Dashboard> {
                                             style: TextStyle(fontSize: 16)),
                                       ),
                                       Text(
+                                          // ---- (ui, My Expense) ----
                                           myTotalExpenseSnapshot.data
                                               .toString(),
                                           style: const TextStyle(fontSize: 16))
@@ -86,6 +86,7 @@ class _DashboardState extends State<Dashboard> {
                                 }
                               }),
                           Column(
+                            // ---- (ui, Next clear off) ----
                             children: [
                               const Text('Next clear off',
                                   style: TextStyle(fontSize: 12)),
@@ -100,8 +101,10 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       Row(
                         children: <Widget>[
-                          Text(Tools().sliptElements(
-                              element: appState.currentUserGroup)[0]),
+                          // ---- (changes, group name now visible in app bar ) ----
+
+                          // Text(Tools().sliptElements(
+                          //     element: appState.currentUserGroup)[0]),
                           IconButton(
                             icon: SvgPicture.asset(moreMembersIcon),
                             onPressed: () async {
@@ -109,14 +112,14 @@ class _DashboardState extends State<Dashboard> {
                                   await _groupService.getMemberDetails(
                                       currentUserGroup:
                                           appState.currentUserGroup);
-                              // for (var element in someValue!) {
 
-                              // }
+                              // ---- (ui, member expenses ) ----
                               await showMemberDetails(
                                   memberDetailList: someValue);
                             },
                           ),
                           Text(
+                              // ---- (ui, Total group expense) ----
                               groupDetailsSnapshot.data['totalExpense']
                                   .toString(),
                               style: const TextStyle(fontSize: 12)),
@@ -136,7 +139,7 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 
-  Future<String?> showMemberDetails({required memberDetailList}) {
+  Future<String?> showMemberDetails({required List? memberDetailList}) {
     return showDialog<String>(
         context: context,
         builder: (context) {
@@ -145,28 +148,30 @@ class _DashboardState extends State<Dashboard> {
               content: SizedBox(
                 height: 400,
                 width: 400,
-                child: ListView.builder(
-                    itemCount: memberDetailList.length,
-                    itemBuilder: (context, int index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                              left: BorderSide(
-                            width: 2,
-                            color: Colors.blue.shade100,
-                          )),
-                          // borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: ListTile(
-                          title:
-                              Text('${memberDetailList[index]['memberName']}'),
-                          subtitle: Text(
-                            '${memberDetailList[index]['totalExpense']}',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                        ),
-                      );
-                    }),
+                child: memberDetailList != null && memberDetailList.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: memberDetailList.length,
+                        itemBuilder: (context, int index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              border: Border(
+                                  left: BorderSide(
+                                width: 2,
+                                color: Colors.blue.shade100,
+                              )),
+                              // borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              title: Text(
+                                  '${memberDetailList[index]['memberName']}'),
+                              subtitle: Text(
+                                '${memberDetailList[index]['totalExpense']}',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            ),
+                          );
+                        })
+                    : const Text('Group Member does not exists_'),
               ));
         });
   }

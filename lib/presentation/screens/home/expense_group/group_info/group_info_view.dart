@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/presentation/screens/home/expense_group/group_info/widgets/account_pallet.dart';
 import 'package:fraction/presentation/screens/notification/models/notification.repo.dart';
 import 'package:fraction/services/group/group.services.dart';
 import 'package:fraction/services/user/user.services.dart';
@@ -351,44 +352,5 @@ class _GroupInfoState extends State<GroupInfo> {
                 ),
               ],
             ));
-  }
-}
-
-class AccountPallet extends StatefulWidget {
-  const AccountPallet(
-      {super.key,
-      required this.streamSnapshot,
-      required this.index,
-      this.leading = false});
-
-  final AsyncSnapshot streamSnapshot;
-  final int index;
-  final bool leading;
-
-  @override
-  State<StatefulWidget> createState() => AccountPalletState();
-}
-
-class AccountPalletState extends State<AccountPallet> {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border(
-            left: BorderSide(
-          width: 2,
-          color: Colors.blue.shade100,
-        )),
-        // borderRadius: BorderRadius.circular(12),
-      ),
-      child: ListTile(
-        title:
-            Text('${widget.streamSnapshot.data[widget.index]['memberName']}'),
-        subtitle: Text(
-          '${widget.streamSnapshot.data[widget.index]['totalExpense']}',
-          style: const TextStyle(fontSize: 20),
-        ),
-      ),
-    );
   }
 }

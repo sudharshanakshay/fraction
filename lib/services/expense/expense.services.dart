@@ -4,9 +4,11 @@ import 'package:fraction/data/api/group/group.api.dart';
 
 class ExpenseService {
   late ExpenseDatabase _expenseDatabaseRef;
+  late GroupDatabase _groupDatabase;
 
   ExpenseService() {
     _expenseDatabaseRef = ExpenseDatabase();
+    _groupDatabase = GroupDatabase();
   }
 
   Stream<QuerySnapshot> getExpenseCollection(
@@ -48,13 +50,19 @@ class ExpenseService {
             description: description,
             cost: int.parse(cost),
             currentExpenseInstance: currentExpenseInstance.toDate().toString())
-        .whenComplete(() {
-      GroupDatabase().updateGroupMemberExpense(
-        memberEmail: currentUserEmail,
-        groupName: currentUserGroup,
-        expenseDiff: int.parse(cost),
-      );
-    });
+        .then((DocumentReference documentReference) {
+      _groupDatabase
+          .updateGroupMemberExpense(
+            memberEmail: currentUserEmail,
+            groupName: currentUserGroup,
+            expenseDiff: int.parse(cost),
+          )
+          .onError((error, stackTrace) => _expenseDatabaseRef.deleteMyExpense(
+              currentUserEmail: currentUserEmail,
+              currentGroupName: currentUserGroup,
+              currentExpenseInstance: currentExpenseInstance,
+              docId: documentReference));
+    }).onError((error, stackTrace) => null);
   }
 
   Future updateExpense({
@@ -77,7 +85,7 @@ class ExpenseService {
       )
           .whenComplete(() {
         if (int.parse(updatedCost) - previousCost != 0) {
-          GroupDatabase().updateGroupMemberExpense(
+          _groupDatabase.updateGroupMemberExpense(
               groupName: currentUserGroup,
               memberEmail: currentUserEmail,
               expenseDiff: int.parse(updatedCost) - previousCost);
@@ -101,7 +109,7 @@ class ExpenseService {
               currentExpenseInstance:
                   currentExpenseInstance.toDate().toString())
           .whenComplete(() {
-        GroupDatabase().updateGroupMemberExpense(
+        _groupDatabase.updateGroupMemberExpense(
             groupName: currentUserGroup,
             memberEmail: currentUserEmail,
             expenseDiff: -expenseDoc['cost']);

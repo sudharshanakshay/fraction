@@ -36,7 +36,7 @@ class ExpenseDatabase extends DatabaseUtils {
   //       .snapshots();
   // }
 
-  Future<void> addExpense(
+  Future<DocumentReference> addExpense(
       {required String currentGroupName,
       required String currentExpenseInstance,
       required String currentUserName,
@@ -55,8 +55,7 @@ class ExpenseDatabase extends DatabaseUtils {
         .collection(_expenseCollectionName)
         .doc(currentGroupName)
         .collection(currentExpenseInstance)
-        .doc()
-        .set(data);
+        .add(data);
   }
 
   Future updateExpense({
