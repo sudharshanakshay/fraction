@@ -10,4 +10,7 @@ class DatabaseUtils {
 
   final String _notificationCollectionName = 'notification';
   get notificationCollectionName => _notificationCollectionName;
+
+  final String _chatsCollectionName = 'chat';
+  get chatsCollectionName => _chatsCollectionName;
 }

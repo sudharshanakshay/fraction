@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/data/api/chats/chat.api.dart';
 import 'package:fraction/presentation/screens/create_group/create_group.screen.dart';
 import 'package:fraction/presentation/screens/drawer/app_drawer.dart';
 import 'package:fraction/presentation/screens/home/expense_group/expense_group.screen.dart';
@@ -42,6 +44,14 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text(widget.title),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           actions: [
+            kDebugMode
+                ? IconButton(
+                    onPressed: () {
+                      ChatApi().initChatCollection(
+                          currentUserEmail: appState.currentUserEmail);
+                    },
+                    icon: const Icon(Icons.chat))
+                : Container(),
             IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/notification');
@@ -50,50 +60,62 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         drawer: const AppDrawer(),
-        body: Column(
-          children: [
-            // ---- (ui, home screen, expense grouplist) ----
-            StreamBuilder(
-                stream: _userServices.groupStream(
-                    currentUserEmail: appState.currentUserEmail),
-                builder: (context, snapShot) {
-                  if (snapShot.hasData) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapShot.data.length,
-                      itemBuilder: (context, int index) {
-                        return Container(
-                          margin: const EdgeInsets.only(top: 4.0),
-                          // color: AppColors().groupListTileColor,
-                          child: ListTile(
-                            title: Text(
-                              Tools().sliptElements(
-                                  element: snapShot.data[index])[0],
-                              style: titleListTileStyle,
-                            ),
-                            subtitle: Text('updates', style: subListTileStyle),
-                            trailing:
-                                Text('Month 0', style: trailingListTileStyle),
-                            onTap: () {
-                              appState.setCurrentUserGroup(
-                                  currentUserGroup: snapShot.data[index]);
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              // ---- (ui, home screen, expense grouplist) ----
+              StreamBuilder(
+                  stream: ChatApi().getChatsCollection(
+                      currentUserEmail: appState.currentUserEmail),
+                  builder: (context, snapShot) {
+                    if (snapShot.hasData) {
+                      print('----printing snapshot data----');
+                      print(snapShot.data!.docs[0].data());
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: snapShot.data!.docs.length,
+                        itemBuilder: (context, int index) {
+                          final chat = snapShot.data!.docs[index].data()
+                              as Map<String, dynamic>;
+                          return Container(
+                            margin: const EdgeInsets.only(top: 4.0),
+                            // color: AppColors().groupListTileColor,
+                            child: ListTile(
+                              title: Text(
+                                chat['groupName'],
+                                style: titleListTileStyle,
+                              ),
+                              subtitle: Text(chat['lastExpenseDesc'],
+                                  style: subListTileStyle),
+                              trailing: Text(
+                                  chat['totalGroupExpense'].toString(),
+                                  style: trailingListTileStyle),
+                              onTap: () {
+                                appState.setCurrentUserGroup(
+                                    currentUserGroup:
+                                        snapShot.data!.docs[index].id);
 
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => const ExpenseGroup(
-                                          title: 'Fraction')));
-                            },
-                          ),
-                        );
-                      },
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
-          ],
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ExpenseGroup(
+                                                title: 'Fraction')));
+                              },
+                            ),
+                          );
+                        },
+                      );
+                    } else {
+                      return Container();
+                    }
+                  }),
+              const SizedBox(
+                height: 80,
+              )
+            ],
+          ),
         ),
         // ---- (ui, home screen, create new expense group ) ----
         floatingActionButton: appState.hasOneGroup

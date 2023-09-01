@@ -4,7 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/data/api/utils/api.dart';
+import 'package:fraction/data/api/chats/chat.api.dart';
+import 'package:fraction/data/api/utils/database.utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
@@ -15,6 +16,7 @@ class ApplicationState extends ChangeNotifier {
   late FirebaseFirestore _firebaseFirestoreRef;
   late String _userCollectionName;
   late String _groupCollectionName;
+  late String _chatCollectionName;
 
   // static final Map<String, ApplicationState> _cache =
   //     <String, ApplicationState>{};
@@ -23,6 +25,7 @@ class ApplicationState extends ChangeNotifier {
     _firebaseFirestoreRef = FirebaseFirestore.instance;
     _userCollectionName = DatabaseUtils().userCollectionName;
     _groupCollectionName = DatabaseUtils().groupCollectionName;
+    _chatCollectionName = DatabaseUtils().chatsCollectionName;
     init();
   }
 
@@ -75,7 +78,59 @@ class ApplicationState extends ChangeNotifier {
         _currentUserEmail = user.email!;
         prefs.setString('currentUserEmail', user.email!);
 
-        // ---- set current user group instances ----
+        // ---- try ----
+
+        print("----  printing chats ----");
+
+        _firebaseFirestoreRef
+            .collection('chat')
+            .doc(currentUserEmail)
+            .collection('chat')
+            .get()
+            .then((doc) {
+          List groupList = [];
+          for (var chat in doc.docs) {
+            if (chat.exists) {
+              final chatDetails = chat.data();
+              // groupList.add(chatDetails['groupName']);
+
+              _firebaseFirestoreRef
+                  .collection(_groupCollectionName)
+                  .doc(chat.id)
+                  .get()
+                  .then((doc) {
+                if (doc.exists) {
+                  final value = doc.data()!['expenseInstance'];
+                  Map<String, Timestamp> data = {chat.id: value};
+
+                  print(data);
+
+                  // ---- set the group name & instance value from the groups database ----
+                  _groupsAndExpenseInstances.addAll(data);
+                  notifyListeners();
+                  // print('group added');
+                } else {
+                  print(chatDetails['groupName']);
+                }
+              });
+            }
+          }
+
+          print('---- printing groupList ----');
+          print(groupList);
+
+          if (groupList.isNotEmpty) {
+            _hasOneGroup = true;
+            for (String groupName in groupList) {
+              // ---- get values from group database ----
+            }
+          } else {
+            print('groupList is empty');
+          }
+        });
+
+        // ---- set current user name ----
+
         _firebaseFirestoreRef
             .collection(_userCollectionName)
             .doc(_currentUserEmail)
@@ -86,38 +141,54 @@ class ApplicationState extends ChangeNotifier {
             // ---- set current user name from user database ----
             _currentUserName = currentProfileDetails['userName'];
             notifyListeners();
-
-            final groupList = currentProfileDetails['groupNames'] as List;
-            if (groupList.isNotEmpty) {
-              _hasOneGroup = true;
-              for (String groupName in groupList) {
-                // ---- get values from group database ----
-
-                _firebaseFirestoreRef
-                    .collection(_groupCollectionName)
-                    .doc(groupName)
-                    .get()
-                    .then((doc) {
-                  if (doc.exists) {
-                    final value = doc.data()!['expenseInstance'];
-                    Map<String, Timestamp> data = {groupName: value};
-
-                    // ---- set the group name & instance value from the groups database ----
-                    _groupsAndExpenseInstances.addAll(data);
-                    notifyListeners();
-                    // print('group added');
-                  }
-                });
-              }
-            } else {
-              if (kDebugMode) {
-                print('user has no group');
-              }
-              _hasOneGroup = false;
-              notifyListeners();
-            }
           }
         });
+
+        // ---- set current user group instances ----
+        // _firebaseFirestoreRef
+        //     .collection(_userCollectionName)
+        //     .doc(_currentUserEmail)
+        //     .get()
+        //     .then((DocumentSnapshot doc) async {
+        //   if (doc.exists) {
+        //     final currentProfileDetails = doc.data() as Map<String, dynamic>;
+        //     // ---- set current user name from user database ----
+        //     _currentUserName = currentProfileDetails['userName'];
+        //     notifyListeners();
+
+        //     final groupList = currentProfileDetails['groupNames'] as List;
+        //     if (groupList.isNotEmpty) {
+        //       _hasOneGroup = true;
+        //       for (String groupName in groupList) {
+        //         // ---- get values from group database ----
+
+        //         _firebaseFirestoreRef
+        //             .collection(_groupCollectionName)
+        //             .doc(groupName)
+        //             .get()
+        //             .then((doc) {
+        //           if (doc.exists) {
+        //             final value = doc.data()!['expenseInstance'];
+        //             Map<String, Timestamp> data = {groupName: value};
+
+        //             print(data);
+
+        //             // ---- set the group name & instance value from the groups database ----
+        //             _groupsAndExpenseInstances.addAll(data);
+        //             notifyListeners();
+        //             // print('group added');
+        //           }
+        //         });
+        //       }
+        //     } else {
+        //       if (kDebugMode) {
+        //         print('user has no group');
+        //       }
+        //       _hasOneGroup = false;
+        //       notifyListeners();
+        //     }
+        //   }
+        // });
 
         // ---- set currentGroupNme ----
         if (prefs.getString(_currentUserGroupName) != null &&
