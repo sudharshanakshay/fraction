@@ -36,6 +36,7 @@ class ChatApi extends DatabaseUtils {
     return _chatcollectionRef
         .doc(currentUserEmail)
         .collection(chatsCollectionName)
+        .orderBy('lastExpenseTime', descending: true)
         .snapshots();
   }
 
@@ -96,7 +97,8 @@ class ChatApi extends DatabaseUtils {
                 chatNameThatIsGroupNameId: element.id,
                 lastExpenseDesc:
                     lastExpenseOfIteratingGroup.docs[0].data()['description'],
-                lastExpenseTime: Timestamp.now(),
+                lastExpenseTime:
+                    lastExpenseOfIteratingGroup.docs[0].data()['timeStamp'],
                 totalGroupCost: element.data()['totalExpense']);
           } else {
             print('---- lastExpenseOfIteratingGroup doc empty ----');

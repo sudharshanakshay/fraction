@@ -6,6 +6,7 @@ import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -84,7 +85,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               subtitle: Text(chat['lastExpenseDesc'],
                                   style: subListTileStyle),
                               trailing: Text(
-                                  chat['totalGroupExpense'].toString(),
+                                  DateFormat.EEEE()
+                                      .format(chat['lastExpenseTime'].toDate())
+                                      .toString(),
                                   style: trailingListTileStyle),
                               onTap: () {
                                 appState.setCurrentUserGroup(

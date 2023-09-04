@@ -42,6 +42,7 @@ class ExpenseService {
       required String currentUserGroup,
       required String currentUserEmail,
       required Timestamp currentExpenseInstance}) async {
+    final timeStamp = DateTime.now();
     _expenseDatabaseRef
         .addExpense(
             currentUserName: currentUserName,
@@ -49,7 +50,8 @@ class ExpenseService {
             currentUserEmail: currentUserEmail,
             description: description,
             cost: int.parse(cost),
-            currentExpenseInstance: currentExpenseInstance.toDate().toString())
+            currentExpenseInstance: currentExpenseInstance.toDate().toString(),
+            timeStamp: timeStamp)
         .then((DocumentReference documentReference) {
       _groupDatabase
           .incrementOrDecrementGroupMemberExpense(
@@ -57,6 +59,12 @@ class ExpenseService {
             groupName: currentUserGroup,
             expenseDiff: int.parse(cost),
           )
+          .whenComplete(() => _expenseDatabaseRef.updateChat(
+              currentUserEmail: currentUserEmail,
+              currentUserGroup: currentUserGroup,
+              lastExpenseDesc: description,
+              lastExpenseTime: timeStamp,
+              totalGroupExpense: 0))
           .onError((error, stackTrace) => _expenseDatabaseRef.deleteMyExpense(
               currentUserEmail: currentUserEmail,
               currentGroupName: currentUserGroup,
