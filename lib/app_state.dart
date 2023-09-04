@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart'
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/data/api/chats/chat.api.dart';
 import 'package:fraction/data/api/utils/database.utils.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
@@ -16,7 +15,6 @@ class ApplicationState extends ChangeNotifier {
   late FirebaseFirestore _firebaseFirestoreRef;
   late String _userCollectionName;
   late String _groupCollectionName;
-  late String _chatCollectionName;
 
   // static final Map<String, ApplicationState> _cache =
   //     <String, ApplicationState>{};
@@ -25,7 +23,6 @@ class ApplicationState extends ChangeNotifier {
     _firebaseFirestoreRef = FirebaseFirestore.instance;
     _userCollectionName = DatabaseUtils().userCollectionName;
     _groupCollectionName = DatabaseUtils().groupCollectionName;
-    _chatCollectionName = DatabaseUtils().chatsCollectionName;
     init();
   }
 
@@ -88,7 +85,6 @@ class ApplicationState extends ChangeNotifier {
             .collection('chat')
             .get()
             .then((doc) {
-          List groupList = [];
           for (var chat in doc.docs) {
             if (chat.exists) {
               final chatDetails = chat.data();
@@ -114,18 +110,6 @@ class ApplicationState extends ChangeNotifier {
                 }
               });
             }
-          }
-
-          print('---- printing groupList ----');
-          print(groupList);
-
-          if (groupList.isNotEmpty) {
-            _hasOneGroup = true;
-            for (String groupName in groupList) {
-              // ---- get values from group database ----
-            }
-          } else {
-            print('groupList is empty');
           }
         });
 

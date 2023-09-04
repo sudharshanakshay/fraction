@@ -4,13 +4,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/data/api/utils/database.utils.dart';
 import 'package:fraction/data/model/group.dart';
+import 'package:fraction/utils/tools.dart';
 
-class GroupDatabase {
-  late String _groupCollectionName;
+class GroupDatabase extends DatabaseUtils {
   late FirebaseFirestore _firebaseFirestoreRef;
 
   GroupDatabase() {
-    _groupCollectionName = DatabaseUtils().groupCollectionName;
     _firebaseFirestoreRef = FirebaseFirestore.instance;
   }
 
@@ -47,7 +46,7 @@ class GroupDatabase {
     }
 
     return _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupNameWithIdentity)
         .set(data)
         .then((value) => groupNameWithIdentity);
@@ -59,7 +58,7 @@ class GroupDatabase {
       required currentUserName}) async {
     final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
 
-    _firebaseFirestoreRef.collection(_groupCollectionName).get().then((value) {
+    _firebaseFirestoreRef.collection(groupCollectionName).get().then((value) {
       print(groupNameToAdd);
       for (var groupDoc in value.docs) {
         if (groupDoc.id == groupNameToAdd) {
@@ -74,7 +73,7 @@ class GroupDatabase {
           };
 
           _firebaseFirestoreRef
-              .collection(_groupCollectionName)
+              .collection(groupCollectionName)
               .doc(groupNameToAdd)
               .set(data, SetOptions(merge: true))
               .whenComplete(() {
@@ -91,7 +90,7 @@ class GroupDatabase {
 
   Stream getGroupDetials({required groupName}) {
     return _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupName)
         .snapshots();
   }
@@ -100,7 +99,7 @@ class GroupDatabase {
     final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
 
     return _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupName)
         .snapshots()
         .asyncExpand((doc) {
@@ -111,7 +110,7 @@ class GroupDatabase {
 
   Future<List?> getMemberDetails({required currentUserGroup}) {
     return _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(currentUserGroup)
         .withConverter<GroupModel>(
             fromFirestore: (snapShot, _) =>
@@ -135,7 +134,7 @@ class GroupDatabase {
       'totalExpense': 0
     };
     return _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(currentGroupName)
         .update({"groupMembers.$memberEmailR": data});
   }
@@ -152,7 +151,7 @@ class GroupDatabase {
           FieldValue.increment(expenseDiff)
     };
     _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupName)
         .update(data);
   }
@@ -167,7 +166,7 @@ class GroupDatabase {
 
     print(data);
     _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupName)
         .update(data);
   }
@@ -179,9 +178,22 @@ class GroupDatabase {
       required int newExpenseSum}) async {
     final data = {'totalExpense': newExpenseSum};
     _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupName)
         .update(data);
+  }
+
+  Future<void> deleteGroup(
+      {required String currentUserEmail, required String groupId}) async {
+    // print(currentUserEmail);
+    // print(Tools().sliptElements(element: GroupId)[1]);
+    if (currentUserEmail == Tools().sliptElements(element: groupId)[1]) {
+      _firebaseFirestoreRef
+          .collection(groupCollectionName)
+          .doc(groupId)
+          .delete();
+    }
+    // _firebaseFirestoreRef.collection(groupCollectionName)
   }
 
   Future<void> clearOff(
@@ -189,7 +201,7 @@ class GroupDatabase {
     final Map<String, dynamic> groupMembers = {};
 
     await _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupName)
         .get()
         .then((DocumentSnapshot doc) {
@@ -216,7 +228,7 @@ class GroupDatabase {
     // print(data);
 
     _firebaseFirestoreRef
-        .collection(_groupCollectionName)
+        .collection(groupCollectionName)
         .doc(groupName)
         .set(data, SetOptions(merge: true));
   }

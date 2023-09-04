@@ -1,12 +1,12 @@
 import 'package:fraction/app_state.dart';
-import 'package:fraction/presentation/screens/auth/register.screen.dart';
-import 'package:fraction/presentation/screens/auth/sign_in.screen.dart';
-import 'package:fraction/presentation/screens/create_group/create_group.screen.dart';
-import 'package:fraction/presentation/screens/home/expense_group/expense_group.screen.dart';
-import 'package:fraction/presentation/screens/home/expense_group/group_info/group_info_view.dart';
-import 'package:fraction/presentation/screens/notification/notification.screen.dart';
-import 'package:fraction/presentation/screens/profile/profile.screen.dart';
-import 'package:fraction/presentation/screens/settings/settings.screen.dart';
+import 'package:fraction/auth/register_screen.dart';
+import 'package:fraction/auth/sign_in_screen.dart';
+import 'package:fraction/groups/components/create_group.screen.dart';
+import 'package:fraction/expenses/expenses_screen.dart';
+import 'package:fraction/group_info/group_info.dart';
+import 'package:fraction/notification/notification_screen.dart';
+import 'package:fraction/profile/profile_screen.dart';
+import 'package:fraction/settings/settings_screen.dart';
 import 'package:provider/provider.dart';
 
 var appRoutes = {

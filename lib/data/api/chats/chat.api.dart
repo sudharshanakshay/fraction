@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:fraction/data/api/utils/database.utils.dart';
 import 'package:fraction/utils/tools.dart';
 
@@ -64,13 +63,14 @@ class ChatApi extends DatabaseUtils {
     _chatcollectionRef
         .doc(currentUserEmail)
         .collection(chatsCollectionName)
-        .doc(chatNameDocId);
+        .doc(chatNameDocId)
+        .delete();
   }
 
   Future<void> initChatCollection({required String currentUserEmail}) async {
     final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
     final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-    final listOfMyGroups = _firebaseFirestore
+    _firebaseFirestore
         .collection('group')
         .where('groupMembers.$currentUserEmailR', isNull: false)
         .get()
