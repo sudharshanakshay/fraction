@@ -32,25 +32,8 @@ class _ExpenseGroupState extends State<ExpenseGroup> {
           title: Text(
               Tools().sliptElements(element: appState.currentUserGroup)[0],
               style: const TextStyle(fontSize: 20)),
-          actions: [
-            // IconButton(
-            //     onPressed: () {
-            //       Navigator.pushNamed(context, '/notification');
-            //     },
-            //     icon: const Icon(Icons.notifications_active_outlined)),
-            appState.hasOneGroup
-                ? IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/groupInfo');
-                    },
-                    // icon: SvgPicture.asset(_settingsIconPath),
-                    icon: const Icon(Icons.bar_chart_outlined),
-                  )
-                : Container(),
-            const SizedBox(
-              width: 8.0,
-            )
-          ],
+
+          // Group Info, navigation has been moved to dashboard component.
         ),
         // drawer: const FractionAppDrawer(),
         body: appState.hasOneGroup

@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/data/api/chats/chat.api.dart';
@@ -40,14 +39,14 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text(widget.title),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           actions: [
-            kDebugMode
-                ? IconButton(
-                    onPressed: () {
-                      ChatApi().initChatCollection(
-                          currentUserEmail: appState.currentUserEmail);
-                    },
-                    icon: const Icon(Icons.chat))
-                : Container(),
+            // kDebugMode
+            //     ? IconButton(
+            //         onPressed: () {
+            //           ChatApi().initChatCollection(
+            //               currentUserEmail: appState.currentUserEmail);
+            //         },
+            //         icon: const Icon(Icons.chat))
+            //     : Container(),
             IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/notification');
@@ -85,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               subtitle: Text(chat['lastExpenseDesc'],
                                   style: subListTileStyle),
                               trailing: Text(
-                                  DateFormat.EEEE()
+                                  DateFormat.yMd()
                                       .format(chat['lastExpenseTime'].toDate())
                                       .toString(),
                                   style: trailingListTileStyle),

@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/data/api/group/group.api.dart';
 import 'package:fraction/group_info/widgets/account_pallet.dart';
 import 'package:fraction/notification/models/notification.dart';
 import 'package:fraction/groups/services/groups_service.dart';
@@ -55,15 +53,6 @@ class _GroupInfoState extends State<GroupInfo> {
               Tools().sliptElements(element: appState.currentUserGroup)[0],
               style: const TextStyle(fontSize: 20)),
           actions: [
-            kDebugMode
-                ? IconButton(
-                    onPressed: () {
-                      GroupDatabase().deleteGroup(
-                          currentUserEmail: appState.currentUserEmail,
-                          groupId: appState.currentUserGroup);
-                    },
-                    icon: const Icon(Icons.delete))
-                : Container(),
             PopupMenuButton(
                 itemBuilder: (context) => [
                       PopupMenuItem(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/widgets/dashboard_shadow.dart';
 import 'package:fraction/groups/services/groups_service.dart';
@@ -15,8 +14,6 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  final String moreMembersIcon = 'assets/icons/moreMembersIcon.svg';
-
   late GroupServices _groupService;
 
   @override
@@ -38,113 +35,140 @@ class _DashboardState extends State<Dashboard> {
                 if (!groupDetailsSnapshot.hasData) {
                   return const DashboardShadow();
                 }
-                return Container(
-                  padding: const EdgeInsets.only(
-                    top: 6.0,
-                    bottom: 2.0,
-                    right: 12,
-                    left: 12,
-                  ),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 2,
-                        color: appState.toggleRandomDashboardColor
-                            ? getRandomColor()
-                            : Colors.blue.shade100,
-                      ),
-                      borderRadius: BorderRadius.circular(6)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          StreamBuilder(
-                              // ---- (ui, My Expense) Stream Builder ----
-                              stream: _groupService.getMyTotalExpense(
-                                  currentUserEmail: appState.currentUserEmail,
-                                  currentUserGroup: appState.currentUserGroup),
-                              builder: (context, myTotalExpenseSnapshot) {
-                                if (myTotalExpenseSnapshot.hasData) {
-                                  return Row(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(4.0),
-                                        decoration: const BoxDecoration(
-                                            // border: Border(
-                                            //     left: BorderSide(
-                                            //         width: 1.0,
-                                            //         color: Colors.black)),
-                                            ),
-                                        child: Text('My Expense: ',
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey.shade800)),
-                                      ),
-                                      Text(
-                                          // ---- (ui, My Expense) ----
-                                          myTotalExpenseSnapshot.data
-                                              .toString(),
-                                          style: const TextStyle(fontSize: 16))
-                                    ],
-                                  );
-                                } else {
-                                  return Container();
-                                }
-                              }),
-                          Column(
-                            // ---- (ui, Next clear off) ----
-                            children: [
-                              const Text('Next clear off',
-                                  style: TextStyle(fontSize: 12)),
-                              Text(
-                                  DateFormat.MMMd().format(groupDetailsSnapshot
-                                      .data['nextClearOffTimeStamp']
-                                      .toDate()),
-                                  style: const TextStyle(fontSize: 16))
-                            ],
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: <Widget>[
-                          // ---- (changes, group name now visible in app bar ) ----
-
-                          // Text(Tools().sliptElements(
-                          //     element: appState.currentUserGroup)[0]),
-                          IconButton(
-                            icon: SvgPicture.asset(moreMembersIcon),
-                            onPressed: () async {
-                              final someValue =
-                                  await _groupService.getMemberDetails(
-                                      currentUserGroup:
-                                          appState.currentUserGroup);
-
-                              // ---- (ui, member expenses ) ----
-                              await showMemberDetails(
-                                  memberDetailList: someValue);
-                            },
-                          ),
-                          Text(
-                              // ---- (ui, Total group expense) ----
-                              groupDetailsSnapshot.data['totalExpense']
-                                  .toString(),
-                              style: const TextStyle(fontSize: 12)),
-                          IconButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, '/groupInfo');
-                              },
-                              icon: const Icon(Icons.navigate_next))
-                        ],
-                      )
-                    ],
+                return GestureDetector(
+                  onTap: () => Navigator.pushNamed(context, '/groupInfo'),
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                      top: 6.0,
+                      bottom: 2.0,
+                      right: 12,
+                      left: 12,
+                    ),
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: appState.toggleRandomDashboardColor
+                              ? getRandomColor()
+                              : Colors.blue.shade100,
+                        ),
+                        borderRadius: BorderRadius.circular(6)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        dashboardExpenseDetail(
+                            appState, groupDetailsSnapshot, context),
+                        dashboardInfo(appState, groupDetailsSnapshot),
+                      ],
+                    ),
                   ),
                 );
               }),
         );
       },
+    );
+  }
+
+  Column dashboardExpenseDetail(ApplicationState appState,
+      AsyncSnapshot<dynamic> groupDetailsSnapshot, BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: <Widget>[
+            // ---- (changes, group name now visible in app bar ) ----
+
+            Text('Total Expense: ',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey.shade800)),
+
+            Text(
+                // ---- (ui, Total group expense) ----
+                groupDetailsSnapshot.data['totalExpense'].toString(),
+                style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+        const SizedBox(
+          height: 6,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4.0),
+              decoration: const BoxDecoration(
+                  // border: Border(
+                  //     left: BorderSide(
+                  //         width: 1.0,
+                  //         color: Colors.black)),
+                  ),
+              child: Text('My Expense: ',
+                  style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.grey.shade800)),
+            ),
+            StreamBuilder(
+                // ---- (ui, My Expense) Stream Builder ----
+                stream: _groupService.getMyTotalExpense(
+                    currentUserEmail: appState.currentUserEmail,
+                    currentUserGroup: appState.currentUserGroup),
+                builder: (context, myTotalExpenseSnapshot) {
+                  if (myTotalExpenseSnapshot.hasData) {
+                    return Text(
+                        // ---- (ui, My Expense) ----
+                        myTotalExpenseSnapshot.data.toString(),
+                        style: const TextStyle(fontSize: 14));
+                  } else {
+                    return Container();
+                  }
+                }),
+          ],
+        )
+      ],
+    );
+  }
+
+  Column dashboardInfo(
+      ApplicationState appState, AsyncSnapshot<dynamic> groupDetailsSnapshot) {
+    return Column(
+      children: [
+        Column(
+          // ---- (ui, Next clear off) ----
+          children: [
+            const Text('Next clear off', style: TextStyle(fontSize: 12)),
+            Text(
+                DateFormat.MMMd().format(groupDetailsSnapshot
+                    .data['nextClearOffTimeStamp']
+                    .toDate()),
+                style: const TextStyle(fontSize: 16))
+          ],
+        ),
+        Row(
+          children: [
+            appState.hasOneGroup
+                ? IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/groupInfo');
+                    },
+                    // icon: SvgPicture.asset(_settingsIconPath),
+                    icon: const Icon(Icons.bar_chart_outlined),
+                  )
+                : Container(),
+            // IconButton(
+            //   icon: SvgPicture.asset(moreMembersIcon),
+            //   onPressed: () async {
+            //     final someValue = await _groupService.getMemberDetails(
+            //         currentUserGroup: appState.currentUserGroup);
+
+            //     // ---- (ui, member expenses ) ----
+            //     await showMemberDetails(memberDetailList: someValue);
+            //   },
+            // ),
+          ],
+        ),
+      ],
     );
   }
 
