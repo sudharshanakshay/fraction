@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/presentation/screens/home/home.screen.dart';
-import 'package:fraction/presentation/screens/notification/models/notification.repo.dart';
-import 'package:fraction/presentation/screens/auth/sign_in.screen.dart';
+import 'package:fraction/groups/groups_screen.dart';
+import 'package:fraction/notification/models/notification.dart';
+import 'package:fraction/auth/sign_in_screen.dart';
 import 'package:fraction/routes.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';

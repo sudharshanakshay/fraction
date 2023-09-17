@@ -1,20 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/data/api/utils/api.dart';
+import 'package:fraction/data/api/utils/database.utils.dart';
 
 class ExpenseDatabase extends DatabaseUtils {
   // final _expenseCollectionName = 'expense';
   late String _expenseCollectionName;
-  late FirebaseFirestore _databaseRef;
+  late FirebaseFirestore _firebaseFirestoreInstance;
 
   ExpenseDatabase() {
-    _databaseRef = FirebaseFirestore.instance;
+    _firebaseFirestoreInstance = FirebaseFirestore.instance;
     _expenseCollectionName = DatabaseUtils().expenseCollectionName;
   }
 
-  Stream<QuerySnapshot> getExpenseCollection(
+  Stream<QuerySnapshot> expenseCollectionStream(
       {required currentGroupName, required currentExpenseInstance}) {
-    return _databaseRef
+    return _firebaseFirestoreInstance
         .collection(_expenseCollectionName)
         .doc(currentGroupName)
         .collection(currentExpenseInstance)
@@ -23,6 +23,17 @@ class ExpenseDatabase extends DatabaseUtils {
         .handleError((e) {
       throw (e);
     });
+  }
+
+  Future<QuerySnapshot> getExpenseCollection(
+      {required String currentGroupName,
+      required String currentExpenseInstance}) {
+    return _firebaseFirestoreInstance
+        .collection(_expenseCollectionName)
+        .doc(currentGroupName)
+        .collection(currentExpenseInstance)
+        .orderBy('timeStamp', descending: true)
+        .get();
   }
 
   // Stream<QuerySnapshot> getMyExpenses(
@@ -36,12 +47,32 @@ class ExpenseDatabase extends DatabaseUtils {
   //       .snapshots();
   // }
 
-  Future<void> addExpense(
+  Future<void> updateChat(
+      {required String currentUserEmail,
+      required String currentUserGroup,
+      required String lastExpenseDesc,
+      required DateTime lastExpenseTime,
+      required int totalGroupExpense}) async {
+    final data = {
+      "lastExpenseDesc": lastExpenseDesc,
+      "lastExpenseTime": lastExpenseTime,
+      "totalGroupExpense": totalGroupExpense
+    };
+    _firebaseFirestoreInstance
+        .collection(chatsCollectionName)
+        .doc(currentUserEmail)
+        .collection(chatsCollectionName)
+        .doc(currentUserGroup)
+        .update(data);
+  }
+
+  Future<DocumentReference> addExpense(
       {required String currentGroupName,
       required String currentExpenseInstance,
       required String currentUserName,
       required String currentUserEmail,
       required String description,
+      required DateTime timeStamp,
       required int cost}) {
     final data = {
       'description': description,
@@ -51,12 +82,11 @@ class ExpenseDatabase extends DatabaseUtils {
       'emailAddress': currentUserEmail,
       'timeStamp': DateTime.now()
     };
-    return _databaseRef
+    return _firebaseFirestoreInstance
         .collection(_expenseCollectionName)
         .doc(currentGroupName)
         .collection(currentExpenseInstance)
-        .doc()
-        .set(data);
+        .add(data);
   }
 
   Future updateExpense({
@@ -71,7 +101,7 @@ class ExpenseDatabase extends DatabaseUtils {
       'cost': updatedCost,
       'tags': FieldValue.arrayUnion(['updated'])
     };
-    _databaseRef
+    _firebaseFirestoreInstance
         .collection(_expenseCollectionName)
         .doc(currentGroupName)
         .collection(currentExpenseInstance)
@@ -85,7 +115,7 @@ class ExpenseDatabase extends DatabaseUtils {
       required currentGroupName,
       required currentExpenseInstance,
       required docId}) async {
-    return _databaseRef
+    return _firebaseFirestoreInstance
         .collection(_expenseCollectionName)
         .doc(currentGroupName)
         .collection(currentExpenseInstance)
