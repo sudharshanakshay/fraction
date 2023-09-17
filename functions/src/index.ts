@@ -1,29 +1,44 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-// import {onRequest} from "firebase-functions/v2/https";
-// import * as logger from "firebase-functions/logger";
-// import {onRequest} from "firebase-functions/v2/https";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
+import {setGlobalOptions} from "firebase-functions/v2";
+import {initializeApp} from "firebase-admin/app";
+import {getFirestore} from "firebase-admin/firestore";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+setGlobalOptions({maxInstances: 10});
 
-// export const helloWorld = onRequest((request:any, response:any) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+initializeApp();
 
-// trigger events expense is added.
+const db = getFirestore();
 
 exports.expenseTrigger =
 onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
-  () => {
-    return "hello, from expense trigger";
+  (change) => {
+    const data = change.data?.after.data();
+    // const previousData = change.data?.before.data();
+
+    // group & chat collections need to updated whenever expense doc is changed.
+
+    // update group.groupMembers.memberExpense
+    const emailAddress = data?.emailAddress;
+    const groupName = change.params.groupName;
+    // const memberEmail = emailAddress.replace(".", "#");
+
+    // const groupUpdataData = {
+    //   "groupMembers"  : {
+    //   }
+    // };
+
+    // db.doc("group/"+groupName).set({});
+
+    const chatUpdateWith = {
+      "lastExpenseDesc": data?.description,
+      "lastExpenseTime": data?.timeStamp,
+    };
+
+    console.log(chatUpdateWith);
+
+    db.doc("chat/"+emailAddress+"/chat/"+groupName)
+      .set(chatUpdateWith, {merge: true});
+
+    console.log("---- doc updated trigger ----");
+    return "ok";
   });

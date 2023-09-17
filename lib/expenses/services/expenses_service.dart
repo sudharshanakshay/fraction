@@ -59,12 +59,6 @@ class ExpenseService {
             groupName: currentUserGroup,
             expenseDiff: int.parse(cost),
           )
-          .whenComplete(() => _expenseDatabaseRef.updateChat(
-              currentUserEmail: currentUserEmail,
-              currentUserGroup: currentUserGroup,
-              lastExpenseDesc: description,
-              lastExpenseTime: timeStamp,
-              totalGroupExpense: 0))
           .onError((error, stackTrace) => _expenseDatabaseRef.deleteMyExpense(
               currentUserEmail: currentUserEmail,
               currentGroupName: currentUserGroup,
