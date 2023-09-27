@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/groups/groups_screen.dart';
+import 'package:fraction/groups/models/groups_models.dart';
 import 'package:fraction/notification/models/notification.dart';
 import 'package:fraction/auth/sign_in_screen.dart';
 import 'package:fraction/routes.dart';
@@ -41,8 +42,12 @@ class MyApp extends StatelessWidget {
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
                 ? const SignInScreen()
-                : const HomeScreen(
-                    title: 'Fraction',
+                : ChangeNotifierProvider(
+                    create: (c) =>
+                        GroupsRepo(currentUserEmail: appState.currentUserEmail),
+                    child: const HomeScreen(
+                      title: 'Fraction',
+                    ),
                   )),
         routes: appRoutes);
   }

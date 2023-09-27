@@ -4,6 +4,7 @@ import 'package:fraction/data/api/chats/chat.api.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
+import 'package:fraction/groups/models/groups_models.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -42,11 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
             // kDebugMode
             //     ? IconButton(
             //         onPressed: () {
-            //           ChatApi().initChatCollection(
-            //               currentUserEmail: appState.currentUserEmail);
-            //         },
-            //         icon: const Icon(Icons.chat))
-            //     : Container(),
+            //     },
+            //     icon: const Icon(Icons.chat))
+            // : Container(),
             IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/notification');
@@ -59,55 +58,49 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               // ---- (ui, home screen, expense grouplist) ----
-              StreamBuilder(
-                  stream: ChatApi().getChatsCollection(
-                      currentUserEmail: appState.currentUserEmail),
-                  builder: (context, snapShot) {
-                    if (snapShot.hasData) {
-                      print('----printing snapshot data----');
-                      print(snapShot.data!.docs[0].data());
-                      return ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: snapShot.data!.docs.length,
-                        itemBuilder: (context, int index) {
-                          final chat = snapShot.data!.docs[index].data()
-                              as Map<String, dynamic>;
-                          return Container(
-                            margin: const EdgeInsets.only(top: 4.0),
-                            // color: AppColors().groupListTileColor,
-                            child: ListTile(
-                              title: Text(
-                                chat['groupName'],
-                                style: titleListTileStyle,
-                              ),
-                              subtitle: Text(chat['lastExpenseDesc'],
-                                  style: subListTileStyle),
-                              trailing: Text(
-                                  DateFormat.yMd()
-                                      .format(chat['lastExpenseTime'].toDate())
-                                      .toString(),
-                                  style: trailingListTileStyle),
-                              onTap: () {
-                                appState.setCurrentUserGroup(
-                                    currentUserGroup:
-                                        snapShot.data!.docs[index].id);
+              Consumer<GroupsRepo>(
+                builder: (context, groupsRepoState, child) => ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: groupsRepoState.expenseGroupList.length,
+                  // itemCount: snapShot.data!.docs.length,
+                  itemBuilder: (context, int index) {
+                    // final chat = snapShot.data!.docs[index].data()
+                    //     as Map<String, dynamic>;
+                    return Container(
+                      margin: const EdgeInsets.only(top: 4.0),
+                      // color: AppColors().groupListTileColor,
+                      child: ListTile(
+                        title: Text(
+                          groupsRepoState.expenseGroupList[index].groupName,
+                          style: titleListTileStyle,
+                        ),
+                        subtitle: Text(
+                            groupsRepoState
+                                .expenseGroupList[index].lastUpdatedDesc,
+                            style: subListTileStyle),
+                        trailing: Text(
+                            DateFormat.yMd()
+                                .format(groupsRepoState
+                                    .expenseGroupList[index].lastUpdatedTime)
+                                .toString(),
+                            style: trailingListTileStyle),
+                        onTap: () {
+                          appState.setCurrentUserGroup(
+                              currentUserGroup: groupsRepoState
+                                  .expenseGroupList[index].groupId);
 
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const ExpenseGroup(
-                                                title: 'Fraction')));
-                              },
-                            ),
-                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const ExpenseGroup(title: 'Fraction')));
                         },
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }),
+                      ),
+                    );
+                  },
+                ),
+              ),
               const SizedBox(
                 height: 80,
               )

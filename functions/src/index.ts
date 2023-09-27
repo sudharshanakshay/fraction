@@ -18,7 +18,7 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
     // group & chat collections need to updated whenever expense doc is changed.
 
     // update group.groupMembers.memberExpense
-    const emailAddress = data?.emailAddress;
+    // const emailAddress = data?.emailAddress;
     const groupName = change.params.groupName;
     // const memberEmail = emailAddress.replace(".", "#");
 
@@ -30,15 +30,42 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
     // db.doc("group/"+groupName).set({});
 
     const chatUpdateWith = {
-      "lastExpenseDesc": data?.description,
-      "lastExpenseTime": data?.timeStamp,
+      "lastUpdatedDesc": data?.description,
+      "lastUpdatedTime": data?.timeStamp,
     };
 
     console.log(chatUpdateWith);
 
-    db.doc("chat/"+emailAddress+"/chat/"+groupName)
-      .set(chatUpdateWith, {merge: true});
+    // db.doc("chat/"+emailAddress+"/chat/"+groupName)
+    //   .set(chatUpdateWith, {merge: true});
+
+    db.doc("group/"+groupName)
+      .set({"lastExpenseId": change.params.expenseDocId}, {merge: true});
 
     console.log("---- doc updated trigger ----");
     return "ok";
   });
+// ---- when a chat-group is create, what happens to chat collection? ----
+
+// exports.onChatGroupIsCreated =
+// onDocumentCreated("group/{groupName}",(event)=>{
+//   const snapShot = event.data;
+//   if(!snapShot){
+//     console.log("No data associated with the event");
+//     return;
+//   }
+
+//   const data = snapShot.data();
+
+//   const chatUpdateWith = {
+//     "groupName": data.groupName,
+//     "lastUpdatedDesc": "new group",
+//     "lastUpdatedTime": data.createdOn,
+//     "totalGroupExpense": data.totalExpense
+//   };
+
+//   db.doc("chat/"+emailAddress+"/chat/"+groupName)
+//   .set(chatUpdateWith, {merge: true});
+// });
+
+// ---- when a chat-group is deleted, what happens to chat collection ----

@@ -99,14 +99,14 @@ class ApplicationState extends ChangeNotifier {
                   final value = doc.data()!['expenseInstance'];
                   Map<String, Timestamp> data = {chat.id: value};
 
-                  print(data);
+                  // print(data);
 
                   // ---- set the group name & instance value from the groups database ----
                   _groupsAndExpenseInstances.addAll(data);
                   notifyListeners();
                   // print('group added');
                 } else {
-                  print(chatDetails['groupName']);
+                  // print(chatDetails['groupName']);
                 }
               });
             }
