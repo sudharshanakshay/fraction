@@ -25,6 +25,7 @@ class GroupDatabase extends DatabaseUtils {
     final adminEmailR = adminEmail.replaceAll('.', '#');
     final data = {
       'createdOn': DateTime.now(),
+      'createdBy': adminEmail,
       'expenseInstance': DateTime.now(),
       'nextClearOffTimeStamp': nextClearOffTimeStamp,
       'groupName': groupName,

@@ -12,17 +12,17 @@ import 'package:provider/provider.dart';
 var appRoutes = {
   '/logIn': (context) => Consumer<ApplicationState>(
         builder: (context, value, child) => value.loggedIn
-            ? const ExpenseGroup(title: 'Fraction')
+            ? const ExpenseScreen(title: 'Fraction')
             : const SignInScreen(),
       ),
   '/register': (context) => Consumer<ApplicationState>(
         builder: (context, value, child) => value.loggedIn
-            ? const ExpenseGroup(title: 'Fraction')
+            ? const ExpenseScreen(title: 'Fraction')
             : const RegisterScreen(),
       ),
   '/home': (context) => Consumer<ApplicationState>(
       builder: (context, appState, _) => appState.loggedIn
-          ? const ExpenseGroup(title: 'Fraction')
+          ? const ExpenseScreen(title: 'Fraction')
           : const SignInScreen()),
   '/profile': (context) => Consumer<ApplicationState>(
       builder: (context, appState, _) =>

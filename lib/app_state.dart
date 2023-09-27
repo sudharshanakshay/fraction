@@ -87,7 +87,6 @@ class ApplicationState extends ChangeNotifier {
             .then((doc) {
           for (var chat in doc.docs) {
             if (chat.exists) {
-              final chatDetails = chat.data();
               // groupList.add(chatDetails['groupName']);
 
               _firebaseFirestoreRef

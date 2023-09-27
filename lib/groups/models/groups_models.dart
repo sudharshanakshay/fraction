@@ -33,12 +33,13 @@ class GroupsRepo extends ChangeNotifier {
         .where('userId', isEqualTo: currentUserEmail)
         .snapshots()
         .listen((groupMembersEvent) {
+      _expenseGroupsList.clear();
       for (var element in groupMembersEvent.docs) {
         firebaseFirestore
             .collection("group")
             .doc(element.data()["groupId"])
-            .snapshots()
-            .listen((groupEvent) {
+            .get()
+            .then((groupEvent) {
           if (groupEvent.exists) {
             _expenseGroupsList.add(GroupsRepoModel(
                 groupName: groupEvent.data()!['groupName'],

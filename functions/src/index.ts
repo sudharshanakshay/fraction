@@ -1,4 +1,8 @@
-import {onDocumentWritten} from "firebase-functions/v2/firestore";
+import {
+  onDocumentCreated,
+  // onDocumentUpdated,
+  onDocumentWritten,
+} from "firebase-functions/v2/firestore";
 import {setGlobalOptions} from "firebase-functions/v2";
 import {initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
@@ -45,27 +49,40 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
     console.log("---- doc updated trigger ----");
     return "ok";
   });
-// ---- when a chat-group is create, what happens to chat collection? ----
+// ---- when a chat-group is create,
+//  what happens to groupMembers collection? ----
 
-// exports.onChatGroupIsCreated =
-// onDocumentCreated("group/{groupName}",(event)=>{
-//   const snapShot = event.data;
-//   if(!snapShot){
-//     console.log("No data associated with the event");
-//     return;
-//   }
+exports.onChatGroupIsCreated =
+onDocumentCreated("group/{groupName}", (event)=>{
+  const snapShot = event.data;
+  if (!snapShot) {
+    console.log("No data associated with the event");
+    return;
+  }
 
-//   const data = snapShot.data();
+  const data = snapShot.data();
 
-//   const chatUpdateWith = {
-//     "groupName": data.groupName,
-//     "lastUpdatedDesc": "new group",
-//     "lastUpdatedTime": data.createdOn,
-//     "totalGroupExpense": data.totalExpense
-//   };
+  // const chatUpdateWith = {
+  //   "groupName": data.groupName,
+  //   "lastUpdatedDesc": "new group",
+  //   "lastUpdatedTime": data.createdOn,
+  //   "totalGroupExpense": data.totalExpense
+  // };
 
-//   db.doc("chat/"+emailAddress+"/chat/"+groupName)
-//   .set(chatUpdateWith, {merge: true});
-// });
+  const groupMemberRelation = {
+    "groupId": event.params.groupName,
+    "userId": data.createdBy,
+    "role": "admin",
+  };
 
-// ---- when a chat-group is deleted, what happens to chat collection ----
+  db.collection("groupMembers").add(groupMemberRelation);
+  // .set(chatUpdateWith, {merge: true});
+});
+
+// ---- when a chat-group is updated,
+// what happens to groupMembers collection ----
+
+// exports.onExpenseGroupIsUpdated = onDocumentUpdated("", (event){});
+
+// ---- when a chat-group is deleted,
+//  what happens to groupMembers collection ----

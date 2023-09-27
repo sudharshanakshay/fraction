@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/data/api/chats/chat.api.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
@@ -63,13 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: groupsRepoState.expenseGroupList.length,
-                  // itemCount: snapShot.data!.docs.length,
                   itemBuilder: (context, int index) {
-                    // final chat = snapShot.data!.docs[index].data()
-                    //     as Map<String, dynamic>;
                     return Container(
                       margin: const EdgeInsets.only(top: 4.0),
-                      // color: AppColors().groupListTileColor,
                       child: ListTile(
                         title: Text(
                           groupsRepoState.expenseGroupList[index].groupName,
@@ -94,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const ExpenseGroup(title: 'Fraction')));
+                                      const ExpenseScreen(title: 'Fraction')));
                         },
                       ),
                     );

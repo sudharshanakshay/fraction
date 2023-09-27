@@ -34,16 +34,20 @@ class GroupServices {
               adminName: currentUserName,
               adminEmail: currentUserEmail,
               nextClearOffTimeStamp: nextClearOffTimeStamp)
+
+          // this function is taken care by firebase trigger functions
+
+          // .then((String groupNameCreatedWithIdentity)
+          // {
+          // _userDatabaseRef
+          //     .insertGroupNameToProfile(
+          //         currentUserEmail: currentUserEmail,
+          //         groupNameToAdd: groupNameCreatedWithIdentity)
           .then((String groupNameCreatedWithIdentity) {
-        _userDatabaseRef
-            .insertGroupNameToProfile(
-                currentUserEmail: currentUserEmail,
-                groupNameToAdd: groupNameCreatedWithIdentity)
-            .whenComplete(() {
-          if (applicationState != null) {
-            applicationState.refreshGroupNamesAndExpenseInstances();
-          }
-        });
+        if (applicationState != null) {
+          applicationState.refreshGroupNamesAndExpenseInstances();
+        }
+        // });
         return groupNameCreatedWithIdentity;
       });
     } catch (e) {

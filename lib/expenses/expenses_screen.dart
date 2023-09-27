@@ -6,16 +6,16 @@ import 'package:fraction/expenses/components/add_expense_component.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 
-class ExpenseGroup extends StatefulWidget {
-  const ExpenseGroup({super.key, required this.title});
+class ExpenseScreen extends StatefulWidget {
+  const ExpenseScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<ExpenseGroup> createState() => _ExpenseGroupState();
+  State<ExpenseScreen> createState() => _ExpenseScreenState();
 }
 
-class _ExpenseGroupState extends State<ExpenseGroup> {
+class _ExpenseScreenState extends State<ExpenseScreen> {
   // final String _settingsIconPath = 'assets/icons/SettingsIcon.svg';
   @override
   Widget build(BuildContext context) {
