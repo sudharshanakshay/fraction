@@ -106,6 +106,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                       // --- Expense list Item ----
                       child: ExpenseListTile(
                         currentUserEmail: appState.currentUserEmail,
+                        expenseDocId: expenses.expenseList[index].docId,
                         currentUserName: expenses.expenseList[index].userName,
                         expenseServiceState: _expenseService,
                         // expenseDoc: snapshot.data!.docs[index],
@@ -124,6 +125,7 @@ class _ExpenseViewState extends State<ExpenseView> {
               // --- Expense list Item ----
               return ExpenseListTile(
                 currentUserEmail: appState.currentUserEmail,
+                expenseDocId: expenses.expenseList[index].docId,
                 currentUserName: expenses.expenseList[index].userName,
                 expenseServiceState: _expenseService,
                 // expenseDoc: snapshot.data!.docs[index],

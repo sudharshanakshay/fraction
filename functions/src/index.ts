@@ -1,11 +1,12 @@
 import {
   onDocumentCreated,
+  onDocumentDeleted,
   // onDocumentUpdated,
   onDocumentWritten,
 } from "firebase-functions/v2/firestore";
 import {setGlobalOptions} from "firebase-functions/v2";
 import {initializeApp} from "firebase-admin/app";
-import {getFirestore} from "firebase-admin/firestore";
+import {FieldValue, getFirestore} from "firebase-admin/firestore";
 
 setGlobalOptions({maxInstances: 10});
 
@@ -49,7 +50,8 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
     console.log("---- doc updated trigger ----");
     return "ok";
   });
-// ---- when a chat-group is create,
+
+// ---- when a group collection is create,
 //  what happens to groupMembers collection? ----
 
 exports.onChatGroupIsCreated =
@@ -79,10 +81,33 @@ onDocumentCreated("group/{groupName}", (event)=>{
   // .set(chatUpdateWith, {merge: true});
 });
 
-// ---- when a chat-group is updated,
+// ---- when a group collection is updated,
 // what happens to groupMembers collection ----
 
 // exports.onExpenseGroupIsUpdated = onDocumentUpdated("", (event){});
 
-// ---- when a chat-group is deleted,
+// ---- when a group collection is deleted,
 //  what happens to groupMembers collection ----
+
+
+// when an expense has been deleted
+// 1. make changes to "members" sub-collection in "group" collection
+exports.expenseDeleted =
+  onDocumentDeleted("expense/{groupName}/{expenseInstance}/{expenseDocId}",
+    (event) => {
+      const groupName = event.params.groupName;
+
+      const snapShot = event.data?.data();
+
+      if (snapShot != undefined) {
+        const expenseCost = snapShot["cost"];
+        const emailAddress = snapShot["emailAddress"];
+
+        const updateGroupMemberData = {
+          "memberExpense": FieldValue.increment(-expenseCost),
+        };
+
+        db.doc("group/"+groupName+"/members/"+emailAddress)
+          .set(updateGroupMemberData, {merge: true});
+      }
+    });

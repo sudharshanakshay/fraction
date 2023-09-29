@@ -4,6 +4,7 @@ import 'package:fraction/expenses/services/expenses_service.dart';
 import 'package:fraction/groups/models/groups_models.dart';
 
 class ExpenseRepoModel {
+  String docId;
   String description;
   String cost;
   DateTime timeStamp;
@@ -11,7 +12,8 @@ class ExpenseRepoModel {
   String emailAddress;
 
   ExpenseRepoModel(
-      {required this.description,
+      {required this.docId,
+      required this.description,
       required this.cost,
       required this.timeStamp,
       required this.emailAddress,
@@ -48,6 +50,7 @@ class ExpenseRepo extends ChangeNotifier {
         if (element.exists) {
           final data = element.data() as Map<String, dynamic>;
           _expensesList.add(ExpenseRepoModel(
+              docId: element.id,
               description: data["description"],
               cost: data["cost"].toString(),
               timeStamp: data["timeStamp"].toDate(),

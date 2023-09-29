@@ -97,25 +97,25 @@ class ExpenseService {
   }
 
   Future deleteExpense({
-    required expenseDoc,
+    required String expenseDocId,
+    required String emailAddress,
     required String currentUserEmail,
     required String currentUserGroup,
     required Timestamp currentExpenseInstance,
   }) async {
-    if (currentUserEmail == expenseDoc['emailAddress']) {
-      _expenseDatabaseRef
-          .deleteMyExpense(
-              currentUserEmail: currentUserEmail,
-              currentGroupName: currentUserGroup,
-              docId: expenseDoc.id,
-              currentExpenseInstance:
-                  currentExpenseInstance.toDate().toString())
-          .whenComplete(() {
-        _groupDatabase.incrementOrDecrementGroupMemberExpense(
-            groupName: currentUserGroup,
-            memberEmail: currentUserEmail,
-            expenseDiff: -expenseDoc['cost']);
-      });
+    if (currentUserEmail == emailAddress) {
+      _expenseDatabaseRef.deleteMyExpense(
+          currentUserEmail: currentUserEmail,
+          currentGroupName: currentUserGroup,
+          docId: expenseDocId,
+          currentExpenseInstance: currentExpenseInstance.toDate().toString());
+      // this functionality is now handled by trigger function.
+      //     .whenComplete(() {
+      //   _groupDatabase.incrementOrDecrementGroupMemberExpense(
+      //       groupName: currentUserGroup,
+      //       memberEmail: currentUserEmail,
+      //       expenseDiff: -expenseDoc['cost']);
+      // });
     }
   }
 }
