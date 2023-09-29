@@ -29,6 +29,9 @@ class ExpenseRepo extends ChangeNotifier {
   final List<ExpenseRepoModel> _expensesList = [];
   List<ExpenseRepoModel> get expenseList => _expensesList;
 
+  bool _hasOneExpense = true;
+  bool get hasOneExpense => _hasOneExpense;
+
   ExpenseRepo({required this.appState, required this.groupsRepoState}) {
     initExpenseInstances();
   }
@@ -50,7 +53,11 @@ class ExpenseRepo extends ChangeNotifier {
               timeStamp: data["timeStamp"].toDate(),
               emailAddress: data["emailAddress"],
               userName: data["userName"]));
+          notifyListeners();
         }
+      }
+      if (_expensesList.isEmpty) {
+        _hasOneExpense = false;
         notifyListeners();
       }
       // print(_expensesList);

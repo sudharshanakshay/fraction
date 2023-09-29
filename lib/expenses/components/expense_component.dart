@@ -58,82 +58,83 @@ class _ExpenseViewState extends State<ExpenseView> {
       //       }
       _expenseTime = '';
       return Consumer<ExpenseRepo>(builder: (context, expenses, child) {
-        if (expenses.expenseList.isEmpty) {
+        if (expenses.hasOneExpense && expenses.expenseList.isEmpty) {
+          return const ExpenseListItemShadow();
+        } else if (!expenses.hasOneExpense) {
           return const ListTile(
             title: Text('no expense to display _ '),
           );
-        } else {
-          return ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: expenses.expenseList.length,
-              // itemCount: snapshot.data?.docs.length,
-              itemBuilder: (BuildContext context, int index) {
-                print(index);
-                if (_expenseTime !=
-                    // DateFormat.MMMMEEEEd()
-                    //     .format(
-                    //         snapshot.data!.docs[index]['timeStamp'].toDate())
-                    DateFormat.MMMMEEEEd()
-                        .format(expenses.expenseList[index].timeStamp)
-                        .toString()) {
-                  _expenseTime = DateFormat.MMMMEEEEd()
-                      .format(expenses.expenseList[index].timeStamp)
-                      .toString();
-                  return Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            child: _expenseTime == _today
-                                ? Text(
-                                    'Today, ${DateFormat.MMMMd().format(expenses.expenseList[index].timeStamp).toString()}',
-                                    style: titleListTileStyle)
-                                : Text(_expenseTime, style: titleListTileStyle),
-                          ),
-                        ],
-                      ),
-                      FractionallySizedBox(
-                        widthFactor: 1,
-
-                        // --- Expense list Item ----
-                        child: ExpenseListTile(
-                          currentUserEmail: appState.currentUserEmail,
-                          currentUserName: expenses.expenseList[index].userName,
-                          expenseServiceState: _expenseService,
-                          // expenseDoc: snapshot.data!.docs[index],
-                          appState: appState,
-                          cost: expenses.expenseList[index].cost,
-                          description: expenses.expenseList[index].description,
-                          emailAddress:
-                              expenses.expenseList[index].emailAddress,
-                          tags: [],
-                          timeStamp: expenses.expenseList[index].timeStamp,
-                        ),
-                      )
-                    ],
-                  );
-                }
-
-                // --- Expense list Item ----
-                return ExpenseListTile(
-                  currentUserEmail: appState.currentUserEmail,
-                  currentUserName: expenses.expenseList[index].userName,
-                  expenseServiceState: _expenseService,
-                  // expenseDoc: snapshot.data!.docs[index],
-                  appState: appState,
-                  cost: expenses.expenseList[index].cost,
-                  description: expenses.expenseList[index].description,
-                  emailAddress: expenses.expenseList[index].emailAddress,
-                  tags: [],
-                  timeStamp: expenses.expenseList[index].timeStamp,
-                );
-              });
         }
+
+        return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: expenses.expenseList.length,
+            // itemCount: snapshot.data?.docs.length,
+            itemBuilder: (BuildContext context, int index) {
+              print(index);
+              if (_expenseTime !=
+                  // DateFormat.MMMMEEEEd()
+                  //     .format(
+                  //         snapshot.data!.docs[index]['timeStamp'].toDate())
+                  DateFormat.MMMMEEEEd()
+                      .format(expenses.expenseList[index].timeStamp)
+                      .toString()) {
+                _expenseTime = DateFormat.MMMMEEEEd()
+                    .format(expenses.expenseList[index].timeStamp)
+                    .toString();
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: _expenseTime == _today
+                              ? Text(
+                                  'Today, ${DateFormat.MMMMd().format(expenses.expenseList[index].timeStamp).toString()}',
+                                  style: titleListTileStyle)
+                              : Text(_expenseTime, style: titleListTileStyle),
+                        ),
+                      ],
+                    ),
+                    FractionallySizedBox(
+                      widthFactor: 1,
+
+                      // --- Expense list Item ----
+                      child: ExpenseListTile(
+                        currentUserEmail: appState.currentUserEmail,
+                        currentUserName: expenses.expenseList[index].userName,
+                        expenseServiceState: _expenseService,
+                        // expenseDoc: snapshot.data!.docs[index],
+                        appState: appState,
+                        cost: expenses.expenseList[index].cost,
+                        description: expenses.expenseList[index].description,
+                        emailAddress: expenses.expenseList[index].emailAddress,
+                        tags: [],
+                        timeStamp: expenses.expenseList[index].timeStamp,
+                      ),
+                    )
+                  ],
+                );
+              }
+
+              // --- Expense list Item ----
+              return ExpenseListTile(
+                currentUserEmail: appState.currentUserEmail,
+                currentUserName: expenses.expenseList[index].userName,
+                expenseServiceState: _expenseService,
+                // expenseDoc: snapshot.data!.docs[index],
+                appState: appState,
+                cost: expenses.expenseList[index].cost,
+                description: expenses.expenseList[index].description,
+                emailAddress: expenses.expenseList[index].emailAddress,
+                tags: [],
+                timeStamp: expenses.expenseList[index].timeStamp,
+              );
+            });
       });
       // });
       // }
