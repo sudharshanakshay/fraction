@@ -19,23 +19,30 @@ const db = getFirestore();
 exports.expenseWritten =
 onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
   (event) => {
-    const data = event.data?.after.data();
     const document = event.data?.after.data();
     const previousValues = event.data?.before.data();
     const groupName = event.params.groupName;
-
 
     if (previousValues == undefined && document != undefined) {
       // new expense has been created.
       const expenseCost = document["cost"];
       const emailAddress = document["emailAddress"];
 
+      // update the group member data with.
       const updateGroupMemberData = {
         "memberExpense": FieldValue.increment(expenseCost),
       };
 
       db.doc("group/"+groupName+"/members/"+emailAddress)
         .set(updateGroupMemberData, {merge: true});
+
+      // update the updated time in group collection.
+      const chatUpdateWith = {
+        "lastUpdatedDesc": document?.description,
+        "lastUpdatedTime": document?.timeStamp,
+      };
+      db.doc("group/"+groupName)
+        .set(chatUpdateWith, {merge: true});
     } else if (document == undefined && previousValues != undefined) {
       // existing expense has been deleted.
       // use previous data "previousValues".
@@ -49,6 +56,14 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
 
       db.doc("group/"+groupName+"/members/"+emailAddress)
         .set(updateGroupMemberData, {merge: true});
+
+      // update the updated time in group collection.
+      const chatUpdateWith = {
+        "lastUpdatedDesc": "deleted",
+        "lastUpdatedTime": Date.now(),
+      };
+      db.doc("group/"+groupName)
+        .set(chatUpdateWith, {merge: true});
     } else if (document != undefined && previousValues != undefined) {
       // expense has been updated.
       const emailAddress = previousValues["emailAddress"];
@@ -56,6 +71,7 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
       const previousExpenseCost = previousValues["cost"];
       const updatedExpenseCost = document["cost"];
 
+      // check if there is any change in the cost.
       if (previousExpenseCost - updatedExpenseCost != 0) {
         const updateGroupMemberData = {
           "memberExpense": FieldValue
@@ -65,37 +81,16 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
         db.doc("group/"+groupName+"/members/"+emailAddress)
           .set(updateGroupMemberData, {merge: true});
       }
+
+      // update the updated time in the group collection.
+      const chatUpdateWith = {
+        "lastUpdatedDesc": document?.description,
+        "lastUpdatedTime": Date.now(),
+      };
+      db.doc("group/"+groupName)
+        .set(chatUpdateWith, {merge: true});
     }
 
-    // const previousData = change.data?.before.data();
-
-    // group & chat collections need to updated whenever expense doc is changed.
-
-    // update group.groupMembers.memberExpense
-    // const emailAddress = data?.emailAddress;
-    // const memberEmail = emailAddress.replace(".", "#");
-
-    // const groupUpdataData = {
-    //   "groupMembers"  : {
-    //   }
-    // };
-
-    // db.doc("group/"+groupName).set({});
-
-    const chatUpdateWith = {
-      "lastUpdatedDesc": data?.description,
-      "lastUpdatedTime": data?.timeStamp,
-    };
-
-    console.log(chatUpdateWith);
-
-    // db.doc("chat/"+emailAddress+"/chat/"+groupName)
-    //   .set(chatUpdateWith, {merge: true});
-
-    db.doc("group/"+groupName)
-      .set({"lastExpenseId": event.params.expenseDocId}, {merge: true});
-
-    console.log("---- doc updated trigger ----");
     return "ok";
   });
 

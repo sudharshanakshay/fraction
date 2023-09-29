@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/data/model/expense.dart';
 import 'package:fraction/expenses/components/dashboard_component.dart';
 import 'package:fraction/expenses/components/expense_component.dart';
 import 'package:fraction/expenses/components/add_expense_component.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
-import 'package:fraction/groups/models/groups_models.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 

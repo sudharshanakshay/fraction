@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/expenses/components/add_expense_component.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
 import 'package:fraction/expenses/widgets/expense_tile.dart';
 import 'package:fraction/expenses/widgets/expense_tile_shadow.dart';
