@@ -45,8 +45,7 @@ class MyApp extends StatelessWidget {
                 : MultiProvider(
                     providers: [
                       ChangeNotifierProvider(
-                        create: (c) => GroupsRepo(
-                            currentUserEmail: appState.currentUserEmail),
+                        create: (c) => GroupsRepo(appState: appState),
                       ),
                       // ChangeNotifierProvider(
                       //   create: (c) => ExpenseRepo(appState: appState),

@@ -1,6 +1,6 @@
 import {
   onDocumentCreated,
-  onDocumentDeleted,
+  // onDocumentDeleted,
   // onDocumentUpdated,
   onDocumentWritten,
 } from "firebase-functions/v2/firestore";
@@ -14,17 +14,45 @@ initializeApp();
 
 const db = getFirestore();
 
-exports.expenseTrigger =
+// when an expense is modified
+// 1. make changes to "members" sub-collection in "group" collection
+exports.expenseWritten =
 onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
-  (change) => {
-    const data = change.data?.after.data();
+  (event) => {
+    const data = event.data?.after.data();
+    const document = event.data?.after.data();
+    const previousValues = event.data?.before.data();
+
+
+    if (previousValues == undefined) {
+      // new expense has been created.
+
+    } else if (document == undefined) {
+      // existing expense has been deleted.
+      // use previous data "previousValues".
+
+      const groupName = event.params.groupName;
+
+      const expenseCost = previousValues["cost"];
+      const emailAddress = previousValues["emailAddress"];
+
+      const updateGroupMemberData = {
+        "memberExpense": FieldValue.increment(-expenseCost),
+      };
+
+      db.doc("group/"+groupName+"/members/"+emailAddress)
+        .set(updateGroupMemberData, {merge: true});
+    } else {
+      // expense has been updated.
+    }
+
     // const previousData = change.data?.before.data();
 
     // group & chat collections need to updated whenever expense doc is changed.
 
     // update group.groupMembers.memberExpense
     // const emailAddress = data?.emailAddress;
-    const groupName = change.params.groupName;
+    const groupName = event.params.groupName;
     // const memberEmail = emailAddress.replace(".", "#");
 
     // const groupUpdataData = {
@@ -45,7 +73,7 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
     //   .set(chatUpdateWith, {merge: true});
 
     db.doc("group/"+groupName)
-      .set({"lastExpenseId": change.params.expenseDocId}, {merge: true});
+      .set({"lastExpenseId": event.params.expenseDocId}, {merge: true});
 
     console.log("---- doc updated trigger ----");
     return "ok";
@@ -92,22 +120,24 @@ onDocumentCreated("group/{groupName}", (event)=>{
 
 // when an expense has been deleted
 // 1. make changes to "members" sub-collection in "group" collection
-exports.expenseDeleted =
-  onDocumentDeleted("expense/{groupName}/{expenseInstance}/{expenseDocId}",
-    (event) => {
-      const groupName = event.params.groupName;
+// exports.expenseDeleted =
+// onDocumentDeleted("expense/{groupName}/{expenseInstance}/{expenseDocId}",
+//   (event) => {
+//     const groupName = event.params.groupName;
+//     const snapShot = event.data?.data();
 
-      const snapShot = event.data?.data();
+//     if (snapShot != undefined) {
+//       const expenseCost = snapShot["cost"];
+//       const emailAddress = snapShot["emailAddress"];
 
-      if (snapShot != undefined) {
-        const expenseCost = snapShot["cost"];
-        const emailAddress = snapShot["emailAddress"];
+//       const updateGroupMemberData = {
+//         "memberExpense": FieldValue.increment(-expenseCost),
+//       };
 
-        const updateGroupMemberData = {
-          "memberExpense": FieldValue.increment(-expenseCost),
-        };
+//       db.doc("group/"+groupName+"/members/"+emailAddress)
+//         .set(updateGroupMemberData, {merge: true});
+//     }
+//   });
 
-        db.doc("group/"+groupName+"/members/"+emailAddress)
-          .set(updateGroupMemberData, {merge: true});
-      }
-    });
+// when an expense has been updated
+// 1.

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fraction/app_state.dart';
 
 class GroupsRepoModel {
   String groupName;
@@ -18,7 +19,7 @@ class GroupsRepo extends ChangeNotifier {
   final List<GroupsRepoModel> _expenseGroupsList = [];
   List<GroupsRepoModel> get expenseGroupList => _expenseGroupsList;
 
-  String currentUserEmail;
+  ApplicationState appState;
   DateTime tempDateTime = DateTime.now();
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
 
@@ -27,10 +28,13 @@ class GroupsRepo extends ChangeNotifier {
   Map<String, Timestamp> get groupAndExpenseInstances =>
       _groupsAndExpenseInstances;
 
-  Timestamp getCurrentExpenseInstance({required currentUserGroup}) =>
-      _groupsAndExpenseInstances[currentUserGroup]!;
+  Timestamp? getCurrentExpenseInstance() =>
+      _groupsAndExpenseInstances[appState.currentUserGroup];
 
-  GroupsRepo({required this.currentUserEmail}) {
+  bool _hasOneGroup = true;
+  bool get hasOneGroup => _hasOneGroup;
+
+  GroupsRepo({required this.appState}) {
     initializeGroupRepo();
   }
 
@@ -39,7 +43,7 @@ class GroupsRepo extends ChangeNotifier {
     // ---- groupMembers collection stored the many-to-many relation users & expensegroups ----
     firebaseFirestore
         .collection('groupMembers')
-        .where('userId', isEqualTo: currentUserEmail)
+        .where('userId', isEqualTo: appState.currentUserEmail)
         .snapshots()
         .listen((groupMembersEvent) {
       _expenseGroupsList.clear();
@@ -63,6 +67,9 @@ class GroupsRepo extends ChangeNotifier {
             });
           }
         });
+      }
+      if (_expenseGroupsList.isEmpty) {
+        _hasOneGroup = false;
       }
     });
   }

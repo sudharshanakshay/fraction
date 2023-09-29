@@ -90,11 +90,12 @@ class _HomeScreenState extends State<HomeScreen> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ChangeNotifierProvider(
-                                      create: (context) => ExpenseRepo(
+                                      create: (_) => ExpenseRepo(
                                           appState: appState,
                                           groupsRepoState: groupsRepoState),
-                                      child: const ExpenseScreen(
-                                          title: 'Fraction'))));
+                                      builder: (context, child) =>
+                                          const ExpenseScreen(
+                                              title: 'Fraction'))));
                         },
                       ),
                     );
