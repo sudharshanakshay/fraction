@@ -22,16 +22,23 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
     const data = event.data?.after.data();
     const document = event.data?.after.data();
     const previousValues = event.data?.before.data();
+    const groupName = event.params.groupName;
 
 
-    if (previousValues == undefined) {
+    if (previousValues == undefined && document != undefined) {
       // new expense has been created.
+      const expenseCost = document["cost"];
+      const emailAddress = document["emailAddress"];
 
-    } else if (document == undefined) {
+      const updateGroupMemberData = {
+        "memberExpense": FieldValue.increment(expenseCost),
+      };
+
+      db.doc("group/"+groupName+"/members/"+emailAddress)
+        .set(updateGroupMemberData, {merge: true});
+    } else if (document == undefined && previousValues != undefined) {
       // existing expense has been deleted.
       // use previous data "previousValues".
-
-      const groupName = event.params.groupName;
 
       const expenseCost = previousValues["cost"];
       const emailAddress = previousValues["emailAddress"];
@@ -42,8 +49,22 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
 
       db.doc("group/"+groupName+"/members/"+emailAddress)
         .set(updateGroupMemberData, {merge: true});
-    } else {
+    } else if (document != undefined && previousValues != undefined) {
       // expense has been updated.
+      const emailAddress = previousValues["emailAddress"];
+
+      const previousExpenseCost = previousValues["cost"];
+      const updatedExpenseCost = document["cost"];
+
+      if (previousExpenseCost - updatedExpenseCost != 0) {
+        const updateGroupMemberData = {
+          "memberExpense": FieldValue
+            .increment(updatedExpenseCost-previousExpenseCost),
+        };
+
+        db.doc("group/"+groupName+"/members/"+emailAddress)
+          .set(updateGroupMemberData, {merge: true});
+      }
     }
 
     // const previousData = change.data?.before.data();
@@ -52,7 +73,6 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
 
     // update group.groupMembers.memberExpense
     // const emailAddress = data?.emailAddress;
-    const groupName = event.params.groupName;
     // const memberEmail = emailAddress.replace(".", "#");
 
     // const groupUpdataData = {
