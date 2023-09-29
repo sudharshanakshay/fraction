@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/expenses/models/expense_model.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
@@ -88,8 +89,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ExpenseScreen(title: 'Fraction')));
+                                  builder: (context) => ChangeNotifierProvider(
+                                      create: (context) => ExpenseRepo(
+                                          appState: appState,
+                                          groupsRepoState: groupsRepoState),
+                                      child: const ExpenseScreen(
+                                          title: 'Fraction'))));
                         },
                       ),
                     );

@@ -270,17 +270,17 @@ class ApplicationState extends ChangeNotifier {
         final groupList = currentProfileDetails['groupNames'] as List;
         if (groupList.isNotEmpty) {
           _hasOneGroup = true;
-          for (String groupName in groupList) {
+          for (String groupId in groupList) {
             // ---- get values from group database ----
 
             _firebaseFirestoreRef
                 .collection(_groupCollectionName)
-                .doc(groupName)
+                .doc(groupId)
                 .get()
                 .then((doc) {
               if (doc.exists) {
                 final value = doc.data()!['expenseInstance'];
-                Map<String, Timestamp> data = {groupName: value};
+                Map<String, Timestamp> data = {groupId: value};
 
                 // ---- set the group name & instance value from the groups database ----
                 _groupsAndExpenseInstances.addAll(data);

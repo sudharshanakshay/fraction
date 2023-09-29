@@ -3,6 +3,7 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/components/dashboard_component.dart';
 import 'package:fraction/expenses/components/expense_component.dart';
 import 'package:fraction/expenses/components/add_expense_component.dart';
+import 'package:fraction/expenses/models/expense_model.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +38,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
         ),
         // drawer: const FractionAppDrawer(),
         body: appState.hasOneGroup
-            ? const SingleChildScrollView(
+            ? SingleChildScrollView(
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
@@ -45,7 +46,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Dashboard(),
-                      ExpenseView(),
+                      Consumer<ExpenseRepo>(
+                        builder: (context, value, child) => ExpenseView(),
+                      ),
                       SizedBox(
                         height: 80,
                       )

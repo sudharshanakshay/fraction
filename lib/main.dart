@@ -42,9 +42,16 @@ class MyApp extends StatelessWidget {
         home: Consumer<ApplicationState>(
             builder: (context, appState, _) => !appState.loggedIn
                 ? const SignInScreen()
-                : ChangeNotifierProvider(
-                    create: (c) =>
-                        GroupsRepo(currentUserEmail: appState.currentUserEmail),
+                : MultiProvider(
+                    providers: [
+                      ChangeNotifierProvider(
+                        create: (c) => GroupsRepo(
+                            currentUserEmail: appState.currentUserEmail),
+                      ),
+                      // ChangeNotifierProvider(
+                      //   create: (c) => ExpenseRepo(appState: appState),
+                      // )
+                    ],
                     child: const HomeScreen(
                       title: 'Fraction',
                     ),

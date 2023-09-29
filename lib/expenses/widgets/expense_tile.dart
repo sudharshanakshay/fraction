@@ -6,20 +6,29 @@ import 'package:fraction/utils/color.dart';
 import 'package:intl/intl.dart';
 
 class ExpenseListTile extends StatefulWidget {
-  const ExpenseListTile({
-    super.key,
-    required this.expenseDoc,
-    required this.currentUserName,
-    required this.currentUserEmail,
-    required this.expenseServiceState,
-    required this.appState,
-  });
+  const ExpenseListTile(
+      {super.key,
+      // required this.expenseDoc,
+      required this.currentUserName,
+      required this.currentUserEmail,
+      required this.expenseServiceState,
+      required this.appState,
+      required this.emailAddress,
+      required this.description,
+      required this.cost,
+      required this.tags,
+      required this.timeStamp});
 
-  final QueryDocumentSnapshot expenseDoc;
+  // final QueryDocumentSnapshot expenseDoc;
   final String currentUserName;
   final String currentUserEmail;
   final ExpenseService expenseServiceState;
   final ApplicationState appState;
+  final String emailAddress;
+  final String description;
+  final String cost;
+  final DateTime timeStamp;
+  final List<String> tags;
 
   @override
   State<StatefulWidget> createState() => _ExpenseListTileState();
@@ -51,10 +60,9 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
-        mainAxisAlignment:
-            widget.currentUserEmail == widget.expenseDoc['emailAddress']
-                ? MainAxisAlignment.end
-                : MainAxisAlignment.start,
+        mainAxisAlignment: widget.currentUserEmail == widget.emailAddress
+            ? MainAxisAlignment.end
+            : MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           Flexible(
@@ -75,19 +83,15 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                 //color: Colors.amber[colorCodes[index % 3]],
                 child: ListTile(
                   onLongPress: () {
-                    _descriptionTextController.text =
-                        widget.expenseDoc['description'];
-                    _costTextController.text =
-                        widget.expenseDoc['cost'].toString();
+                    _descriptionTextController.text = widget.description;
+                    _costTextController.text = widget.cost;
 
-                    if (widget.expenseDoc['emailAddress'] ==
-                        widget.currentUserEmail) {
+                    if (widget.emailAddress == widget.currentUserEmail) {
                       showExpenseDialog();
                     }
                   },
                   // leading: const Icon(Icons.person),
-                  title: Text(widget.expenseDoc['description'],
-                      style: titleListTileStyle),
+                  title: Text(widget.description, style: titleListTileStyle),
                   // '${widget.streamSnapshot.data?.docs[widget.index]['description']}'),
                   //isThreeLine: true,
                   subtitle: Row(
@@ -102,8 +106,7 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                         ),
                       ),
                       Text(
-                        DateFormat.jm()
-                            .format(widget.expenseDoc['timeStamp'].toDate()),
+                        DateFormat.jm().format(widget.timeStamp),
                         style: subListTileStyle,
                       ),
                       // Text(DateFormat.yMMMd().format(widget
@@ -115,7 +118,7 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      widget.expenseDoc['tags'].length != 0
+                      widget.tags.isNotEmpty
                           ? Padding(
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Container(
@@ -129,7 +132,7 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                             )
                           : Container(),
                       Text(
-                        '${widget.expenseDoc['cost']}/-',
+                        '${widget.cost}/-',
                         style: trailingListTileStyle,
                       ),
                     ],
@@ -181,20 +184,20 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                       const snakBar =
                           SnackBar(content: Text('updating expense ...'));
                       ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                      widget.expenseServiceState
-                          .updateExpense(
-                              docId: widget.expenseDoc.id,
-                              updatedDescription:
-                                  _descriptionTextController.text,
-                              updatedCost: _costTextController.text,
-                              previousCost: widget.expenseDoc['cost'],
-                              currentUserEmail:
-                                  widget.appState.currentUserEmail,
-                              currentUserGroup:
-                                  widget.appState.currentUserGroup,
-                              currentExpenseInstance:
-                                  widget.appState.currentExpenseInstance)
-                          .whenComplete(() => Navigator.pop(context));
+                      // widget.expenseServiceState
+                      //     .updateExpense(
+                      //         docId: widget.expenseDoc.id,
+                      //         updatedDescription:
+                      //             _descriptionTextController.text,
+                      //         updatedCost: _costTextController.text,
+                      //         previousCost: int.parse(widget.cost),
+                      //         currentUserEmail:
+                      //             widget.appState.currentUserEmail,
+                      //         currentUserGroup:
+                      //             widget.appState.currentUserGroup,
+                      //         currentExpenseInstance:
+                      //             widget.appState.currentExpenseInstance)
+                      //     .whenComplete(() => Navigator.pop(context));
                     },
                     child: const Text('update')),
               ],
@@ -208,16 +211,16 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                   onPressed: () async {
                     await confirmDeleteExpense().then((msg) {
                       if (msg == 'OK') {
-                        widget.expenseServiceState
-                            .deleteExpense(
-                                expenseDoc: widget.expenseDoc,
-                                currentUserEmail:
-                                    widget.appState.currentUserEmail,
-                                currentUserGroup:
-                                    widget.appState.currentUserGroup,
-                                currentExpenseInstance:
-                                    widget.appState.currentExpenseInstance)
-                            .whenComplete(() => Navigator.pop(context));
+                        // widget.expenseServiceState
+                        //     .deleteExpense(
+                        //         expenseDoc: widget.expenseDoc,
+                        //         currentUserEmail:
+                        //             widget.appState.currentUserEmail,
+                        //         currentUserGroup:
+                        //             widget.appState.currentUserGroup,
+                        //         currentExpenseInstance:
+                        //             widget.appState.currentExpenseInstance)
+                        //     .whenComplete(() => Navigator.pop(context));
                       }
                     });
                   },

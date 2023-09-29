@@ -32,7 +32,9 @@ class ExpenseDatabase extends DatabaseUtils {
         .collection(_expenseCollectionName)
         .doc(currentGroupName)
         .collection(currentExpenseInstance)
-        .orderBy('timeStamp', descending: true)
+        .orderBy(
+          'timeStamp',
+        )
         .get();
   }
 
