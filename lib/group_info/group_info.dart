@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/group_info/widgets/account_pallet.dart';
+import 'package:fraction/group_info/components/members_detail_component.dart';
 import 'package:fraction/notification/models/notification.dart';
 import 'package:fraction/groups/services/groups_service.dart';
 import 'package:fraction/profile/services/user_service.dart';
@@ -75,9 +74,10 @@ class _GroupInfoState extends State<GroupInfo> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    MemberExpenseDetail(
-                      appState: appState,
-                    ),
+                    const MemberExpenseDetail(),
+                    // MemberExpenseDetail(
+                    //   appState: appState,
+                    // ),
                     inviteToggle ? inviteMemberToggle() : inviteMemberView(),
                   ],
                 ),
@@ -317,62 +317,62 @@ class _GroupInfoState extends State<GroupInfo> {
   }
 }
 
-class MemberExpenseDetail extends StatelessWidget {
-  const MemberExpenseDetail({
-    super.key,
-    required this.appState,
-  });
+// class MemberExpenseDetail extends StatelessWidget {
+//   const MemberExpenseDetail({
+//     super.key,
+//     required this.appState,
+//   });
 
-  final ApplicationState appState;
+//   final ApplicationState appState;
 
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<List>(
-        stream: FirebaseFirestore.instance
-            .collection('group')
-            .doc(appState.currentUserGroup)
-            .snapshots()
-            .asyncExpand((doc) {
-          try {
-            List memberDetails = [];
-            if (doc.exists && doc.data()!.isNotEmpty) {
-              var groupMemberDetails =
-                  doc.data()!['groupMembers'] as Map<String, dynamic>;
-              groupMemberDetails.forEach((key, value) {
-                memberDetails.add(value);
-              });
-            }
-            return Stream.value(memberDetails);
-          } catch (e) {
-            return const Stream.empty();
-          }
-        }),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data!.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return AccountPallet(
-                            streamSnapshot: snapshot, index: index);
-                      },
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, childAspectRatio: (1 / .4)),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          } else {
-            return Container();
-          }
-        });
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return StreamBuilder<List>(
+//         stream: FirebaseFirestore.instance
+//             .collection('group')
+//             .doc(appState.currentUserGroup)
+//             .snapshots()
+//             .asyncExpand((doc) {
+//           try {
+//             List memberDetails = [];
+//             if (doc.exists && doc.data()!.isNotEmpty) {
+//               var groupMemberDetails =
+//                   doc.data()!['groupMembers'] as Map<String, dynamic>;
+//               groupMemberDetails.forEach((key, value) {
+//                 memberDetails.add(value);
+//               });
+//             }
+//             return Stream.value(memberDetails);
+//           } catch (e) {
+//             return const Stream.empty();
+//           }
+//         }),
+//         builder: (context, snapshot) {
+//           if (snapshot.hasData) {
+//             return SingleChildScrollView(
+//               child: Column(
+//                 children: [
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(vertical: 8.0),
+//                     child: GridView.builder(
+//                       shrinkWrap: true,
+//                       physics: const NeverScrollableScrollPhysics(),
+//                       itemCount: snapshot.data!.length,
+//                       itemBuilder: (BuildContext context, int index) {
+//                         return AccountPallet(
+//                             streamSnapshot: snapshot, index: index);
+//                       },
+//                       gridDelegate:
+//                           const SliverGridDelegateWithFixedCrossAxisCount(
+//                               crossAxisCount: 2, childAspectRatio: (1 / .4)),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//             );
+//           } else {
+//             return Container();
+//           }
+//         });
+//   }
+// }

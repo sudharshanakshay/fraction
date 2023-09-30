@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/dashboard_model.dart';
+import 'package:fraction/group_info/group_info.dart';
+import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -22,7 +24,18 @@ class _DashboardState extends State<Dashboard> {
             return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: GestureDetector(
-                  onTap: () => Navigator.pushNamed(context, '/groupInfo'),
+                  // onTap: () => Navigator.pushNamed(context, '/groupInfo'),
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MultiProvider(
+                                providers: [
+                                  ChangeNotifierProvider(
+                                      create: (_) =>
+                                          GroupInfoRepo(appState: appState)),
+                                ],
+                                builder: (context, child) => const GroupInfo(),
+                              ))),
                   child: Container(
                     padding: const EdgeInsets.only(
                       top: 6.0,

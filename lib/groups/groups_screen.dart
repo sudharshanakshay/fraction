@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/dashboard_model.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
+import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
@@ -99,8 +100,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                             groupsRepoState: groupsRepoState),
                                       ),
                                       ChangeNotifierProvider(
+                                          create: (_) => DashboardRepo(
+                                              appState: appState)),
+                                      ChangeNotifierProvider(
                                           create: (_) =>
-                                              DashboardRepo(appState: appState))
+                                              GroupInfoRepo(appState: appState))
                                     ],
                                     builder: (context, child) =>
                                         const ExpenseScreen(title: 'Fraction')),
