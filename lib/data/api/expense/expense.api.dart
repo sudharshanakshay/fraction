@@ -49,24 +49,26 @@ class ExpenseDatabase extends DatabaseUtils {
   //       .snapshots();
   // }
 
-  Future<void> updateChat(
-      {required String currentUserEmail,
-      required String currentUserGroup,
-      required String lastExpenseDesc,
-      required DateTime lastExpenseTime,
-      required int totalGroupExpense}) async {
-    final data = {
-      "lastExpenseDesc": lastExpenseDesc,
-      "lastExpenseTime": lastExpenseTime,
-      "totalGroupExpense": totalGroupExpense
-    };
-    _firebaseFirestoreInstance
-        .collection(chatsCollectionName)
-        .doc(currentUserEmail)
-        .collection(chatsCollectionName)
-        .doc(currentUserGroup)
-        .update(data);
-  }
+  // ---- functionality implemented firestore trigger ----
+
+  // Future<void> updateChat(
+  //     {required String currentUserEmail,
+  //     required String currentUserGroup,
+  //     required String lastExpenseDesc,
+  //     required DateTime lastExpenseTime,
+  //     required int totalGroupExpense}) async {
+  //   final data = {
+  //     "lastExpenseDesc": lastExpenseDesc,
+  //     "lastExpenseTime": lastExpenseTime,
+  //     "totalGroupExpense": totalGroupExpense
+  //   };
+  //   _firebaseFirestoreInstance
+  //       .collection(chatsCollectionName)
+  //       .doc(currentUserEmail)
+  //       .collection(chatsCollectionName)
+  //       .doc(currentUserGroup)
+  //       .update(data);
+  // }
 
   Future<DocumentReference> addExpense(
       {required String currentGroupName,

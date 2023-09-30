@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/expenses/widgets/dashboard_shadow.dart';
-import 'package:fraction/groups/services/groups_service.dart';
+import 'package:fraction/expenses/models/dashboard_model.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -14,28 +13,15 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  late GroupServices _groupService;
-
-  @override
-  void initState() {
-    _groupService = GroupServices();
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Consumer<ApplicationState>(
-      builder: (context, appState, _) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: StreamBuilder(
-              stream: _groupService.getGroupDetials(
-                  currentUserGroup: appState.currentUserGroup),
-              builder: (context, groupDetailsSnapshot) {
-                if (!groupDetailsSnapshot.hasData) {
-                  return const DashboardShadow();
-                }
-                return GestureDetector(
+    return Consumer<DashboardRepo>(
+      builder: (context, dashboardRepoState, child) {
+        return Consumer<ApplicationState>(
+          builder: (context, appState, _) {
+            return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: GestureDetector(
                   onTap: () => Navigator.pushNamed(context, '/groupInfo'),
                   child: Container(
                     padding: const EdgeInsets.only(
@@ -56,21 +42,26 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
+                        // first column where
+                        // 1. TotalExpense &
+                        // 2. My Expense is displayed.
                         dashboardExpenseDetail(
-                            appState, groupDetailsSnapshot, context),
-                        dashboardInfo(appState, groupDetailsSnapshot),
+                            dashboard: dashboardRepoState.dashboard),
+
+                        // second column where
+                        // 1. nextClearOff data is displayed.
+                        dashboardInfo(dashboard: dashboardRepoState.dashboard),
                       ],
                     ),
                   ),
-                );
-              }),
+                ));
+          },
         );
       },
     );
   }
 
-  Column dashboardExpenseDetail(ApplicationState appState,
-      AsyncSnapshot<dynamic> groupDetailsSnapshot, BuildContext context) {
+  Column dashboardExpenseDetail({required DashboardRepoModel dashboard}) {
     return Column(
       children: [
         Row(
@@ -85,7 +76,7 @@ class _DashboardState extends State<Dashboard> {
 
             Text(
                 // ---- (ui, Total group expense) ----
-                groupDetailsSnapshot.data['totalExpense'].toString(),
+                dashboard.totalExpense,
                 style: const TextStyle(fontSize: 16)),
           ],
         ),
@@ -109,103 +100,76 @@ class _DashboardState extends State<Dashboard> {
                       fontWeight: FontWeight.normal,
                       color: Colors.grey.shade800)),
             ),
-            StreamBuilder(
-                // ---- (ui, My Expense) Stream Builder ----
-                stream: _groupService.getMyTotalExpense(
-                    currentUserEmail: appState.currentUserEmail,
-                    currentUserGroup: appState.currentUserGroup),
-                builder: (context, myTotalExpenseSnapshot) {
-                  if (myTotalExpenseSnapshot.hasData) {
-                    return Text(
-                        // ---- (ui, My Expense) ----
-                        myTotalExpenseSnapshot.data.toString(),
-                        style: const TextStyle(fontSize: 14));
-                  } else {
-                    return Container();
-                  }
-                }),
+            Text(
+                // ---- (ui, My Expense) ----
+                dashboard.myExpense,
+                style: const TextStyle(fontSize: 14)),
           ],
         )
       ],
     );
   }
 
-  Column dashboardInfo(
-      ApplicationState appState, AsyncSnapshot<dynamic> groupDetailsSnapshot) {
+  Column dashboardInfo({required DashboardRepoModel dashboard}) {
     return Column(
       children: [
         Column(
           // ---- (ui, Next clear off) ----
           children: [
             const Text('Next clear off', style: TextStyle(fontSize: 12)),
-            Text(
-                DateFormat.MMMd().format(groupDetailsSnapshot
-                    .data['nextClearOffTimeStamp']
-                    .toDate()),
+            Text(DateFormat.MMMd().format(dashboard.nextClearOffDate),
                 style: const TextStyle(fontSize: 16))
           ],
         ),
         Row(
           children: [
-            appState.hasOneGroup
-                ? IconButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/groupInfo');
-                    },
-                    // icon: SvgPicture.asset(_settingsIconPath),
-                    icon: const Icon(Icons.bar_chart_outlined),
-                  )
-                : Container(),
-            // IconButton(
-            //   icon: SvgPicture.asset(moreMembersIcon),
-            //   onPressed: () async {
-            //     final someValue = await _groupService.getMemberDetails(
-            //         currentUserGroup: appState.currentUserGroup);
-
-            //     // ---- (ui, member expenses ) ----
-            //     await showMemberDetails(memberDetailList: someValue);
-            //   },
-            // ),
+            IconButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/groupInfo');
+              },
+              // icon: SvgPicture.asset(_settingsIconPath),
+              icon: const Icon(Icons.bar_chart_outlined),
+            )
           ],
         ),
       ],
     );
   }
 
-  Future<String?> showMemberDetails({required List? memberDetailList}) {
-    return showDialog<String>(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-              scrollable: true,
-              content: SizedBox(
-                height: 400,
-                width: 400,
-                child: memberDetailList != null && memberDetailList.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: memberDetailList.length,
-                        itemBuilder: (context, int index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              border: Border(
-                                  left: BorderSide(
-                                width: 2,
-                                color: Colors.blue.shade100,
-                              )),
-                              // borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: ListTile(
-                              title: Text(
-                                  '${memberDetailList[index]['memberName']}'),
-                              subtitle: Text(
-                                '${memberDetailList[index]['totalExpense']}',
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                            ),
-                          );
-                        })
-                    : const Text('Group Member does not exists_'),
-              ));
-        });
-  }
+  // Future<String?> showMemberDetails({required List? memberDetailList}) {
+  //   return showDialog<String>(
+  //       context: context,
+  //       builder: (context) {
+  //         return AlertDialog(
+  //             scrollable: true,
+  //             content: SizedBox(
+  //               height: 400,
+  //               width: 400,
+  //               child: memberDetailList != null && memberDetailList.isNotEmpty
+  //                   ? ListView.builder(
+  //                       itemCount: memberDetailList.length,
+  //                       itemBuilder: (context, int index) {
+  //                         return Container(
+  //                           decoration: BoxDecoration(
+  //                             border: Border(
+  //                                 left: BorderSide(
+  //                               width: 2,
+  //                               color: Colors.blue.shade100,
+  //                             )),
+  //                             // borderRadius: BorderRadius.circular(12),
+  //                           ),
+  //                           child: ListTile(
+  //                             title: Text(
+  //                                 '${memberDetailList[index]['memberName']}'),
+  //                             subtitle: Text(
+  //                               '${memberDetailList[index]['totalExpense']}',
+  //                               style: const TextStyle(fontSize: 20),
+  //                             ),
+  //                           ),
+  //                         );
+  //                       })
+  //                   : const Text('Group Member does not exists_'),
+  //             ));
+  //       });
+  // }
 }

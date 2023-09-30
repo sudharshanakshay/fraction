@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/data/api/utils/database.utils.dart';
 import 'package:fraction/data/model/group.dart';
-import 'package:fraction/utils/tools.dart';
 
 class GroupDatabase extends DatabaseUtils {
   late FirebaseFirestore _firebaseFirestoreRef;
@@ -142,22 +141,23 @@ class GroupDatabase extends DatabaseUtils {
         .update({"groupMembers.$memberEmailR": data});
   }
 
+  // ---- functionality implemented firestore trigger ----
   // -- increment or decrement group member expense, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
-  Future<void> incrementOrDecrementGroupMemberExpense(
-      {required groupName,
-      required memberEmail,
-      required int expenseDiff}) async {
-    final memberEmailR = memberEmail.replaceAll('.', '#');
-    final data = {
-      'totalExpense': FieldValue.increment(expenseDiff),
-      'groupMembers.$memberEmailR.totalExpense':
-          FieldValue.increment(expenseDiff)
-    };
-    _firebaseFirestoreRef
-        .collection(groupCollectionName)
-        .doc(groupName)
-        .update(data);
-  }
+  // Future<void> incrementOrDecrementGroupMemberExpense(
+  //     {required groupName,
+  //     required memberEmail,
+  //     required int expenseDiff}) async {
+  //   final memberEmailR = memberEmail.replaceAll('.', '#');
+  //   final data = {
+  //     'totalExpense': FieldValue.increment(expenseDiff),
+  //     'groupMembers.$memberEmailR.totalExpense':
+  //         FieldValue.increment(expenseDiff)
+  //   };
+  //   _firebaseFirestoreRef
+  //       .collection(groupCollectionName)
+  //       .doc(groupName)
+  //       .update(data);
+  // }
 
   // -- updare group member expense with new value --
   Future<void> updateGroupMemberExpense(
@@ -186,18 +186,19 @@ class GroupDatabase extends DatabaseUtils {
         .update(data);
   }
 
-  Future<void> deleteGroup(
-      {required String currentUserEmail, required String groupId}) async {
-    // print(currentUserEmail);
-    // print(Tools().sliptElements(element: GroupId)[1]);
-    if (currentUserEmail == Tools().sliptElements(element: groupId)[1]) {
-      _firebaseFirestoreRef
-          .collection(groupCollectionName)
-          .doc(groupId)
-          .delete();
-    }
-    // _firebaseFirestoreRef.collection(groupCollectionName)
-  }
+  // ---- functionality implemented firestore trigger ----
+  // Future<void> deleteGroup(
+  //     {required String currentUserEmail, required String groupId}) async {
+  //   // print(currentUserEmail);
+  //   // print(Tools().sliptElements(element: GroupId)[1]);
+  //   if (currentUserEmail == Tools().sliptElements(element: groupId)[1]) {
+  //     _firebaseFirestoreRef
+  //         .collection(groupCollectionName)
+  //         .doc(groupId)
+  //         .delete();
+  //   }
+  //   // _firebaseFirestoreRef.collection(groupCollectionName)
+  // }
 
   Future<void> clearOff(
       {required String groupName, required DateTime nextClearOffDate}) async {
