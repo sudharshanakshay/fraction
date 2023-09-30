@@ -36,7 +36,9 @@ class GroupDatabase extends DatabaseUtils {
           'memberEmail': adminEmail,
           'totalExpense': 0
         }
-      }
+      },
+      'lastUpdatedTime': DateTime.now(),
+      'lastUpdatedDesc': 'new Group',
     };
 
     final String groupNameWithIdentity =

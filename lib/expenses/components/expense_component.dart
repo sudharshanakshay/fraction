@@ -71,7 +71,6 @@ class _ExpenseViewState extends State<ExpenseView> {
             itemCount: expenses.expenseList.length,
             // itemCount: snapshot.data?.docs.length,
             itemBuilder: (BuildContext context, int index) {
-              print(index);
               if (_expenseTime !=
                   // DateFormat.MMMMEEEEd()
                   //     .format(

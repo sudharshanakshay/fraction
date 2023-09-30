@@ -43,9 +43,10 @@ class _HomeScreenState extends State<HomeScreen> {
             // kDebugMode
             //     ? IconButton(
             //         onPressed: () {
-            //     },
-            //     icon: const Icon(Icons.chat))
-            // : Container(),
+
+            //         },
+            //         icon: const Icon(Icons.chat))
+            //     : Container(),
             IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/notification');

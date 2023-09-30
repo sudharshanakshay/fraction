@@ -65,7 +65,6 @@ class ExpenseRepo extends ChangeNotifier {
           _hasOneExpense = false;
           notifyListeners();
         }
-        // print(_expensesList);
       });
     }
   }
