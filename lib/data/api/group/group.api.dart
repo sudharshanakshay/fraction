@@ -51,7 +51,20 @@ class GroupDatabase extends DatabaseUtils {
         .collection(groupCollectionName)
         .doc(groupNameWithIdentity)
         .set(data)
-        .then((value) => groupNameWithIdentity);
+        .then((value) {
+      // push one doc to sub-collection 'members' in 'group' collection.
+      _firebaseFirestoreRef
+          .collection(groupCollectionName)
+          .doc(groupNameWithIdentity)
+          .collection('members')
+          .doc(adminEmail)
+          .set({
+        'memberName': adminName,
+        'memberEmail': adminEmail,
+        'memberExpense': 0
+      });
+      return groupNameWithIdentity;
+    });
   }
 
   Future<void> addMeToGroup(
@@ -73,7 +86,18 @@ class GroupDatabase extends DatabaseUtils {
               }
             }
           };
+          _firebaseFirestoreRef
+              .collection(groupCollectionName)
+              .doc(groupNameToAdd)
+              .collection('members')
+              .doc(currentUserEmail)
+              .set({
+            'memberName': currentUserEmail,
+            'memberEmail': currentUserName,
+            'memberExpense': 0
+          });
 
+          // push one doc to sub-collection 'members' in 'group' collection.
           _firebaseFirestoreRef
               .collection(groupCollectionName)
               .doc(groupNameToAdd)
@@ -124,22 +148,24 @@ class GroupDatabase extends DatabaseUtils {
     });
   }
 
+  // ---- this functionality requirement has been moved to 'members' collection. ----
+
   // -- add member to the group requires, groupName to add & member details --
-  Future<void> insertMemberToGroup(
-      {required String currentGroupName,
-      required String memberName,
-      required String memberEmail}) {
-    final memberEmailR = memberEmail.replaceAll('.', '#');
-    final data = {
-      'memberName': memberName,
-      'memberEmail': memberEmail,
-      'totalExpense': 0
-    };
-    return _firebaseFirestoreRef
-        .collection(groupCollectionName)
-        .doc(currentGroupName)
-        .update({"groupMembers.$memberEmailR": data});
-  }
+  // Future<void> insertMemberToGroup(
+  //     {required String currentGroupName,
+  //     required String memberName,
+  //     required String memberEmail}) {
+  //   final memberEmailR = memberEmail.replaceAll('.', '#');
+  //   final data = {
+  //     'memberName': memberName,
+  //     'memberEmail': memberEmail,
+  //     'totalExpense': 0
+  //   };
+  //   return _firebaseFirestoreRef
+  //       .collection(groupCollectionName)
+  //       .doc(currentGroupName)
+  //       .update({"groupMembers.$memberEmailR": data});
+  // }
 
   // ---- functionality implemented firestore trigger ----
   // -- increment or decrement group member expense, expenseDiff can be '+' representing addition to current value, '-' vise-versa --
@@ -159,32 +185,36 @@ class GroupDatabase extends DatabaseUtils {
   //       .update(data);
   // }
 
+  // ---- this functionality requirement has been moved to 'members' collection. ----
+
   // -- updare group member expense with new value --
-  Future<void> updateGroupMemberExpense(
-      {required String groupName,
-      required String memberEmail,
-      required int newExpenseSum}) async {
-    final memberEmailR = memberEmail.replaceAll('.', '#');
-    final data = {'groupMembers.$memberEmailR.totalExpense': newExpenseSum};
+  // Future<void> updateGroupMemberExpense(
+  //     {required String groupName,
+  //     required String memberEmail,
+  //     required int newExpenseSum}) async {
+  //   final memberEmailR = memberEmail.replaceAll('.', '#');
+  //   final data = {'groupMembers.$memberEmailR.totalExpense': newExpenseSum};
 
-    print(data);
-    _firebaseFirestoreRef
-        .collection(groupCollectionName)
-        .doc(groupName)
-        .update(data);
-  }
+  //   print(data);
+  //   _firebaseFirestoreRef
+  //       .collection(groupCollectionName)
+  //       .doc(groupName)
+  //       .update(data);
+  // }
 
-  // -- updare group's total expense with new value --
-  Future<void> updateGroupTotalExpense(
-      {required String groupName,
-      // required String memberEmail,
-      required int newExpenseSum}) async {
-    final data = {'totalExpense': newExpenseSum};
-    _firebaseFirestoreRef
-        .collection(groupCollectionName)
-        .doc(groupName)
-        .update(data);
-  }
+  // ---- this functionality requirement has been moved to 'members' collection. ----
+
+  // // -- updare group's total expense with new value --
+  // Future<void> updateGroupTotalExpense(
+  //     {required String groupName,
+  //     // required String memberEmail,
+  //     required int newExpenseSum}) async {
+  //   final data = {'totalExpense': newExpenseSum};
+  //   _firebaseFirestoreRef
+  //       .collection(groupCollectionName)
+  //       .doc(groupName)
+  //       .update(data);
+  // }
 
   // ---- functionality implemented firestore trigger ----
   // Future<void> deleteGroup(

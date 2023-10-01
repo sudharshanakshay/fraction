@@ -30,7 +30,7 @@ class GroupsRepo extends ChangeNotifier {
   Timestamp? getCurrentExpenseInstance() =>
       _groupsAndExpenseInstances[appState.currentUserGroup];
 
-  bool _hasOneGroup = true;
+  final bool _hasOneGroup = true;
   bool get hasOneGroup => _hasOneGroup;
 
   GroupsRepo({required this.appState}) {
@@ -44,58 +44,15 @@ class GroupsRepo extends ChangeNotifier {
         .collection('groupMembers')
         .where('userId', isEqualTo: appState.currentUserEmail)
         .snapshots()
-        .listen((event) {})
-
-        //
-
-        //   .listen((groupMembersEvent) {
-        // _expenseGroupsList.clear();
-        // for (var element in groupMembersEvent.docs) {
-        //   // ---- query to fetch expenseGroup name from group collection ----
-        //   firebaseFirestore
-        //       .collection("group")
-        //       .doc(element.data()["groupId"])
-        //       .get()
-        //       .then((groupEvent) {
-        //     if (groupEvent.exists) {
-        //       // ---- this data is display in the frontend ----
-        //       try {
-        //         _expenseGroupsList.add(GroupsRepoModel(
-        //             groupName: groupEvent.data()!['groupName'],
-        //             groupId: element.data()["groupId"],
-        //             lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
-        //             lastUpdatedTime: DateTime.fromMillisecondsSinceEpoch(
-        //                 groupEvent.data()!["lastUpdatedTime"],
-        //                 isUtc: true)));
-        //         // notifyListeners();
-        //       } catch (e) {
-        //         _expenseGroupsList.add(GroupsRepoModel(
-        //             groupName: groupEvent.data()!['groupName'],
-        //             groupId: element.data()["groupId"],
-        //             lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
-        //             lastUpdatedTime:
-        //                 groupEvent.data()!["lastUpdatedTime"].toDate()));
-        //         // notifyListeners();
-        //       }
-        //       // ---- collection of instances of expenseGroups ----
-        //       _groupsAndExpenseInstances.addAll({
-        //         element.data()["groupId"]: groupEvent.data()!['expenseInstance']
-        //       });
-        //     }
-        //   });
-        // }
-        // print('for loop done');
-        // })
-        .onData((data) {
-      // This method replaces the current handler set by the invocation of [Stream.listen]
-      //or by a previous call to [onData].
-      for (var element in data.docs) {
+        .listen((groupMembersEvent) {
+      _expenseGroupsList.clear();
+      for (var element in groupMembersEvent.docs) {
         // ---- query to fetch expenseGroup name from group collection ----
         firebaseFirestore
             .collection("group")
             .doc(element.data()["groupId"])
-            .snapshots()
-            .listen((groupEvent) {
+            .get()
+            .then((groupEvent) {
           if (groupEvent.exists) {
             // ---- this data is display in the frontend ----
             try {
@@ -104,8 +61,7 @@ class GroupsRepo extends ChangeNotifier {
                   groupId: element.data()["groupId"],
                   lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
                   lastUpdatedTime: DateTime.fromMillisecondsSinceEpoch(
-                      groupEvent.data()!["lastUpdatedTime"],
-                      isUtc: true)));
+                      groupEvent.data()!["lastUpdatedTime"])));
               // notifyListeners();
             } catch (e) {
               _expenseGroupsList.add(GroupsRepoModel(
@@ -120,13 +76,57 @@ class GroupsRepo extends ChangeNotifier {
             _groupsAndExpenseInstances.addAll({
               element.data()["groupId"]: groupEvent.data()!['expenseInstance']
             });
-            // ---- sorting in decending order of the TimeStamp.
+
             _expenseGroupsList.sort((a, b) =>
                 a.lastUpdatedTime.isAfter(b.lastUpdatedTime) ? -1 : 1);
             notifyListeners();
           }
         });
       }
+      print('for loop done');
     });
+    // .onData((data) {
+    //   print(data);
+    // This method replaces the current handler set by the invocation of [Stream.listen]
+    //or by a previous call to [onData].
+    // for (var element in data.docs) {
+    //   // ---- query to fetch expenseGroup name from group collection ----
+    //   firebaseFirestore
+    //       .collection("group")
+    //       .doc(element.data()["groupId"])
+    //       .snapshots()
+    //       .listen((groupEvent) {
+    //     if (groupEvent.exists) {
+    //       // ---- this data is display in the frontend ----
+    //       try {
+    //         _expenseGroupsList.add(GroupsRepoModel(
+    //             groupName: groupEvent.data()!['groupName'],
+    //             groupId: element.data()["groupId"],
+    //             lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
+    //             lastUpdatedTime: DateTime.fromMillisecondsSinceEpoch(
+    //                 groupEvent.data()!["lastUpdatedTime"],
+    //                 isUtc: true)));
+    //         // notifyListeners();
+    //       } catch (e) {
+    //         _expenseGroupsList.add(GroupsRepoModel(
+    //             groupName: groupEvent.data()!['groupName'],
+    //             groupId: element.data()["groupId"],
+    //             lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
+    //             lastUpdatedTime:
+    //                 groupEvent.data()!["lastUpdatedTime"].toDate()));
+    //         // notifyListeners();
+    //       }
+    //       // ---- collection of instances of expenseGroups ----
+    //       _groupsAndExpenseInstances.addAll({
+    //         element.data()["groupId"]: groupEvent.data()!['expenseInstance']
+    //       });
+    //       // ---- sorting in decending order of the TimeStamp.
+    //       _expenseGroupsList.sort((a, b) =>
+    //           a.lastUpdatedTime.isAfter(b.lastUpdatedTime) ? -1 : 1);
+    //       notifyListeners();
+    //     }
+    //   });
+    // }
+    // });
   }
 }

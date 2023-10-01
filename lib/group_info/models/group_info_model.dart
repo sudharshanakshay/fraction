@@ -11,29 +11,58 @@ class GroupInfoRepoModel {
 
 class GroupInfoRepo extends ChangeNotifier {
   final ApplicationState appState;
-  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  late DocumentReference _currentGroupDbRef;
 
   final List<GroupInfoRepoModel> _groupMembers = [];
   List<GroupInfoRepoModel> get groupMembers => _groupMembers;
 
   GroupInfoRepo({required this.appState}) {
+    _currentGroupDbRef = FirebaseFirestore.instance
+        .collection('group')
+        .doc(appState.currentUserGroup);
     _initGroupInfoRepo();
   }
 
   _initGroupInfoRepo() {
-    _firebaseFirestore
-        .collection('group')
-        .doc(appState.currentUserGroup)
+    _currentGroupDbRef
         .collection('members')
         .snapshots()
         .listen((event) {})
         .onData((data) {
+      _groupMembers.clear();
+      if (data.docs.isEmpty) {
+        // to avail changes from previous app version.
+        _currentGroupDbRef.get().then((value) {
+          if (value.exists) {
+            Map<String, dynamic> groupMembers = value['groupMembers'];
+
+            groupMembers.forEach((key, value) {
+              print(value);
+              _currentGroupDbRef
+                  .collection('members')
+                  .doc(value['memberEmail'])
+                  .set({
+                'memberEmail': value['memberEmail'],
+                'memberName': value['memberName'],
+                'memberExpense': value['totalExpense']
+              });
+            });
+          }
+        });
+      }
       for (var element in data.docs) {
         if (element.exists) {
-          _groupMembers.add(GroupInfoRepoModel(
-              memberExpense: element.data()['memberExpense'].toString(),
-              memberName: 'name'));
-          notifyListeners();
+          try {
+            print('try');
+            _groupMembers.add(GroupInfoRepoModel(
+                memberExpense: element.data()['memberExpense'].toString(),
+                memberName: element.data()['memberName']));
+            notifyListeners();
+          } catch (e) {
+            print('catch');
+            print(e);
+            // element.reference.delete();
+          }
         }
       }
     });
