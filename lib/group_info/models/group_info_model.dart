@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/utils/constants.dart';
 
 class GroupInfoRepoModel {
   String memberName;
@@ -61,8 +62,32 @@ class GroupInfoRepo extends ChangeNotifier {
           } catch (e) {
             print('catch');
             print(e);
+            _groupMembers.add(GroupInfoRepoModel(
+                memberExpense: element.data()['memberExpense'].toString(),
+                memberName: 'name'));
             // element.reference.delete();
           }
+        }
+      }
+    });
+  }
+
+  exitGroup() {
+    FirebaseFirestore.instance
+        .collection('groupMembers')
+        .where('userId', isEqualTo: appState.currentUserEmail)
+        .where('groupId', isEqualTo: appState.currentUserGroup)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        // element.reference.delete();
+        // print(element.data());
+        if (element.data()['role'] == Constants().admin) {
+          // call firestore function to clean up!
+          // & delete doc from groupMembers.
+          element.reference.delete();
+        } else {
+          element.reference.delete();
         }
       }
     });

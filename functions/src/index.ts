@@ -28,21 +28,22 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
       const expenseCost = document["cost"];
       const emailAddress = document["emailAddress"];
 
-      // update the group member data with.
+      // update 'members' collection doc with
       const updateGroupMemberData = {
         "memberExpense": FieldValue.increment(expenseCost),
       };
-
       db.doc("group/"+groupName+"/members/"+emailAddress)
         .set(updateGroupMemberData, {merge: true});
 
-      // update the updated time in group collection.
-      const chatUpdateWith = {
-        "lastUpdatedDesc": document?.description,
-        "lastUpdatedTime": document?.timeStamp,
+      // update 'group' collection's 'totalExpense' &
+      // last expense for faster retrival.
+      const updateGroupDocWith = {
+        "totalExpense": FieldValue.increment(expenseCost),
+        "lastUpdatedDesc": document.description,
+        "lastUpdatedTime": document.timeStamp,
       };
       db.doc("group/"+groupName)
-        .set(chatUpdateWith, {merge: true});
+        .set(updateGroupDocWith, {merge: true});
     } else if (document == undefined && previousValues != undefined) {
       // existing expense has been deleted.
       // use previous data "previousValues".
@@ -50,20 +51,22 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
       const expenseCost = previousValues["cost"];
       const emailAddress = previousValues["emailAddress"];
 
+      // update 'members' collection doc with
       const updateGroupMemberData = {
         "memberExpense": FieldValue.increment(-expenseCost),
       };
-
       db.doc("group/"+groupName+"/members/"+emailAddress)
         .set(updateGroupMemberData, {merge: true});
 
-      // update the updated time in group collection.
-      const chatUpdateWith = {
+      // update 'group' collection's 'totalExpense' &
+      // last expense for faster retrival.
+      const updateGroupDocWith = {
+        "totalExpense": FieldValue.increment(expenseCost),
         "lastUpdatedDesc": "deleted",
         "lastUpdatedTime": Date.now(),
       };
       db.doc("group/"+groupName)
-        .set(chatUpdateWith, {merge: true});
+        .set(updateGroupDocWith, {merge: true});
     } else if (document != undefined && previousValues != undefined) {
       // expense has been updated.
       const emailAddress = previousValues["emailAddress"];
@@ -82,13 +85,16 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
           .set(updateGroupMemberData, {merge: true});
       }
 
-      // update the updated time in the group collection.
-      const chatUpdateWith = {
+      // update 'group' collection's 'totalExpense' &
+      // last expense for faster retrival.
+      const updateGroupDocWith = {
+        "totalExpense": FieldValue
+          .increment(updatedExpenseCost-previousExpenseCost),
         "lastUpdatedDesc": document?.description,
         "lastUpdatedTime": Date.now(),
       };
       db.doc("group/"+groupName)
-        .set(chatUpdateWith, {merge: true});
+        .set(updateGroupDocWith, {merge: true});
     }
 
     return "ok";

@@ -10,4 +10,7 @@ class Constants {
 
   final String _Ok = 'Ok';
   get Ok => _Ok;
+
+  final String _admin = 'admin';
+  get admin => _admin;
 }

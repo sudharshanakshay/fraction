@@ -40,21 +40,27 @@ class MyApp extends StatelessWidget {
         ),
         // home: const CreateGroupLayout(),
         home: Consumer<ApplicationState>(
-            builder: (context, appState, _) => !appState.loggedIn
-                ? const SignInScreen()
-                : MultiProvider(
-                    providers: [
-                      ChangeNotifierProvider(
-                        create: (c) => GroupsRepo(appState: appState),
-                      ),
-                      // ChangeNotifierProvider(
-                      //   create: (c) => ExpenseRepo(appState: appState),
-                      // )
-                    ],
-                    child: const HomeScreen(
-                      title: 'Fraction',
-                    ),
-                  )),
+          builder: (context, appState, _) => !appState.loggedIn
+              ? const SignInScreen()
+              : ChangeNotifierProxyProvider<ApplicationState, GroupsModel>(
+                  create: (_) => GroupsModel(),
+                  update: (_, appState, groupRepoState) {
+                    return groupRepoState == null
+                        ? groupRepoState
+                        : groupRepoState.updateState(
+                            appStateFromProxyProvider: appState);
+                    // try {
+
+                    // } catch (e) {
+                    //   print("error: proxy provider in main.dart");
+                    //   print(e);
+                    // }
+                  },
+                  child: const GroupsScreen(
+                    title: 'Fraction',
+                  ),
+                ),
+        ),
         routes: appRoutes);
   }
 }

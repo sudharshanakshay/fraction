@@ -3,7 +3,7 @@ import 'package:fraction/auth/register_screen.dart';
 import 'package:fraction/auth/sign_in_screen.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
-import 'package:fraction/group_info/group_info.dart';
+import 'package:fraction/group_info/group_info_screen.dart';
 import 'package:fraction/notification/notification_screen.dart';
 import 'package:fraction/profile/profile_screen.dart';
 import 'package:fraction/settings/settings_screen.dart';

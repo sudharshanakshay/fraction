@@ -25,7 +25,7 @@ class ExpenseRepo extends ChangeNotifier {
   ApplicationState appState;
 
   // ---- groupRepoState to get the current instance of expense group ----
-  GroupsRepo groupsRepoState;
+  GroupsModel groupsRepoState;
 
   final ExpenseService _expenseService = ExpenseService();
 

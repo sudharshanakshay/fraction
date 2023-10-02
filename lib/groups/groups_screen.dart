@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/dashboard_model.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
-import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
@@ -10,16 +9,16 @@ import 'package:fraction/groups/models/groups_models.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
+class GroupsScreen extends StatefulWidget {
+  const GroupsScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<StatefulWidget> createState() => _HomeScreenState();
+  State<StatefulWidget> createState() => _GroupsScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _GroupsScreenState extends State<GroupsScreen> {
   @override
   void initState() {
     super.initState();
@@ -61,59 +60,67 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               // ---- (ui, home screen, expense grouplist) ----
-              Consumer<GroupsRepo>(
-                builder: (context, groupsRepoState, child) => ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: groupsRepoState.expenseGroupList.length,
-                  itemBuilder: (context, int index) {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 4.0),
-                      child: ListTile(
-                        title: Text(
-                          groupsRepoState.expenseGroupList[index].groupName,
-                          style: titleListTileStyle,
-                        ),
-                        subtitle: Text(
-                            groupsRepoState
-                                .expenseGroupList[index].lastUpdatedDesc,
-                            style: subListTileStyle),
-                        trailing: Text(
-                            DateFormat.yMd()
-                                .format(groupsRepoState
-                                    .expenseGroupList[index].lastUpdatedTime)
-                                .toString(),
-                            style: trailingListTileStyle),
-                        onTap: () {
-                          appState.setCurrentUserGroup(
-                              currentUserGroup: groupsRepoState
-                                  .expenseGroupList[index].groupId);
+              Consumer<GroupsModel>(
+                builder: (context, groupsRepoState, child) {
+                  if (groupsRepoState != null) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: groupsRepoState.expenseGroupList.length,
+                      itemBuilder: (context, int index) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 4.0),
+                          child: ListTile(
+                            title: Text(
+                              groupsRepoState.expenseGroupList[index].groupName,
+                              style: titleListTileStyle,
+                            ),
+                            subtitle: Text(
+                                groupsRepoState
+                                    .expenseGroupList[index].lastUpdatedDesc,
+                                style: subListTileStyle),
+                            trailing: Text(
+                                DateFormat.yMd()
+                                    .format(groupsRepoState
+                                        .expenseGroupList[index]
+                                        .lastUpdatedTime)
+                                    .toString(),
+                                style: trailingListTileStyle),
+                            onTap: () {
+                              appState.setCurrentUserGroup(
+                                  currentUserGroup: groupsRepoState
+                                      .expenseGroupList[index].groupId);
 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MultiProvider(
-                                    providers: [
-                                      ChangeNotifierProvider(
-                                        create: (_) => ExpenseRepo(
-                                            appState: appState,
-                                            groupsRepoState: groupsRepoState),
-                                      ),
-                                      ChangeNotifierProvider(
-                                          create: (_) => DashboardRepo(
-                                              appState: appState)),
-                                      ChangeNotifierProvider(
-                                          create: (_) =>
-                                              GroupInfoRepo(appState: appState))
-                                    ],
-                                    builder: (context, child) =>
-                                        const ExpenseScreen(title: 'Fraction')),
-                              ));
-                        },
-                      ),
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MultiProvider(
+                                        providers: [
+                                          ChangeNotifierProvider(
+                                            create: (_) => ExpenseRepo(
+                                                appState: appState,
+                                                groupsRepoState:
+                                                    groupsRepoState),
+                                          ),
+                                          ChangeNotifierProvider(
+                                              create: (_) => DashboardRepo(
+                                                  appState: appState)),
+                                          ChangeNotifierProvider.value(
+                                            value: groupsRepoState,
+                                          )
+                                        ],
+                                        builder: (context, child) =>
+                                            const ExpenseScreen(
+                                                title: 'Fraction')),
+                                  ));
+                            },
+                          ),
+                        );
+                      },
                     );
-                  },
-                ),
+                  }
+                  return Container();
+                },
               ),
               const SizedBox(
                 height: 80,

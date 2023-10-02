@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/group_info/components/members_detail_component.dart';
+import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/notification/models/notification.dart';
 import 'package:fraction/groups/services/groups_service.dart';
-import 'package:fraction/profile/services/user_service.dart';
+// import 'package:fraction/profile/services/user_service.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
@@ -19,19 +20,22 @@ class GroupInfo extends StatefulWidget {
 
 class _GroupInfoState extends State<GroupInfo> {
   late GroupServices _groupServices;
-  late UserServices _userServices;
+  // late UserServices _userServices;
   final String clearOffIconPath = 'assets/icons/ClearOffIcon.svg';
   late DateTime next30day;
-  late NotificationRepo _notificationRepoRef;
   late TextEditingController _memberEmailController;
   bool inviteToggle = true;
+
+  late NotificationRepo _notificationRepoRef;
+  late GroupInfoRepo _groupInfoRepoRef;
 
   @override
   void initState() {
     _groupServices = GroupServices();
-    _userServices = UserServices();
+    // _userServices = UserServices();
     _notificationRepoRef =
         Provider.of<NotificationRepo>(context, listen: false);
+    _groupInfoRepoRef = Provider.of<GroupInfoRepo>(context, listen: false);
     _memberEmailController = TextEditingController();
     super.initState();
   }
@@ -45,104 +49,113 @@ class _GroupInfoState extends State<GroupInfo> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text(
-              Tools().sliptElements(element: appState.currentUserGroup)[0],
-              style: const TextStyle(fontSize: 20)),
-          actions: const [
-            // ---- not application, since this data has been moved to 'members' collection. ----
+      return ChangeNotifierProvider(
+        create: (_) => GroupInfoRepo(appState: appState),
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: Text(
+                Tools().sliptElements(element: appState.currentUserGroup)[0],
+                style: const TextStyle(fontSize: 20)),
+            actions: const [
+              // ---- not application, since this data has been moved to 'members' collection. ----
 
-            // PopupMenuButton(
-            //     itemBuilder: (context) => [
-            //           PopupMenuItem(
-            //               child: const Text('Recalculate expenses'),
-            //               onTap: () => {}
-            //               // _groupServices.refreshMemberExpenses(
-            //               //     currentGroupName: appState.currentUserGroup,
-            //               //     currentExpenseInstance:
-            //               //         appState.currentExpenseInstance),
-            //               ),
-            //         ]),
-          ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const MemberExpenseDetail(),
-                    // MemberExpenseDetail(
-                    //   appState: appState,
-                    // ),
-                    inviteToggle ? inviteMemberToggle() : inviteMemberView(),
-                  ],
-                ),
-                Container(
-                  color: const Color(0x00640000),
-                  child: Column(
+              // PopupMenuButton(
+              //     itemBuilder: (context) => [
+              //           PopupMenuItem(
+              //               child: const Text('Recalculate expenses'),
+              //               onTap: () => {}
+              //               // _groupServices.refreshMemberExpenses(
+              //               //     currentGroupName: appState.currentUserGroup,
+              //               //     currentExpenseInstance:
+              //               //         appState.currentExpenseInstance),
+              //               ),
+              //         ]),
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      ListTile(
-                          leading: SvgPicture.asset(
-                            clearOffIconPath,
-                            color: Colors.blueAccent,
-                          ),
-                          title: const Text(
-                            'Clear off',
-                            style: TextStyle(
-                                fontSize: 16.0, color: Colors.blueAccent),
-                          ),
-                          onTap: () async {
-                            await confirmClearOff().then((value) async {
-                              if (value != Constants().cancel &&
-                                  value != null) {
-                                _groupServices
-                                    .clearOff(
-                                        nextClearOffDate: value as DateTime,
-                                        currentUserGroup:
-                                            appState.currentUserGroup)
-                                    .whenComplete(() => appState
-                                        .refreshGroupNamesAndExpenseInstances());
-                              }
-                            });
-                          }),
-                      ListTile(
-                        leading: const Icon(
-                          Icons.exit_to_app_outlined,
-                          color: Colors.red,
-                        ),
-                        title: const Text(
-                          'Exit group',
-                          style: TextStyle(fontSize: 16.0, color: Colors.red),
-                        ),
-                        onTap: () async {
-                          await confirmExitGroup().then((value) async {
-                            if (value != Constants().cancel && value != null) {
-                              _userServices
-                                  .exitGroup(
-                                      currentUserEmail:
-                                          appState.currentUserEmail,
-                                      currentUserGroup:
-                                          appState.currentUserGroup,
-                                      appState: appState)
-                                  .whenComplete(() => Navigator.pop(context));
-                            }
-                          });
-                        },
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
+                      Consumer<GroupInfoRepo>(
+                          builder: (context, value, child) =>
+                              MemberExpenseDetail(
+                                groupMembers: value.groupMembers,
+                              )),
+                      // MemberExpenseDetail(
+                      //   appState: appState,
+                      // ),
+                      inviteToggle ? inviteMemberToggle() : inviteMemberView(),
                     ],
                   ),
-                ),
-              ],
+                  Container(
+                    color: const Color(0x00640000),
+                    child: Column(
+                      children: [
+                        ListTile(
+                            leading: SvgPicture.asset(
+                              clearOffIconPath,
+                              color: Colors.blueAccent,
+                            ),
+                            title: const Text(
+                              'Clear off',
+                              style: TextStyle(
+                                  fontSize: 16.0, color: Colors.blueAccent),
+                            ),
+                            onTap: () async {
+                              await confirmClearOff().then((value) async {
+                                if (value != Constants().cancel &&
+                                    value != null) {
+                                  _groupServices
+                                      .clearOff(
+                                          nextClearOffDate: value as DateTime,
+                                          currentUserGroup:
+                                              appState.currentUserGroup)
+                                      .whenComplete(() => appState
+                                          .refreshGroupNamesAndExpenseInstances());
+                                }
+                              });
+                            }),
+                        ListTile(
+                          leading: const Icon(
+                            Icons.exit_to_app_outlined,
+                            color: Colors.red,
+                          ),
+                          title: const Text(
+                            'Exit group',
+                            style: TextStyle(fontSize: 16.0, color: Colors.red),
+                          ),
+                          onTap: () async {
+                            await confirmExitGroup().then((value) async {
+                              if (value != Constants().cancel &&
+                                  value != null) {
+                                // _userServices
+                                //     .exitGroup(
+                                //         currentUserEmail:
+                                //             appState.currentUserEmail,
+                                //         currentUserGroup:
+                                //             appState.currentUserGroup,
+                                //         appState: appState)
+                                _groupInfoRepoRef.exitGroup();
+                                // .whenComplete(() => Navigator.pop(context));
+                              }
+                            });
+                          },
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
