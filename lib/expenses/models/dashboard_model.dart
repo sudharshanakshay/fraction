@@ -47,19 +47,20 @@ class DashboardRepo extends ChangeNotifier {
           notifyListeners();
         }
       });
+
+      _firebaseFirestore
+          .collection('group')
+          .doc(appState!.currentUserGroup)
+          .collection('members')
+          .doc(appState!.currentUserEmail)
+          .snapshots()
+          .listen((event) {})
+          .onData((data) {
+        if (data.exists) {
+          _dashboard.myExpense = data.data()!['memberExpense'].toString();
+          notifyListeners();
+        }
+      });
     }
-    _firebaseFirestore
-        .collection('group')
-        .doc(appState!.currentUserGroup)
-        .collection('members')
-        .doc(appState!.currentUserEmail)
-        .snapshots()
-        .listen((event) {})
-        .onData((data) {
-      if (data.exists) {
-        _dashboard.myExpense = data.data()!['memberExpense'].toString();
-        notifyListeners();
-      }
-    });
   }
 }

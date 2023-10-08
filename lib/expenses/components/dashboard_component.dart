@@ -17,58 +17,64 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
-    return Consumer<DashboardRepo>(
+    return Consumer<DashboardRepo?>(
       builder: (context, dashboardRepoState, child) {
-        return Consumer<ApplicationState>(
-          builder: (context, appState, _) {
-            return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: GestureDetector(
-                  // onTap: () => Navigator.pushNamed(context, '/groupInfo'),
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ChangeNotifierProxyProvider<
-                                  ApplicationState, GroupInfoRepo?>(
-                              create: (context) => GroupInfoRepo(),
-                              update: (context, newAppState, groupRepoState) =>
-                                  groupRepoState
-                                    ?..udpate(newAppState: newAppState),
-                              child: const GroupInfo()))),
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      top: 6.0,
-                      bottom: 2.0,
-                      right: 12,
-                      left: 12,
-                    ),
-                    decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 2,
-                          color: appState.toggleRandomDashboardColor
-                              ? getRandomColor()
-                              : Colors.blue.shade100,
-                        ),
-                        borderRadius: BorderRadius.circular(6)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        // first column where
-                        // 1. TotalExpense &
-                        // 2. My Expense is displayed.
-                        dashboardExpenseDetail(
-                            dashboard: dashboardRepoState.dashboard),
+        if (dashboardRepoState != null) {
+          return Consumer<ApplicationState>(
+            builder: (context, appState, _) {
+              return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: GestureDetector(
+                    // onTap: () => Navigator.pushNamed(context, '/groupInfo'),
+                    onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ChangeNotifierProxyProvider<
+                                    ApplicationState, GroupInfoRepo?>(
+                                create: (context) => GroupInfoRepo(),
+                                update:
+                                    (context, newAppState, groupRepoState) =>
+                                        groupRepoState
+                                          ?..udpate(newAppState: newAppState),
+                                child: const GroupInfo()))),
+                    child: Container(
+                      padding: const EdgeInsets.only(
+                        top: 6.0,
+                        bottom: 2.0,
+                        right: 12,
+                        left: 12,
+                      ),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2,
+                            color: appState.toggleRandomDashboardColor
+                                ? getRandomColor()
+                                : Colors.blue.shade100,
+                          ),
+                          borderRadius: BorderRadius.circular(6)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          // first column where
+                          // 1. TotalExpense &
+                          // 2. My Expense is displayed.
+                          dashboardExpenseDetail(
+                              dashboard: dashboardRepoState.dashboard),
 
-                        // second column where
-                        // 1. nextClearOff data is displayed.
-                        dashboardInfo(dashboard: dashboardRepoState.dashboard),
-                      ],
+                          // second column where
+                          // 1. nextClearOff data is displayed.
+                          dashboardInfo(
+                              dashboard: dashboardRepoState.dashboard),
+                        ],
+                      ),
                     ),
-                  ),
-                ));
-          },
-        );
+                  ));
+            },
+          );
+        } else {
+          return Text('null data');
+        }
       },
     );
   }

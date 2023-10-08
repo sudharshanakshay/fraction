@@ -117,8 +117,9 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                             create: (_) => DashboardRepo(),
                                             update: (context, newAppState,
                                                     dashboardRepoState) =>
-                                                dashboardRepoState?.update(
-                                                    newAppState: newAppState),
+                                                dashboardRepoState
+                                                  ?..update(
+                                                      newAppState: newAppState),
                                           ),
                                           ChangeNotifierProvider.value(
                                             value: groupsRepoState,
