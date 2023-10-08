@@ -69,160 +69,152 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                 // Group Info, navigation has been moved to dashboard component.
               ),
               // drawer: const FractionAppDrawer(),
-              body: appState.hasOneGroup
-                  ? SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Dashboard(),
-                            toggleAddExpense
-                                ? Form(
-                                    key: _formKey,
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: <Widget>[
-                                            AppBar(
-                                              leading: IconButton(
-                                                icon: const Icon(Icons.close),
-                                                onPressed: () =>
-                                                    Navigator.pop(context),
-                                              ),
-                                              // leading: const Icon(Icons.close),
-                                              title: const Text('Add Expense'),
-                                            ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Dashboard(),
+                      toggleAddExpense
+                          ? Form(
+                              key: _formKey,
+                              child: SingleChildScrollView(
+                                child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      AppBar(
+                                        leading: IconButton(
+                                          icon: const Icon(Icons.close),
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                        ),
+                                        // leading: const Icon(Icons.close),
+                                        title: const Text('Add Expense'),
+                                      ),
 
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
 
-                                            // ---- (UI) add expense title ----
+                                      // ---- (UI) add expense title ----
 
-                                            FractionallySizedBox(
-                                                // ---- (UI input) description ----
-                                                widthFactor: 0.7,
-                                                //heightFactor: 0.2,
-                                                child: TextFormField(
-                                                    validator: (value) =>
-                                                        validateNotEmptyDesc(
-                                                            value),
-                                                    keyboardType:
-                                                        TextInputType.multiline,
-                                                    maxLines: null,
-                                                    controller:
-                                                        _descriptionTextController,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      label: Text('Item Name'),
-                                                    ))),
+                                      FractionallySizedBox(
+                                          // ---- (UI input) description ----
+                                          widthFactor: 0.7,
+                                          //heightFactor: 0.2,
+                                          child: TextFormField(
+                                              validator: (value) =>
+                                                  validateNotEmptyDesc(value),
+                                              keyboardType:
+                                                  TextInputType.multiline,
+                                              maxLines: null,
+                                              controller:
+                                                  _descriptionTextController,
+                                              decoration: const InputDecoration(
+                                                label: Text('Item Name'),
+                                              ))),
 
-                                            const SizedBox(
-                                                // ---- (ui, top margin of 10) ----
-                                                height: 10),
+                                      const SizedBox(
+                                          // ---- (ui, top margin of 10) ----
+                                          height: 10),
 
-                                            FractionallySizedBox(
-                                                // ---- (UI input) cost ----
-                                                widthFactor: 0.7,
-                                                //heightFactor: 0.2,
-                                                child: TextFormField(
-                                                    validator: (value) =>
-                                                        validateNotEmptyCost(
-                                                            value),
-                                                    controller:
-                                                        _costTextController,
-                                                    keyboardType:
-                                                        TextInputType.number,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      label: Text('Item Cost'),
-                                                    ))),
-                                            const SizedBox(height: 10),
+                                      FractionallySizedBox(
+                                          // ---- (UI input) cost ----
+                                          widthFactor: 0.7,
+                                          //heightFactor: 0.2,
+                                          child: TextFormField(
+                                              validator: (value) =>
+                                                  validateNotEmptyCost(value),
+                                              controller: _costTextController,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: const InputDecoration(
+                                                label: Text('Item Cost'),
+                                              ))),
+                                      const SizedBox(height: 10),
 
-                                            // ---- (UI button) add expense ----
-                                            FilledButton(
-                                                onPressed: () async {
-                                                  if (_formKey.currentState!
-                                                      .validate()) {
-                                                    const snakBar = SnackBar(
-                                                        content: Text(
-                                                            'adding expense ...'));
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(snakBar);
-                                                    // if (appState.groupAndExpenseInstances[
-                                                    //     appState.currentUserGroup] !=
-                                                    // null) {
-                                                    // _expenseService
-                                                    // .addExpense(
-                                                    //   description:
-                                                    //       _descriptionTextController.text,
-                                                    //   cost: _costTextController.text,
-                                                    //   currentUserName: appState.currentUserName,
-                                                    //   currentUserEmail:
-                                                    //       appState.currentUserEmail,
-                                                    //   currentUserGroup:
-                                                    //       appState.currentUserGroup,
-                                                    //   currentExpenseInstance:
-                                                    //       appState.currentExpenseInstance,
-                                                    // )
+                                      // ---- (UI button) add expense ----
+                                      FilledButton(
+                                          onPressed: () async {
+                                            if (_formKey.currentState!
+                                                .validate()) {
+                                              const snakBar = SnackBar(
+                                                  content: Text(
+                                                      'adding expense ...'));
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(snakBar);
+                                              // if (appState.groupAndExpenseInstances[
+                                              //     appState.currentUserGroup] !=
+                                              // null) {
+                                              // _expenseService
+                                              // .addExpense(
+                                              //   description:
+                                              //       _descriptionTextController.text,
+                                              //   cost: _costTextController.text,
+                                              //   currentUserName: appState.currentUserName,
+                                              //   currentUserEmail:
+                                              //       appState.currentUserEmail,
+                                              //   currentUserGroup:
+                                              //       appState.currentUserGroup,
+                                              //   currentExpenseInstance:
+                                              //       appState.currentExpenseInstance,
+                                              // )
 
-                                                    // .whenComplete(() => Navigator.pop(context));
-                                                    // }
+                                              // .whenComplete(() => Navigator.pop(context));
+                                              // }
 
-                                                    if (_expenseRepo != null) {
-                                                      _expenseRepo!
-                                                          .addExpense(
-                                                              description:
-                                                                  _descriptionTextController
-                                                                      .text,
-                                                              cost:
-                                                                  _costTextController
-                                                                      .text)
-                                                          .whenComplete(() =>
-                                                              // Navigator.pop(context)
-                                                              setState(() {
-                                                                toggleAddExpense =
-                                                                    !toggleAddExpense;
-                                                              }));
-                                                    }
-                                                  }
-                                                },
-                                                child: const Text('Save')),
-                                            const SizedBox(
-                                              height: 20,
-                                            ),
-                                          ]),
-                                    ),
-                                  )
-                                : Container(),
-                            ExpenseView(),
-                            SizedBox(
-                              height: 80,
+                                              if (_expenseRepo != null) {
+                                                _expenseRepo!
+                                                    .addExpense(
+                                                        description:
+                                                            _descriptionTextController
+                                                                .text,
+                                                        cost:
+                                                            _costTextController
+                                                                .text)
+                                                    .whenComplete(() =>
+                                                        // Navigator.pop(context)
+                                                        setState(() {
+                                                          toggleAddExpense =
+                                                              !toggleAddExpense;
+                                                        }));
+                                              }
+                                            }
+                                          },
+                                          child: const Text('Save')),
+                                      const SizedBox(
+                                        height: 20,
+                                      ),
+                                    ]),
+                              ),
                             )
-                          ],
-                        ),
-                      ),
-                    )
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Row(),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        const Text('no group found _'),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/createGroup');
-                            },
-                            child: const Text('Tap here to create group')),
-                      ],
-                    ),
+                          : Container(),
+                      ExpenseView(),
+                      SizedBox(
+                        height: 80,
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              // : Column(
+              //     crossAxisAlignment: CrossAxisAlignment.center,
+              //     children: [
+              //       const Row(),
+              //       const SizedBox(
+              //         height: 10,
+              //       ),
+              //       const Text('no group found _'),
+              //       TextButton(
+              //           onPressed: () {
+              //             Navigator.pushNamed(context, '/createGroup');
+              //           },
+              //           child: const Text('Tap here to create group')),
+              //     ],
+              //   ),
               floatingActionButton: appState.hasOneGroup
                   ? FloatingActionButton(
                       child: const Icon(Icons.add),

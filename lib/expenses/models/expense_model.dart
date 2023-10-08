@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/services/expenses_service.dart';
-import 'package:fraction/groups/models/groups_models.dart';
+import 'package:fraction/groups/models/groups_model.dart';
 
 class ExpenseRepoModel {
   String docId;
@@ -26,7 +26,7 @@ class ExpenseRepo extends ChangeNotifier {
   ApplicationState? appState;
 
   // ---- groupRepoState to get the current instance of expense group ----
-  GroupsModel? groupsRepoState;
+  GroupsRepo? groupsRepoState;
 
   final ExpenseService _expenseService = ExpenseService();
 
@@ -49,7 +49,7 @@ class ExpenseRepo extends ChangeNotifier {
 
   update(
       {required ApplicationState newAppState,
-      required GroupsModel newGroupsRepoState}) {
+      required GroupsRepo newGroupsRepoState}) {
     appState = newAppState;
 
     if (appState != null) {
@@ -62,13 +62,13 @@ class ExpenseRepo extends ChangeNotifier {
   initExpenseInstances() {
     count++;
     print("update: " + count.toString());
+    _expensesList.clear();
     if (_currentExpenseInstance != null) {
       _expenseService
           .getExpenseCollection(
               currentUserGroup: appState!.currentUserGroup,
               currentExpenseInstance: _currentExpenseInstance!)
           .listen((event) {
-        _expensesList.clear();
         for (var element in event.docs) {
           if (element.exists) {
             final data = element.data() as Map<String, dynamic>;

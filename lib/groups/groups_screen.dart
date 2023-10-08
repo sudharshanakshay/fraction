@@ -5,7 +5,7 @@ import 'package:fraction/expenses/models/expense_model.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
-import 'package:fraction/groups/models/groups_models.dart';
+import 'package:fraction/groups/models/groups_model.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -60,7 +60,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
           child: Column(
             children: [
               // ---- (ui, home screen, expense grouplist) ----
-              Consumer<GroupsModel?>(
+              Consumer<GroupsRepo?>(
                 builder: (context, groupsRepoState, child) {
                   if (groupsRepoState != null) {
                     return ListView.builder(

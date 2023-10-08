@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/app_state.dart';
+import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/utils/constants.dart';
 
 class GroupInfoRepoModel {
@@ -11,7 +11,7 @@ class GroupInfoRepoModel {
 }
 
 class GroupInfoRepo extends ChangeNotifier {
-  ApplicationState? appState;
+  GroupsRepo? groupsRepoState;
   late DocumentReference _currentGroupDbRef;
 
   final List<GroupInfoRepoModel> _groupMembers = [];
@@ -21,16 +21,16 @@ class GroupInfoRepo extends ChangeNotifier {
   //   _currentGroupDbRef = ;
   // }
 
-  udpate({required ApplicationState newAppState}) {
-    appState = newAppState;
+  udpate({required GroupsRepo newGroupsState}) {
+    groupsRepoState = newGroupsState;
     _initGroupInfoRepo();
   }
 
   _initGroupInfoRepo() {
-    if (appState != null) {
+    if (groupsRepoState!.appState != null) {
       FirebaseFirestore.instance
           .collection('group')
-          .doc(appState!.currentUserGroup)
+          .doc(groupsRepoState!.appState!.currentUserGroup)
           .collection('members')
           .snapshots()
           .listen((event) {})
@@ -79,11 +79,13 @@ class GroupInfoRepo extends ChangeNotifier {
   }
 
   exitGroup() {
-    if (appState != null) {
+    if (groupsRepoState!.appState != null) {
       FirebaseFirestore.instance
           .collection('groupMembers')
-          .where('userId', isEqualTo: appState!.currentUserEmail)
-          .where('groupId', isEqualTo: appState!.currentUserGroup)
+          .where('userId',
+              isEqualTo: groupsRepoState!.appState!.currentUserEmail)
+          .where('groupId',
+              isEqualTo: groupsRepoState!.appState!.currentUserGroup)
           .get()
           .then((value) {
         for (var element in value.docs) {
@@ -92,7 +94,9 @@ class GroupInfoRepo extends ChangeNotifier {
           if (element.data()['role'] == Constants().admin) {
             // call firestore function to clean up!
             // & delete doc from groupMembers.
-            element.reference.delete();
+            element.reference
+                .delete()
+                .whenComplete(() => groupsRepoState?.updateState());
           } else {
             element.reference.delete();
           }
