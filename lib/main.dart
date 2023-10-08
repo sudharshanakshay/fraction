@@ -42,20 +42,19 @@ class MyApp extends StatelessWidget {
         home: Consumer<ApplicationState>(
           builder: (context, appState, _) => !appState.loggedIn
               ? const SignInScreen()
-              : ChangeNotifierProxyProvider<ApplicationState, GroupsModel>(
-                  create: (_) => GroupsModel(),
-                  update: (_, appState, groupRepoState) {
-                    return groupRepoState == null
-                        ? groupRepoState
-                        : groupRepoState.updateState(
-                            appStateFromProxyProvider: appState);
-                    // try {
+              :
+              //  ChangeNotifierProxyProvider<ApplicationState, GroupsModel?>(
+              //     lazy: false,
+              //     create: (_) => GroupsModel(),
+              //     update: (_, appState, groupRepoState) {
+              //       return groupRepoState?.updateState(
+              //           appStateFromProxyProvider: appState);
+              //     },
 
-                    // } catch (e) {
-                    //   print("error: proxy provider in main.dart");
-                    //   print(e);
-                    // }
-                  },
+              ChangeNotifierProvider(
+                  // lazy: false,
+                  create: (_) =>
+                      GroupsModel(appStateFromProxyProvider: appState),
                   child: const GroupsScreen(
                     title: 'Fraction',
                   ),

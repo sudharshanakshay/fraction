@@ -22,7 +22,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   late GlobalKey<FormState> _formKey;
   bool toggleAddExpense = false;
 
-  late ExpenseRepo _expenseRepo;
+  late ExpenseRepo? _expenseRepo;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     _descriptionTextController = TextEditingController();
     _costTextController = TextEditingController();
     _formKey = GlobalKey<FormState>();
-    _expenseRepo = Provider.of<ExpenseRepo>(context, listen: false);
+    _expenseRepo = Provider.of<ExpenseRepo?>(context, listen: false);
     super.initState();
   }
 
@@ -174,20 +174,22 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                                                     // .whenComplete(() => Navigator.pop(context));
                                                     // }
 
-                                                    _expenseRepo
-                                                        .addExpense(
-                                                            description:
-                                                                _descriptionTextController
-                                                                    .text,
-                                                            cost:
-                                                                _costTextController
-                                                                    .text)
-                                                        .whenComplete(() =>
-                                                            // Navigator.pop(context)
-                                                            setState(() {
-                                                              toggleAddExpense =
-                                                                  !toggleAddExpense;
-                                                            }));
+                                                    if (_expenseRepo != null) {
+                                                      _expenseRepo!
+                                                          .addExpense(
+                                                              description:
+                                                                  _descriptionTextController
+                                                                      .text,
+                                                              cost:
+                                                                  _costTextController
+                                                                      .text)
+                                                          .whenComplete(() =>
+                                                              // Navigator.pop(context)
+                                                              setState(() {
+                                                                toggleAddExpense =
+                                                                    !toggleAddExpense;
+                                                              }));
+                                                    }
                                                   }
                                                 },
                                                 child: const Text('Save')),

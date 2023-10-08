@@ -16,36 +16,43 @@ class DashboardRepoModel {
 
 class DashboardRepo extends ChangeNotifier {
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
-  ApplicationState appState;
+  ApplicationState? appState;
 
   final DashboardRepoModel _dashboard = DashboardRepoModel(
       myExpense: "_", nextClearOffDate: DateTime.now(), totalExpense: "_");
 
   DashboardRepoModel get dashboard => _dashboard;
 
-  DashboardRepo({required this.appState}) {
+  DashboardRepo() {
+    _initDashboardRepo();
+  }
+
+  update({required ApplicationState newAppState}) {
+    appState = newAppState;
     _initDashboardRepo();
   }
 
   _initDashboardRepo() {
+    if (appState != null) {
+      _firebaseFirestore
+          .collection('group')
+          .doc(appState!.currentUserGroup)
+          .snapshots()
+          .listen((event) {})
+          .onData((data) {
+        if (data.exists) {
+          _dashboard.nextClearOffDate =
+              data.data()!['nextClearOffTimeStamp'].toDate();
+          _dashboard.totalExpense = data.data()!['totalExpense'].toString();
+          notifyListeners();
+        }
+      });
+    }
     _firebaseFirestore
         .collection('group')
-        .doc(appState.currentUserGroup)
-        .snapshots()
-        .listen((event) {})
-        .onData((data) {
-      if (data.exists) {
-        _dashboard.nextClearOffDate =
-            data.data()!['nextClearOffTimeStamp'].toDate();
-        _dashboard.totalExpense = data.data()!['totalExpense'].toString();
-        notifyListeners();
-      }
-    });
-    _firebaseFirestore
-        .collection('group')
-        .doc(appState.currentUserGroup)
+        .doc(appState!.currentUserGroup)
         .collection('members')
-        .doc(appState.currentUserEmail)
+        .doc(appState!.currentUserEmail)
         .snapshots()
         .listen((event) {})
         .onData((data) {

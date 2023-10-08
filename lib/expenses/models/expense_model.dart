@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/services/expenses_service.dart';
@@ -22,10 +23,10 @@ class ExpenseRepoModel {
 
 class ExpenseRepo extends ChangeNotifier {
   // ---- appState is required to get current selected user expense group ----
-  ApplicationState appState;
+  ApplicationState? appState;
 
   // ---- groupRepoState to get the current instance of expense group ----
-  GroupsModel groupsRepoState;
+  GroupsModel? groupsRepoState;
 
   final ExpenseService _expenseService = ExpenseService();
 
@@ -35,17 +36,37 @@ class ExpenseRepo extends ChangeNotifier {
   bool _hasOneExpense = true;
   bool get hasOneExpense => _hasOneExpense;
 
-  ExpenseRepo({required this.appState, required this.groupsRepoState}) {
-    initExpenseInstances();
+  Timestamp? _currentExpenseInstance;
+
+  static int count = 0;
+
+  // ExpenseRepo({required this.appState, required this.groupsRepoState}) {
+  //   // st current expense instance.
+  //   _currentExpenseInstance =
+  //       groupsRepoState.groupsAndExpenseInstances[appState.currentUserGroup];
+  //   initExpenseInstances();
+  // }
+
+  update(
+      {required ApplicationState newAppState,
+      required GroupsModel newGroupsRepoState}) {
+    appState = newAppState;
+
+    if (appState != null) {
+      _currentExpenseInstance = newGroupsRepoState
+          .groupsAndExpenseInstances[appState?.currentUserGroup];
+      initExpenseInstances();
+    }
   }
 
   initExpenseInstances() {
-    if (groupsRepoState.getCurrentExpenseInstance() != null) {
+    count++;
+    print("update: " + count.toString());
+    if (_currentExpenseInstance != null) {
       _expenseService
           .getExpenseCollection(
-              currentUserGroup: appState.currentUserGroup,
-              currentExpenseInstance:
-                  groupsRepoState.getCurrentExpenseInstance()!)
+              currentUserGroup: appState!.currentUserGroup,
+              currentExpenseInstance: _currentExpenseInstance!)
           .listen((event) {
         _expensesList.clear();
         for (var element in event.docs) {
@@ -58,6 +79,7 @@ class ExpenseRepo extends ChangeNotifier {
                 timeStamp: data["timeStamp"].toDate(),
                 emailAddress: data["emailAddress"],
                 userName: data["userName"]));
+            print(_expensesList.length);
             notifyListeners();
           }
         }
@@ -71,14 +93,14 @@ class ExpenseRepo extends ChangeNotifier {
 
   Future<void> addExpense(
       {required String description, required String cost}) async {
-    if (groupsRepoState.getCurrentExpenseInstance() != null) {
+    if (_currentExpenseInstance != null) {
       _expenseService.addExpense(
           description: description,
           cost: cost,
-          currentUserName: appState.currentUserName,
-          currentUserGroup: appState.currentUserGroup,
-          currentUserEmail: appState.currentUserEmail,
-          currentExpenseInstance: groupsRepoState.getCurrentExpenseInstance()!);
+          currentUserName: appState!.currentUserName,
+          currentUserGroup: appState!.currentUserGroup,
+          currentUserEmail: appState!.currentUserEmail,
+          currentExpenseInstance: _currentExpenseInstance!);
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/dashboard_model.dart';
 import 'package:fraction/group_info/group_info_screen.dart';
+import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +28,13 @@ class _DashboardState extends State<Dashboard> {
                   onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const GroupInfo())),
+                          builder: (context) => ChangeNotifierProxyProvider<
+                                  ApplicationState, GroupInfoRepo?>(
+                              create: (context) => GroupInfoRepo(),
+                              update: (context, newAppState, groupRepoState) =>
+                                  groupRepoState
+                                    ?..udpate(newAppState: newAppState),
+                              child: const GroupInfo()))),
                   child: Container(
                     padding: const EdgeInsets.only(
                       top: 6.0,

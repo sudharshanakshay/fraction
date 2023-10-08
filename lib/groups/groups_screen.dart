@@ -60,7 +60,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
           child: Column(
             children: [
               // ---- (ui, home screen, expense grouplist) ----
-              Consumer<GroupsModel>(
+              Consumer<GroupsModel?>(
                 builder: (context, groupsRepoState, child) {
                   if (groupsRepoState != null) {
                     return ListView.builder(
@@ -96,15 +96,30 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => MultiProvider(
                                         providers: [
-                                          ChangeNotifierProvider(
+                                          ChangeNotifierProxyProvider<
+                                              ApplicationState, ExpenseRepo?>(
+                                            lazy: false,
                                             create: (_) => ExpenseRepo(
-                                                appState: appState,
-                                                groupsRepoState:
-                                                    groupsRepoState),
+                                                // appState: appState,
+                                                // groupsRepoState:
+                                                //     groupsRepoState
+                                                ),
+                                            update: (context, appState,
+                                                    expenseRepo) =>
+                                                expenseRepo
+                                                  ?..update(
+                                                      newAppState: appState,
+                                                      newGroupsRepoState:
+                                                          groupsRepoState),
                                           ),
-                                          ChangeNotifierProvider(
-                                              create: (_) => DashboardRepo(
-                                                  appState: appState)),
+                                          ChangeNotifierProxyProvider<
+                                              ApplicationState, DashboardRepo?>(
+                                            create: (_) => DashboardRepo(),
+                                            update: (context, newAppState,
+                                                    dashboardRepoState) =>
+                                                dashboardRepoState?.update(
+                                                    newAppState: newAppState),
+                                          ),
                                           ChangeNotifierProvider.value(
                                             value: groupsRepoState,
                                           )
@@ -119,7 +134,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                       },
                     );
                   }
-                  return Container();
+                  return Text('data is null');
                 },
               ),
               const SizedBox(
