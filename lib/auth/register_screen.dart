@@ -30,42 +30,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   build(context) {
     return Scaffold(
-      body: Form(
-        key: _registerInFormKey,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Row(),
-            const Text(
-              'Welcome to Fraction',
-              style: TextStyle(fontSize: 20),
-            ),
-            NameInputWidget(nameStringController: _nameStringController),
-            EmailInputWidget(emailStringController: _emailStringController),
-            PasswordInputWidget(passwordController: _passwordStringController),
-            FractionallySizedBox(
-              widthFactor: 0.8,
-              child: FilledButton(
+      body: SingleChildScrollView(
+        child: Form(
+          key: _registerInFormKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Row(),
+              const Text(
+                'Welcome to Fraction',
+                style: TextStyle(fontSize: 20),
+              ),
+              NameInputWidget(nameStringController: _nameStringController),
+              EmailInputWidget(emailStringController: _emailStringController),
+              PasswordInputWidget(
+                  passwordController: _passwordStringController),
+              FractionallySizedBox(
+                widthFactor: 0.8,
+                child: FilledButton(
+                    onPressed: () {
+                      if (_registerInFormKey.currentState!.validate()) {
+                        const snakBar =
+                            SnackBar(content: Text('registering ...'));
+                        ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                        _authServices.emailRegisterUser(
+                            _nameStringController.text,
+                            _emailStringController.text,
+                            _passwordStringController.text);
+                      }
+                    },
+                    child:
+                        const DetailAndIcon(Icons.navigate_next, 'Register')),
+              ),
+              const Text('or'),
+              TextButton(
                   onPressed: () {
-                    if (_registerInFormKey.currentState!.validate()) {
-                      const snakBar =
-                          SnackBar(content: Text('registering ...'));
-                      ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                      _authServices.emailRegisterUser(
-                          _nameStringController.text,
-                          _emailStringController.text,
-                          _passwordStringController.text);
-                    }
+                    Navigator.pushReplacementNamed(context, '/logIn');
                   },
-                  child: const DetailAndIcon(Icons.navigate_next, 'Register')),
-            ),
-            const Text('or'),
-            TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, '/logIn');
-                },
-                child: const Text('Log in')),
-          ],
+                  child: const Text('Log in')),
+            ],
+          ),
         ),
       ),
     );
