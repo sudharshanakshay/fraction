@@ -71,12 +71,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               // drawer: const FractionAppDrawer(),
               body: SingleChildScrollView(
                 child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     mainAxisSize: MainAxisSize.max,
                     children: [
-                      Dashboard(),
+                      const Dashboard(),
                       toggleAddExpense
                           ? Form(
                               key: _formKey,
@@ -192,8 +192,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                               ),
                             )
                           : Container(),
-                      ExpenseView(),
-                      SizedBox(
+                      const ExpenseView(),
+                      const SizedBox(
                         height: 80,
                       )
                     ],

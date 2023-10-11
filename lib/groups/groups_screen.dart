@@ -96,6 +96,9 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                   MaterialPageRoute(
                                     builder: (context) => MultiProvider(
                                         providers: [
+                                          ChangeNotifierProvider.value(
+                                            value: groupsRepoState,
+                                          ),
                                           ChangeNotifierProxyProvider<
                                               ApplicationState, ExpenseRepo?>(
                                             lazy: false,
@@ -121,9 +124,6 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                                   ?..update(
                                                       newAppState: newAppState),
                                           ),
-                                          ChangeNotifierProvider.value(
-                                            value: groupsRepoState,
-                                          )
                                         ],
                                         builder: (context, child) =>
                                             const ExpenseScreen(

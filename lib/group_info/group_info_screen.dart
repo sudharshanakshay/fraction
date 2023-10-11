@@ -55,20 +55,29 @@ class _GroupInfoState extends State<GroupInfo> {
           title: Text(
               Tools().sliptElements(element: appState.currentUserGroup)[0],
               style: const TextStyle(fontSize: 20)),
-          actions: const [
+          actions: [
             // ---- not application, since this data has been moved to 'members' collection. ----
 
-            // PopupMenuButton(
-            //     itemBuilder: (context) => [
-            //           PopupMenuItem(
-            //               child: const Text('Recalculate expenses'),
-            //               onTap: () => {}
-            //               // _groupServices.refreshMemberExpenses(
-            //               //     currentGroupName: appState.currentUserGroup,
-            //               //     currentExpenseInstance:
-            //               //         appState.currentExpenseInstance),
-            //               ),
-            //         ]),
+            PopupMenuButton(
+                itemBuilder: (context) => [
+                      PopupMenuItem(
+                          child: const Text('Recalculate expenses'),
+                          onTap: () => {
+                                // FirebaseFirestore.instance
+                                //     .collection('expense')
+                                //     .doc(
+                                //         'Buss pass one day%sudharshan6acharya@gmail.com%2023-08-18%07:22:04.459744')
+                                //     .collection('2023-08-18 07:22:04.459')
+                                //     .get()
+                                //     .then((value) {
+                                //   print(value.docs.length);
+                                //   for (var element in value.docs) {
+                                //     print(element);
+                                //   }
+                                // })
+                                _groupInfoRepoRef?.recalculateMemberExpenses()
+                              }),
+                    ]),
           ],
         ),
         body: Padding(

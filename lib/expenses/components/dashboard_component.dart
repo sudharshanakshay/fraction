@@ -23,63 +23,67 @@ class _DashboardState extends State<Dashboard> {
         if (dashboardRepoState != null) {
           return Consumer<ApplicationState>(
             builder: (context, appState, _) {
-              return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: GestureDetector(
-                    // onTap: () => Navigator.pushNamed(context, '/groupInfo'),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MultiProvider(
-                          providers: [
-                            // ChangeNotifierProvider.value(
-                            //     value: Provider.of<GroupsRepo>(context)),
-                            ChangeNotifierProxyProvider<GroupsRepo,
-                                GroupInfoRepo?>(
-                              create: (context) => GroupInfoRepo(),
-                              update: (context, newGroupsState,
-                                      groupRepoState) =>
-                                  groupRepoState
-                                    ?..udpate(newGroupsState: newGroupsState),
-                            ),
-                          ],
-                          builder: (context, child) => const GroupInfo(),
+              return Consumer<GroupsRepo>(
+                builder: (context, groupsRepoState, child) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    child: GestureDetector(
+                      // onTap: () => Navigator.pushNamed(context, '/groupInfo'),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MultiProvider(
+                            providers: [
+                              ChangeNotifierProvider.value(
+                                  value: groupsRepoState),
+                              // ChangeNotifierProvider.value(
+                              //     value: Provider.of<GroupsRepo>(context)),
+                              ChangeNotifierProxyProvider<GroupsRepo,
+                                  GroupInfoRepo?>(
+                                create: (context) => GroupInfoRepo(),
+                                update: (context, newGroupsState,
+                                        groupRepoState) =>
+                                    groupRepoState
+                                      ?..udpate(newGroupsState: newGroupsState),
+                              ),
+                            ],
+                            builder: (context, child) => const GroupInfo(),
+                          ),
                         ),
                       ),
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.only(
-                        top: 6.0,
-                        bottom: 2.0,
-                        right: 12,
-                        left: 12,
-                      ),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                            color: appState.toggleRandomDashboardColor
-                                ? getRandomColor()
-                                : Colors.blue.shade100,
-                          ),
-                          borderRadius: BorderRadius.circular(6)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // first column where
-                          // 1. TotalExpense &
-                          // 2. My Expense is displayed.
-                          dashboardExpenseDetail(
-                              dashboard: dashboardRepoState.dashboard),
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                          top: 6.0,
+                          bottom: 2.0,
+                          right: 12,
+                          left: 12,
+                        ),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 2,
+                              color: appState.toggleRandomDashboardColor
+                                  ? getRandomColor()
+                                  : Colors.blue.shade100,
+                            ),
+                            borderRadius: BorderRadius.circular(6)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            // first column where
+                            // 1. TotalExpense &
+                            // 2. My Expense is displayed.
+                            dashboardExpenseDetail(
+                                dashboard: dashboardRepoState.dashboard),
 
-                          // second column where
-                          // 1. nextClearOff data is displayed.
-                          dashboardInfo(
-                              dashboard: dashboardRepoState.dashboard),
-                        ],
+                            // second column where
+                            // 1. nextClearOff data is displayed.
+                            dashboardInfo(
+                                dashboard: dashboardRepoState.dashboard),
+                          ],
+                        ),
                       ),
-                    ),
-                  ));
+                    )),
+              );
             },
           );
         } else {
