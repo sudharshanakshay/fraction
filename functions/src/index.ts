@@ -61,7 +61,7 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
       // update 'group' collection's 'totalExpense' &
       // last expense for faster retrival.
       const updateGroupDocWith = {
-        "totalExpense": FieldValue.increment(expenseCost),
+        "totalExpense": FieldValue.increment(-expenseCost),
         "lastUpdatedDesc": "deleted",
         "lastUpdatedTime": Date.now(),
       };
