@@ -230,40 +230,42 @@ class GroupDatabase extends DatabaseUtils {
   //   // _firebaseFirestoreRef.collection(groupCollectionName)
   // }
 
-  Future<void> clearOff(
-      {required String groupName, required DateTime nextClearOffDate}) async {
-    final Map<String, dynamic> groupMembers = {};
+// -- this function is moved to group_info_services --
 
-    await _firebaseFirestoreRef
-        .collection(groupCollectionName)
-        .doc(groupName)
-        .get()
-        .then((DocumentSnapshot doc) {
-      if (doc.exists) {
-        final groupDetails = doc.data() as Map<String, dynamic>;
-        final memberDetails =
-            groupDetails['groupMembers'] as Map<String, dynamic>;
-        memberDetails.forEach((key, value) {
-          final Map<String, dynamic> groupMember = {
-            key: {'totalExpense': 0}
-          };
-          groupMembers.addAll(groupMember);
-        });
-      }
-    });
+//   Future<void> clearOff(
+//       {required String groupName, required DateTime nextClearOffDate}) async {
+//     final Map<String, dynamic> groupMembers = {};
 
-    final data = {
-      'expenseInstance': DateTime.now(),
-      'groupMembers': groupMembers,
-      'totalExpense': 0,
-      'nextClearOffTimeStamp': nextClearOffDate
-    };
+//     await _firebaseFirestoreRef
+//         .collection(groupCollectionName)
+//         .doc(groupName)
+//         .get()
+//         .then((DocumentSnapshot doc) {
+//       if (doc.exists) {
+//         final groupDetails = doc.data() as Map<String, dynamic>;
+//         final memberDetails =
+//             groupDetails['groupMembers'] as Map<String, dynamic>;
+//         memberDetails.forEach((key, value) {
+//           final Map<String, dynamic> groupMember = {
+//             key: {'totalExpense': 0}
+//           };
+//           groupMembers.addAll(groupMember);
+//         });
+//       }
+//     });
 
-    // print(data);
+//     final data = {
+//       'expenseInstance': DateTime.now(),
+//       'groupMembers': groupMembers,
+//       'totalExpense': 0,
+//       'nextClearOffTimeStamp': nextClearOffDate
+//     };
 
-    _firebaseFirestoreRef
-        .collection(groupCollectionName)
-        .doc(groupName)
-        .set(data, SetOptions(merge: true));
-  }
+//     // print(data);
+
+//     _firebaseFirestoreRef
+//         .collection(groupCollectionName)
+//         .doc(groupName)
+//         .set(data, SetOptions(merge: true));
+//   }
 }

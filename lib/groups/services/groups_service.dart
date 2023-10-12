@@ -136,26 +136,26 @@ class GroupServices {
     }
   }
 
-  Future<void> clearOff(
-      {required DateTime nextClearOffDate,
-      required String currentUserGroup}) async {
-    try {
-      _groupDatabaseRef
-          .clearOff(
-              groupName: currentUserGroup, nextClearOffDate: nextClearOffDate)
-          .whenComplete(() async {
-        // await super.initGroupAndExpenseInstances().whenComplete(() {
-        //   if (kDebugMode) {
-        //     // print(super.currentExpenseInstance.toDate().toString());
-        //   }
-        // });
-      });
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
+  // Future<void> clearOff(
+  //     {required DateTime nextClearOffDate,
+  //     required String currentUserGroup}) async {
+  //   try {
+  //     _groupDatabaseRef
+  //         .clearOff(
+  //             groupName: currentUserGroup, nextClearOffDate: nextClearOffDate)
+  //         .whenComplete(() async {
+  //       // await super.initGroupAndExpenseInstances().whenComplete(() {
+  //       //   if (kDebugMode) {
+  //       //     // print(super.currentExpenseInstance.toDate().toString());
+  //       //   }
+  //       // });
+  //     });
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //   }
+  // }
 
   // ---- not application, since this data has been moved to 'members' collection. ----
 

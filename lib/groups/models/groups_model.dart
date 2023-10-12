@@ -78,7 +78,7 @@ class GroupsRepo extends ChangeNotifier {
           (groupMembersEvent) {
             _expenseGroupsList.clear();
             _groupsAndExpenseInstances.clear();
-            GroupsRepoModel _expenseGroup;
+            GroupsRepoModel expenseGroup;
             for (var element in groupMembersEvent.docs) {
               // ---- query to fetch expenseGroup name from group collection ----
               firebaseFirestore
@@ -90,7 +90,7 @@ class GroupsRepo extends ChangeNotifier {
                   // ---- this data is display in the frontend ----
 
                   try {
-                    _expenseGroup = GroupsRepoModel(
+                    expenseGroup = GroupsRepoModel(
                         groupName: groupEvent.data()!['groupName'],
                         groupId: element.data()["groupId"],
                         lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
@@ -99,7 +99,7 @@ class GroupsRepo extends ChangeNotifier {
                     // _expenseGroupsList.add();
                     // notifyListeners();
                   } catch (e) {
-                    _expenseGroup = GroupsRepoModel(
+                    expenseGroup = GroupsRepoModel(
                         groupName: groupEvent.data()!['groupName'],
                         groupId: element.data()["groupId"],
                         lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
@@ -113,16 +113,16 @@ class GroupsRepo extends ChangeNotifier {
                   // check if the expense group already present in the list.
                   int indexOfExistingExpenseGroup =
                       _expenseGroupsList.indexWhere((thisExpenseGroup) =>
-                          thisExpenseGroup.groupId == _expenseGroup.groupId);
+                          thisExpenseGroup.groupId == expenseGroup.groupId);
 
                   if (indexOfExistingExpenseGroup != -1) {
                     if (kDebugMode) {
                       print('contains this obj in expense groups');
                     }
                     _expenseGroupsList.removeAt(indexOfExistingExpenseGroup);
-                    _expenseGroupsList.add(_expenseGroup);
+                    _expenseGroupsList.add(expenseGroup);
                   } else {
-                    _expenseGroupsList.add(_expenseGroup);
+                    _expenseGroupsList.add(expenseGroup);
                   }
 
                   // ---- collection of instances of expenseGroups ----

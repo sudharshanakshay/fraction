@@ -203,10 +203,10 @@ class GroupInfoRepo extends ChangeNotifier {
   // }
 
   Future<void> clearOff({required DateTime nextClearOffDate}) async {
-    final Map<String, dynamic> groupMembers = {};
-
     if (groupsRepoState != null && groupsRepoState!.currentUserGroup != '') {
-      FirebaseFirestore.instance
+      FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+      final Map<String, dynamic> groupMembers = {};
+      firebaseFirestore
           .collection('group')
           .doc(groupsRepoState!.currentUserGroup)
           .get()
@@ -223,21 +223,32 @@ class GroupInfoRepo extends ChangeNotifier {
           });
         }
       });
+
+      final data = {
+        'expenseInstance': DateTime.now(),
+        'groupMembers': groupMembers,
+        'totalExpense': 0,
+        'nextClearOffTimeStamp': nextClearOffDate
+      };
+
+      // print(data);
+
+      firebaseFirestore
+          .collection('group')
+          .doc(groupsRepoState!.currentUserGroup)
+          .set(data, SetOptions(merge: true));
+
+      firebaseFirestore
+          .collection('group')
+          .doc(groupsRepoState!.currentUserGroup)
+          .collection('members')
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          element.reference.update({'memberExpense': 0});
+        }
+      });
     }
-
-    final data = {
-      'expenseInstance': DateTime.now(),
-      'groupMembers': groupMembers,
-      'totalExpense': 0,
-      'nextClearOffTimeStamp': nextClearOffDate
-    };
-
-    // print(data);
-
-    FirebaseFirestore.instance
-        .collection('group')
-        .doc(groupsRepoState!.currentUserGroup)
-        .set(data, SetOptions(merge: true));
   }
 
   exitGroup() {
