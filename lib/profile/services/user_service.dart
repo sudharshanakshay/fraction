@@ -38,11 +38,10 @@ class UserServices {
       required String currentUserGroup,
       required ApplicationState appState}) async {
     try {
-      _userDatabaseRef
-          .exitGroup(
-              currentUserEmail: currentUserEmail,
-              currentUserGroup: currentUserGroup)
-          .whenComplete(() => appState.initCurrentUserGroup(bypassState: true));
+      _userDatabaseRef.exitGroup(
+          currentUserEmail: currentUserEmail,
+          currentUserGroup: currentUserGroup);
+      // .whenComplete(() => appState.initCurrentUserGroup(bypassState: true));
     } catch (e) {
       if (kDebugMode) {
         print(e);

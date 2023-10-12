@@ -26,7 +26,12 @@ class GroupsRepo extends ChangeNotifier {
   Map<String, Timestamp> get groupsAndExpenseInstances =>
       _groupsAndExpenseInstances;
 
-  Timestamp? currentExpenseInstance;
+  String currentUserGroup = '';
+
+  Timestamp? get currentExpenseInstance =>
+      _groupsAndExpenseInstances[currentUserGroup];
+
+  // Timestamp? currentExpenseInstance;
   // Timestamp? getCurrentExpenseInstance() => appState == null
   //     ? null
   //     : _groupsAndExpenseInstances[appState?.currentUserGroup];
@@ -40,63 +45,105 @@ class GroupsRepo extends ChangeNotifier {
   //   }
   // }
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
   updateState({ApplicationState? newAppState}) {
     appState = newAppState;
-    print('app is not null');
     initializeGroupRepo();
   }
 
   initializeGroupRepo() {
     // ---- query to fetch expenseGroup of currentUser from groupMembers collection ----
     // ---- groupMembers collection stored the many-to-many relation users & expensegroups ----
-    if (appState != null) {
-      firebaseFirestore
-          .collection('groupMembers')
-          .where('userId', isEqualTo: appState!.currentUserEmail)
-          .snapshots()
-          .listen((groupMembersEvent) {
-        _expenseGroupsList.clear();
-        _groupsAndExpenseInstances.clear();
-        for (var element in groupMembersEvent.docs) {
-          // ---- query to fetch expenseGroup name from group collection ----
-          firebaseFirestore
-              .collection("group")
-              .doc(element.data()["groupId"])
-              .snapshots()
-              .listen((groupEvent) {
-            if (groupEvent.exists) {
-              // ---- this data is display in the frontend ----
-              try {
-                _expenseGroupsList.add(GroupsRepoModel(
-                    groupName: groupEvent.data()!['groupName'],
-                    groupId: element.data()["groupId"],
-                    lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
-                    lastUpdatedTime: DateTime.fromMillisecondsSinceEpoch(
-                        groupEvent.data()!["lastUpdatedTime"])));
-                // notifyListeners();
-              } catch (e) {
-                _expenseGroupsList.add(GroupsRepoModel(
-                    groupName: groupEvent.data()!['groupName'],
-                    groupId: element.data()["groupId"],
-                    lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
-                    lastUpdatedTime:
-                        groupEvent.data()!["lastUpdatedTime"].toDate()));
-                // notifyListeners();
-              }
-              // ---- collection of instances of expenseGroups ----
-              _groupsAndExpenseInstances.addAll({
-                element.data()["groupId"]: groupEvent.data()!['expenseInstance']
+    try {
+      if (appState != null) {
+        firebaseFirestore
+            .collection('groupMembers')
+            .where('userId', isEqualTo: appState!.currentUserEmail)
+            .snapshots()
+            .listen(
+          (groupMembersEvent) {
+            _expenseGroupsList.clear();
+            _groupsAndExpenseInstances.clear();
+            GroupsRepoModel _expenseGroup;
+            for (var element in groupMembersEvent.docs) {
+              // ---- query to fetch expenseGroup name from group collection ----
+              firebaseFirestore
+                  .collection("group")
+                  .doc(element.data()["groupId"])
+                  .snapshots()
+                  .listen((groupEvent) {
+                if (groupEvent.exists) {
+                  // ---- this data is display in the frontend ----
+
+                  try {
+                    _expenseGroup = GroupsRepoModel(
+                        groupName: groupEvent.data()!['groupName'],
+                        groupId: element.data()["groupId"],
+                        lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
+                        lastUpdatedTime: DateTime.fromMillisecondsSinceEpoch(
+                            groupEvent.data()!["lastUpdatedTime"]));
+                    // _expenseGroupsList.add();
+                    // notifyListeners();
+                  } catch (e) {
+                    _expenseGroup = GroupsRepoModel(
+                        groupName: groupEvent.data()!['groupName'],
+                        groupId: element.data()["groupId"],
+                        lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
+                        lastUpdatedTime:
+                            groupEvent.data()!["lastUpdatedTime"].toDate());
+
+                    // _expenseGroupsList.add();
+                    // notifyListeners();
+                  }
+
+                  if (_expenseGroupsList.contains(_expenseGroup)) {
+                    print('contains this obj in expense groups');
+                  } else {
+                    _expenseGroupsList.add(_expenseGroup);
+                  }
+
+                  // ---- collection of instances of expenseGroups ----
+                  _groupsAndExpenseInstances.addAll({
+                    element.data()["groupId"]:
+                        groupEvent.data()!['expenseInstance']
+                  });
+
+                  _expenseGroupsList.sort((a, b) =>
+                      a.lastUpdatedTime.isAfter(b.lastUpdatedTime) ? -1 : 1);
+                  notifyListeners();
+                }
               });
 
-              _expenseGroupsList.sort((a, b) =>
-                  a.lastUpdatedTime.isAfter(b.lastUpdatedTime) ? -1 : 1);
-              // print(_expenseGroupsList);
-              notifyListeners();
+              // .onData((data) {
+              //   print(data.data());
+              // });
             }
-          });
-        }
-        print('for loop done');
-      });
+          },
+        );
+        // .onData((data) {
+        //   print('number of expense groups');
+        //   print(data.docs.length);
+        // });
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print('exception at groups_model.dart');
+        print(e);
+      }
     }
     // .onData((data) {
     //   print(data);

@@ -44,9 +44,9 @@ class GroupServices {
           //         currentUserEmail: currentUserEmail,
           //         groupNameToAdd: groupNameCreatedWithIdentity)
           .then((String groupNameCreatedWithIdentity) {
-        if (applicationState != null) {
-          applicationState.refreshGroupNamesAndExpenseInstances();
-        }
+        // if (applicationState != null) {
+        //   applicationState.refreshGroupNamesAndExpenseInstances();
+        // }
         // });
         return groupNameCreatedWithIdentity;
       });
@@ -78,7 +78,7 @@ class GroupServices {
                   groupNameToAdd: groupName.trim())
               .whenComplete(() {
             if (applicationState != null) {
-              applicationState.refreshGroupNamesAndExpenseInstances();
+              // applicationState.refreshGroupNamesAndExpenseInstances();
               _notificationDatabaseRef.deleteNotification(docId: docId);
             }
           });

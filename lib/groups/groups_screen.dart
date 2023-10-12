@@ -24,6 +24,8 @@ class _GroupsScreenState extends State<GroupsScreen> {
     super.initState();
   }
 
+  static int buildTimes = 1;
+
   TextStyle titleListTileStyle =
       TextStyle(fontSize: 16, color: Colors.grey.shade800);
 
@@ -62,6 +64,8 @@ class _GroupsScreenState extends State<GroupsScreen> {
               // ---- (ui, home screen, expense grouplist) ----
               Consumer<GroupsRepo?>(
                 builder: (context, groupsRepoState, child) {
+                  print('buildTimes++');
+                  print(buildTimes++);
                   if (groupsRepoState != null) {
                     return ListView.builder(
                       shrinkWrap: true,
@@ -87,9 +91,11 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                     .toString(),
                                 style: trailingListTileStyle),
                             onTap: () {
-                              appState.setCurrentUserGroup(
-                                  currentUserGroup: groupsRepoState
-                                      .expenseGroupList[index].groupId);
+                              groupsRepoState.currentUserGroup = groupsRepoState
+                                  .expenseGroupList[index].groupId;
+                              // appState.setCurrentUserGroup(
+                              //     currentUserGroup: groupsRepoState
+                              //         .expenseGroupList[index].groupId);
 
                               Navigator.push(
                                   context,
@@ -116,13 +122,15 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                                           groupsRepoState),
                                           ),
                                           ChangeNotifierProxyProvider<
-                                              ApplicationState, DashboardRepo?>(
+                                              GroupsRepo, DashboardRepo?>(
                                             create: (_) => DashboardRepo(),
-                                            update: (context, newAppState,
+                                            update: (context,
+                                                    newGroupsRepoState,
                                                     dashboardRepoState) =>
                                                 dashboardRepoState
                                                   ?..update(
-                                                      newAppState: newAppState),
+                                                      newGroupsRepoState:
+                                                          newGroupsRepoState),
                                           ),
                                         ],
                                         builder: (context, child) =>

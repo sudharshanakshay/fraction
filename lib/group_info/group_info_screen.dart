@@ -3,8 +3,9 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/group_info/components/members_detail_component.dart';
 import 'package:fraction/group_info/models/group_info_model.dart';
+import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/notification/models/notification.dart';
-import 'package:fraction/groups/services/groups_service.dart';
+// import 'package:fraction/groups/services/groups_service.dart';
 // import 'package:fraction/profile/services/user_service.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:fraction/utils/tools.dart';
@@ -19,7 +20,7 @@ class GroupInfo extends StatefulWidget {
 }
 
 class _GroupInfoState extends State<GroupInfo> {
-  late GroupServices _groupServices;
+  // late GroupServices _groupServices;
   // late UserServices _userServices;
   final String clearOffIconPath = 'assets/icons/ClearOffIcon.svg';
   late DateTime next30day;
@@ -28,14 +29,16 @@ class _GroupInfoState extends State<GroupInfo> {
 
   late NotificationRepo _notificationRepoRef;
   late GroupInfoRepo? _groupInfoRepoRef;
+  late GroupsRepo? _groupsRepo;
 
   @override
   void initState() {
-    _groupServices = GroupServices();
+    // _groupServices = GroupServices();
     // _userServices = UserServices();
     _notificationRepoRef =
         Provider.of<NotificationRepo>(context, listen: false);
     _groupInfoRepoRef = Provider.of<GroupInfoRepo?>(context, listen: false);
+    _groupsRepo = Provider.of<GroupsRepo?>(context, listen: false);
     _memberEmailController = TextEditingController();
     super.initState();
   }
@@ -53,7 +56,8 @@ class _GroupInfoState extends State<GroupInfo> {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: Text(
-              Tools().sliptElements(element: appState.currentUserGroup)[0],
+              Tools().sliptElements(
+                  element: _groupsRepo?.currentUserGroup ?? 'Fraction')[0],
               style: const TextStyle(fontSize: 20)),
           actions: [
             // ---- not application, since this data has been moved to 'members' collection. ----
@@ -124,13 +128,14 @@ class _GroupInfoState extends State<GroupInfo> {
                             await confirmClearOff().then((value) async {
                               if (value != Constants().cancel &&
                                   value != null) {
-                                _groupServices
-                                    .clearOff(
-                                        nextClearOffDate: value as DateTime,
-                                        currentUserGroup:
-                                            appState.currentUserGroup)
-                                    .whenComplete(() => appState
-                                        .refreshGroupNamesAndExpenseInstances());
+                                _groupInfoRepoRef?.clearOff(
+                                    nextClearOffDate: value as DateTime);
+                                // _groupServices.clearOff(
+                                //     nextClearOffDate: value as DateTime,
+                                //     currentUserGroup:
+                                //         appState.currentUserGroup);
+                                // .whenComplete(() => appState
+                                //     .refreshGroupNamesAndExpenseInstances());
                               }
                             });
                           }),

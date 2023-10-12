@@ -157,8 +157,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                                   applicationState: appState)
                               .then((String result) {
                             if (result != Constants().failed) {
-                              appState.setCurrentUserGroup(
-                                  currentUserGroup: result);
+                              // appState.setCurrentUserGroup(
+                              //     currentUserGroup: result);
                               Navigator.pop(context);
                             }
                           });

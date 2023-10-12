@@ -20,16 +20,31 @@ class GroupInfoRepo extends ChangeNotifier {
   //   _currentGroupDbRef = ;
   // }
 
+  bool _disposed = false;
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (!_disposed) {
+      super.notifyListeners();
+    }
+  }
+
   udpate({required GroupsRepo newGroupsState}) {
     groupsRepoState = newGroupsState;
     _initGroupInfoRepo();
   }
 
   _initGroupInfoRepo() {
-    if (groupsRepoState!.appState != null) {
+    if (groupsRepoState != null) {
       FirebaseFirestore.instance
           .collection('group')
-          .doc(groupsRepoState!.appState!.currentUserGroup)
+          .doc(groupsRepoState!.currentUserGroup)
           .collection('members')
           .snapshots()
           .listen((event) {})
@@ -39,7 +54,7 @@ class GroupInfoRepo extends ChangeNotifier {
           // to avail changes from previous app version.
           FirebaseFirestore.instance
               .collection('group')
-              .doc(groupsRepoState!.appState!.currentUserGroup)
+              .doc(groupsRepoState!.currentUserGroup)
               .get()
               .then((value) {
             if (value.exists) {
@@ -49,7 +64,7 @@ class GroupInfoRepo extends ChangeNotifier {
                 print(value);
                 FirebaseFirestore.instance
                     .collection('group')
-                    .doc(groupsRepoState!.appState!.currentUserGroup)
+                    .doc(groupsRepoState!.currentUserGroup)
                     .collection('members')
                     .doc(value['memberEmail'])
                     .set({
@@ -87,19 +102,19 @@ class GroupInfoRepo extends ChangeNotifier {
     print('recalculate ..');
     if (groupsRepoState != null && groupsRepoState!.appState != null) {
       print('init success');
-      print(groupsRepoState!.appState!.currentUserGroup);
-      print(groupsRepoState!.groupsAndExpenseInstances[
-              groupsRepoState!.appState!.currentUserGroup]
+      print(groupsRepoState!.currentUserGroup);
+      print(groupsRepoState!
+          .groupsAndExpenseInstances[groupsRepoState!.currentUserGroup]
           ?.toDate()
           .toString());
       FirebaseFirestore.instance
           .collection('expense')
-          .doc(groupsRepoState!.appState!.currentUserGroup)
+          .doc(groupsRepoState!.currentUserGroup)
           // .doc(
           //     'Buss pass one day%sudharshan6acharya@gmail.com%2023-08-18%07:22:04.459744')
           // .collection('2023-08-18 07:22:04.459')
-          .collection(groupsRepoState!.groupsAndExpenseInstances[
-                  groupsRepoState!.appState!.currentUserGroup]!
+          .collection(groupsRepoState!
+              .groupsAndExpenseInstances[groupsRepoState!.currentUserGroup]!
               .toDate()
               .toString())
           .get()
@@ -127,11 +142,11 @@ class GroupInfoRepo extends ChangeNotifier {
 
           firebaseFirestore
               .collection('group')
-              .doc(groupsRepoState!.appState!.currentUserGroup)
+              .doc(groupsRepoState!.currentUserGroup)
               .update(data);
           firebaseFirestore
               .collection('group')
-              .doc(groupsRepoState!.appState!.currentUserGroup)
+              .doc(groupsRepoState!.currentUserGroup)
               .collection('members')
               .doc(key)
               .update({'memberExpense': value});
@@ -139,7 +154,7 @@ class GroupInfoRepo extends ChangeNotifier {
 
         firebaseFirestore
             .collection('group')
-            .doc(groupsRepoState!.appState!.currentUserGroup)
+            .doc(groupsRepoState!.currentUserGroup)
             .update({'totalExpense': totalGroupExpense});
 
         print(totalGroupExpense);
@@ -187,14 +202,51 @@ class GroupInfoRepo extends ChangeNotifier {
   //   print(totalGroupExpense);
   // }
 
+  Future<void> clearOff({required DateTime nextClearOffDate}) async {
+    final Map<String, dynamic> groupMembers = {};
+
+    if (groupsRepoState != null && groupsRepoState!.currentUserGroup != '') {
+      FirebaseFirestore.instance
+          .collection('group')
+          .doc(groupsRepoState!.currentUserGroup)
+          .get()
+          .then((DocumentSnapshot doc) {
+        if (doc.exists) {
+          final groupDetails = doc.data() as Map<String, dynamic>;
+          final memberDetails =
+              groupDetails['groupMembers'] as Map<String, dynamic>;
+          memberDetails.forEach((key, value) {
+            final Map<String, dynamic> groupMember = {
+              key: {'totalExpense': 0}
+            };
+            groupMembers.addAll(groupMember);
+          });
+        }
+      });
+    }
+
+    final data = {
+      'expenseInstance': DateTime.now(),
+      'groupMembers': groupMembers,
+      'totalExpense': 0,
+      'nextClearOffTimeStamp': nextClearOffDate
+    };
+
+    // print(data);
+
+    FirebaseFirestore.instance
+        .collection('group')
+        .doc(groupsRepoState!.currentUserGroup)
+        .set(data, SetOptions(merge: true));
+  }
+
   exitGroup() {
     if (groupsRepoState != null && groupsRepoState!.appState != null) {
       FirebaseFirestore.instance
           .collection('groupMembers')
           .where('userId',
               isEqualTo: groupsRepoState!.appState!.currentUserEmail)
-          .where('groupId',
-              isEqualTo: groupsRepoState!.appState!.currentUserGroup)
+          .where('groupId', isEqualTo: groupsRepoState!.currentUserGroup)
           .get()
           .then((value) {
         for (var element in value.docs) {

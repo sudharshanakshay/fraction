@@ -3,7 +3,6 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
 import 'package:fraction/expenses/widgets/expense_tile.dart';
 import 'package:fraction/expenses/widgets/expense_tile_shadow.dart';
-import 'package:fraction/expenses/services/expenses_service.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -15,13 +14,13 @@ class ExpenseView extends StatefulWidget {
 }
 
 class _ExpenseViewState extends State<ExpenseView> {
-  late ExpenseService _expenseService;
+  // late ExpenseService _expenseService;
   late String _expenseTime;
   late String _today;
 
   @override
   void initState() {
-    _expenseService = ExpenseService();
+    // _expenseService = ExpenseService();
     _expenseTime = '';
     _today = DateFormat.MMMMEEEEd().format(DateTime.now()).toString();
     super.initState();
@@ -107,7 +106,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                           currentUserEmail: appState.currentUserEmail,
                           expenseDocId: expenses.expenseList[index].docId,
                           currentUserName: expenses.expenseList[index].userName,
-                          expenseServiceState: _expenseService,
+                          // expenseServiceState: _expenseService,
                           // expenseDoc: snapshot.data!.docs[index],
                           appState: appState,
                           cost: expenses.expenseList[index].cost,
@@ -116,6 +115,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                               expenses.expenseList[index].emailAddress,
                           tags: [],
                           timeStamp: expenses.expenseList[index].timeStamp,
+                          expenseRepoState: expenses,
                         ),
                       )
                     ],
@@ -127,7 +127,8 @@ class _ExpenseViewState extends State<ExpenseView> {
                   currentUserEmail: appState.currentUserEmail,
                   expenseDocId: expenses.expenseList[index].docId,
                   currentUserName: expenses.expenseList[index].userName,
-                  expenseServiceState: _expenseService,
+                  // expenseServiceState: _expenseService,
+                  expenseRepoState: expenses,
                   // expenseDoc: snapshot.data!.docs[index],
                   appState: appState,
                   cost: expenses.expenseList[index].cost,

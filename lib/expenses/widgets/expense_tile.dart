@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
-import 'package:fraction/expenses/services/expenses_service.dart';
+import 'package:fraction/expenses/models/expense_model.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:intl/intl.dart';
 
@@ -11,7 +11,8 @@ class ExpenseListTile extends StatefulWidget {
       required this.expenseDocId,
       required this.currentUserName,
       required this.currentUserEmail,
-      required this.expenseServiceState,
+      // required this.expenseServiceState,
+      required this.expenseRepoState,
       required this.appState,
       required this.emailAddress,
       required this.description,
@@ -23,7 +24,8 @@ class ExpenseListTile extends StatefulWidget {
   final String expenseDocId;
   final String currentUserName;
   final String currentUserEmail;
-  final ExpenseService expenseServiceState;
+  // final ExpenseService expenseServiceState;
+  final ExpenseRepo expenseRepoState;
   final ApplicationState appState;
   final String emailAddress;
   final String description;
@@ -185,19 +187,26 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                       const snakBar =
                           SnackBar(content: Text('updating expense ...'));
                       ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                      widget.expenseServiceState
+                      // widget.expenseServiceState
+                      //     .updateExpense(
+                      //         docId: widget.expenseDocId,
+                      //         updatedDescription:
+                      //             _descriptionTextController.text,
+                      //         updatedCost: _costTextController.text,
+                      //         previousCost: int.parse(widget.cost),
+                      //         currentUserEmail:
+                      //             widget.appState.currentUserEmail,
+                      //         currentUserGroup:
+                      //             widget.appState.currentUserGroup,
+                      //         currentExpenseInstance:
+                      //             widget.appState.currentExpenseInstance)
+                      //     .whenComplete(() => Navigator.pop(context));
+                      widget.expenseRepoState
                           .updateExpense(
                               docId: widget.expenseDocId,
                               updatedDescription:
                                   _descriptionTextController.text,
-                              updatedCost: _costTextController.text,
-                              previousCost: int.parse(widget.cost),
-                              currentUserEmail:
-                                  widget.appState.currentUserEmail,
-                              currentUserGroup:
-                                  widget.appState.currentUserGroup,
-                              currentExpenseInstance:
-                                  widget.appState.currentExpenseInstance)
+                              updatedCost: _costTextController.text)
                           .whenComplete(() => Navigator.pop(context));
                     },
                     child: const Text('update')),
@@ -212,16 +221,19 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                   onPressed: () async {
                     await confirmDeleteExpense().then((msg) {
                       if (msg == 'OK') {
-                        widget.expenseServiceState
-                            .deleteExpense(
-                                expenseDocId: widget.expenseDocId,
-                                emailAddress: widget.emailAddress,
-                                currentUserEmail:
-                                    widget.appState.currentUserEmail,
-                                currentUserGroup:
-                                    widget.appState.currentUserGroup,
-                                currentExpenseInstance:
-                                    widget.appState.currentExpenseInstance)
+                        // widget.expenseServiceState
+                        //     .deleteExpense(
+                        //         expenseDocId: widget.expenseDocId,
+                        //         emailAddress: widget.emailAddress,
+                        //         currentUserEmail:
+                        //             widget.appState.currentUserEmail,
+                        //         currentUserGroup:
+                        //             widget.appState.currentUserGroup,
+                        //         currentExpenseInstance:
+                        //             widget.appState.currentExpenseInstance)
+                        //     .whenComplete(() => Navigator.pop(context));
+                        widget.expenseRepoState
+                            .deleteExpense(docId: widget.expenseDocId)
                             .whenComplete(() => Navigator.pop(context));
                       }
                     });

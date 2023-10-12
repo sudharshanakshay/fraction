@@ -9,7 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 class ApplicationState extends ChangeNotifier {
-  final String _currentUserGroupName = 'currentUserGroupName';
+  // final String _currentUserGroupName = 'currentUserGroupName';
   final String _settingsUseRandomDashboardColorName = 's-drc';
 
   late FirebaseFirestore _firebaseFirestoreRef;
@@ -45,15 +45,15 @@ class ApplicationState extends ChangeNotifier {
   String _currentUserEmail = '';
   String get currentUserEmail => _currentUserEmail;
 
-  String _currentUserGroup = '';
-  String get currentUserGroup => _currentUserGroup;
+  // String _currentUserGroup = '';
+  // String get currentUserGroup => _currentUserGroup;
 
   final Map<String, Timestamp> _groupsAndExpenseInstances = {};
   Map<String, Timestamp> get groupAndExpenseInstances =>
       _groupsAndExpenseInstances;
 
-  Timestamp get currentExpenseInstance =>
-      _groupsAndExpenseInstances[_currentUserGroup]!;
+  // Timestamp get currentExpenseInstance =>
+  //     _groupsAndExpenseInstances[_currentUserGroup]!;
 
   bool _toggleRandomDashboardColor = false;
   get toggleRandomDashboardColor => _toggleRandomDashboardColor;
@@ -174,41 +174,41 @@ class ApplicationState extends ChangeNotifier {
         // });
 
         // ---- set currentGroupNme ----
-        if (prefs.getString(_currentUserGroupName) != null &&
-            prefs.getString(_currentUserGroupName)!.isNotEmpty) {
-          if (kDebugMode) {
-            print('prefs : currentUserGroup is neither null or empty');
-            print(prefs.getString(_currentUserGroupName));
-          }
+        // if (prefs.getString(_currentUserGroupName) != null &&
+        //     prefs.getString(_currentUserGroupName)!.isNotEmpty) {
+        //   if (kDebugMode) {
+        //     print('prefs : currentUserGroup is neither null or empty');
+        //     print(prefs.getString(_currentUserGroupName));
+        //   }
 
-          _currentUserGroup = prefs.getString(_currentUserGroupName)!;
-          // notifyListeners();
-        } else {
-          if (kDebugMode) {
-            print('prefs : currentUserGroup is either null or empty');
-          }
-          _firebaseFirestoreRef
-              .collection(_userCollectionName)
-              .doc(currentUserEmail)
-              .get()
-              .then((DocumentSnapshot doc) {
-            final profileInfo = doc.data() as Map<String, dynamic>;
-            _currentUserName = profileInfo['userName'];
-            final groupInfo = profileInfo['groupNames'] as List;
-            if (groupInfo.isNotEmpty) {
-              prefs.setString(_currentUserGroupName, groupInfo[0]);
-              _currentUserGroup = groupInfo[0];
-              notifyListeners();
-            } else {
-              _hasOneGroup = false;
-              notifyListeners();
-            }
-          });
+        //   _currentUserGroup = prefs.getString(_currentUserGroupName)!;
+        //   // notifyListeners();
+        // } else {
+        //   if (kDebugMode) {
+        //     print('prefs : currentUserGroup is either null or empty');
+        //   }
+        //   _firebaseFirestoreRef
+        //       .collection(_userCollectionName)
+        //       .doc(currentUserEmail)
+        //       .get()
+        //       .then((DocumentSnapshot doc) {
+        //     final profileInfo = doc.data() as Map<String, dynamic>;
+        //     _currentUserName = profileInfo['userName'];
+        //     final groupInfo = profileInfo['groupNames'] as List;
+        //     if (groupInfo.isNotEmpty) {
+        //       prefs.setString(_currentUserGroupName, groupInfo[0]);
+        //       _currentUserGroup = groupInfo[0];
+        //       notifyListeners();
+        //     } else {
+        //       _hasOneGroup = false;
+        //       notifyListeners();
+        //     }
+        //   });
 
-          if (kDebugMode) {
-            print(_currentUserGroup);
-          }
-        }
+        //   if (kDebugMode) {
+        //     print(_currentUserGroup);
+        //   }
+        // }
 
         if (prefs.getBool(_settingsUseRandomDashboardColorName) != null) {
           _toggleRandomDashboardColor =
@@ -218,7 +218,7 @@ class ApplicationState extends ChangeNotifier {
         _loggedIn = false;
       }
       if (kDebugMode) {
-        print('currentUserGroup : $_currentUserGroup');
+        // print('currentUserGroup : $_currentUserGroup');
         print('currentUserName : $_currentUserName');
         print('currentUserEmail : $_currentUserEmail');
       }
@@ -249,10 +249,10 @@ class ApplicationState extends ChangeNotifier {
     }
   }
 
-  Future<void> refreshGroupNamesAndExpenseInstances() async {
-    await setGroupAndExpenseInstances()
-        .whenComplete(() async => await initCurrentUserGroup());
-  }
+  // Future<void> refreshGroupNamesAndExpenseInstances() async {
+  //   await setGroupAndExpenseInstances()
+  //       .whenComplete(() async => await initCurrentUserGroup());
+  // }
 
   Future<void> setGroupAndExpenseInstances() async {
     // ---- set current user group instances ----
@@ -300,49 +300,49 @@ class ApplicationState extends ChangeNotifier {
   }
 
   // ---- set currentUserGroup ----
-  Future<void> initCurrentUserGroup({bypassState = false}) async {
-    // ---- set currentGroupNme ----
-    if (bypassState || _currentUserGroup.isEmpty) {
-      final prefs = await SharedPreferences.getInstance();
+  // Future<void> initCurrentUserGroup({bypassState = false}) async {
+  //   // ---- set currentGroupNme ----
+  //   if (bypassState || _currentUserGroup.isEmpty) {
+  //     final prefs = await SharedPreferences.getInstance();
 
-      if (!bypassState &&
-          prefs.getString(_currentUserGroupName) != null &&
-          prefs.getString(_currentUserGroupName)!.isNotEmpty) {
-        final prefs = await SharedPreferences.getInstance();
+  //     if (!bypassState &&
+  //         prefs.getString(_currentUserGroupName) != null &&
+  //         prefs.getString(_currentUserGroupName)!.isNotEmpty) {
+  //       final prefs = await SharedPreferences.getInstance();
 
-        if (kDebugMode) {
-          print('prefs : currentUserGroup is neither null or empty');
-          print(prefs.getString(_currentUserGroupName));
-        }
-        _currentUserGroup = prefs.getString(_currentUserGroupName)!;
-      } else {
-        if (kDebugMode) {
-          print('prefs : currentUserGroup is either null or empty');
-        }
-        _firebaseFirestoreRef
-            .collection(_userCollectionName)
-            .doc(currentUserEmail)
-            .get()
-            .then((DocumentSnapshot doc) {
-          final profileInfo = doc.data() as Map<String, dynamic>;
-          _currentUserName = profileInfo['userName'];
-          final groupInfo = profileInfo['groupNames'] as List;
-          if (groupInfo.isNotEmpty) {
-            prefs.setString(_currentUserGroupName, groupInfo[0]);
-            _currentUserGroup = groupInfo[0];
-            notifyListeners();
-          } else {
-            _hasOneGroup = false;
-            notifyListeners();
-          }
-        });
+  //       if (kDebugMode) {
+  //         print('prefs : currentUserGroup is neither null or empty');
+  //         print(prefs.getString(_currentUserGroupName));
+  //       }
+  //       _currentUserGroup = prefs.getString(_currentUserGroupName)!;
+  //     } else {
+  //       if (kDebugMode) {
+  //         print('prefs : currentUserGroup is either null or empty');
+  //       }
+  //       _firebaseFirestoreRef
+  //           .collection(_userCollectionName)
+  //           .doc(currentUserEmail)
+  //           .get()
+  //           .then((DocumentSnapshot doc) {
+  //         final profileInfo = doc.data() as Map<String, dynamic>;
+  //         _currentUserName = profileInfo['userName'];
+  //         final groupInfo = profileInfo['groupNames'] as List;
+  //         if (groupInfo.isNotEmpty) {
+  //           prefs.setString(_currentUserGroupName, groupInfo[0]);
+  //           _currentUserGroup = groupInfo[0];
+  //           notifyListeners();
+  //         } else {
+  //           _hasOneGroup = false;
+  //           notifyListeners();
+  //         }
+  //       });
 
-        if (kDebugMode) {
-          print(_currentUserGroup);
-        }
-      }
-    }
-  }
+  //       if (kDebugMode) {
+  //         print(_currentUserGroup);
+  //       }
+  //     }
+  //   }
+  // }
 
   Future<void> setRandomDashboardColor({required bool value}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -357,14 +357,14 @@ class ApplicationState extends ChangeNotifier {
   }
 
   // ---- set currentUserGroup variable ----
-  Future<void> setCurrentUserGroup({required String currentUserGroup}) async {
-    final prefs = await SharedPreferences.getInstance();
+  // Future<void> setCurrentUserGroup({required String currentUserGroup}) async {
+  //   final prefs = await SharedPreferences.getInstance();
 
-    _currentUserGroup = currentUserGroup;
-    notifyListeners();
+  //   _currentUserGroup = currentUserGroup;
+  //   notifyListeners();
 
-    await prefs.setString(_currentUserGroupName, currentUserGroup);
-  }
+  //   await prefs.setString(_currentUserGroupName, currentUserGroup);
+  // }
 
   // ------------- option, sign-out -------------
 
