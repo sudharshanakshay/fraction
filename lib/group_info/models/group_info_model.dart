@@ -79,7 +79,7 @@ class GroupInfoRepo extends ChangeNotifier {
         for (var element in data.docs) {
           if (element.exists) {
             try {
-              print('try');
+              print('try in group_info_model');
               _groupMembers.add(GroupInfoRepoModel(
                   memberExpense: element.data()['memberExpense'].toString(),
                   memberName: element.data()['memberName']));

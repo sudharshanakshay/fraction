@@ -110,8 +110,17 @@ class GroupsRepo extends ChangeNotifier {
                     // notifyListeners();
                   }
 
-                  if (_expenseGroupsList.contains(_expenseGroup)) {
-                    print('contains this obj in expense groups');
+                  // check if the expense group already present in the list.
+                  int indexOfExistingExpenseGroup =
+                      _expenseGroupsList.indexWhere((thisExpenseGroup) =>
+                          thisExpenseGroup.groupId == _expenseGroup.groupId);
+
+                  if (indexOfExistingExpenseGroup != -1) {
+                    if (kDebugMode) {
+                      print('contains this obj in expense groups');
+                    }
+                    _expenseGroupsList.removeAt(indexOfExistingExpenseGroup);
+                    _expenseGroupsList.add(_expenseGroup);
                   } else {
                     _expenseGroupsList.add(_expenseGroup);
                   }
