@@ -62,6 +62,16 @@ class GroupDatabase extends DatabaseUtils {
         'memberName': adminName,
         'memberEmail': adminEmail,
         'memberExpense': 0
+      }).then((value) {
+        final groupMemberRelation = {
+          "groupId": groupNameWithIdentity,
+          "userId": adminEmail,
+          "role": "admin",
+        };
+
+        _firebaseFirestoreRef
+            .collection("groupMembers")
+            .add(groupMemberRelation);
       });
       return groupNameWithIdentity;
     });

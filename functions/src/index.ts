@@ -1,5 +1,5 @@
 import {
-  onDocumentCreated,
+  // onDocumentCreated,
   // onDocumentDeleted,
   // onDocumentUpdated,
   onDocumentWritten,
@@ -104,32 +104,32 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
 // ---- when a group collection is create,
 //  what happens to groupMembers collection? ----
 
-exports.onChatGroupIsCreated =
-onDocumentCreated("group/{groupName}", (event)=>{
-  const snapShot = event.data;
-  if (!snapShot) {
-    console.log("No data associated with the event");
-    return;
-  }
+// exports.onChatGroupIsCreated =
+// onDocumentCreated("group/{groupName}", (event)=>{
+//   const snapShot = event.data;
+//   if (!snapShot) {
+//     console.log("No data associated with the event");
+//     return;
+//   }
 
-  const data = snapShot.data();
+//   const data = snapShot.data();
 
-  // const chatUpdateWith = {
-  //   "groupName": data.groupName,
-  //   "lastUpdatedDesc": "new group",
-  //   "lastUpdatedTime": data.createdOn,
-  //   "totalGroupExpense": data.totalExpense
-  // };
+//   // const chatUpdateWith = {
+//   //   "groupName": data.groupName,
+//   //   "lastUpdatedDesc": "new group",
+//   //   "lastUpdatedTime": data.createdOn,
+//   //   "totalGroupExpense": data.totalExpense
+//   // };
 
-  const groupMemberRelation = {
-    "groupId": event.params.groupName,
-    "userId": data.createdBy,
-    "role": "admin",
-  };
+//   const groupMemberRelation = {
+//     "groupId": event.params.groupName,
+//     "userId": data.createdBy,
+//     "role": "admin",
+//   };
 
-  db.collection("groupMembers").add(groupMemberRelation);
-  // .set(chatUpdateWith, {merge: true});
-});
+//   db.collection("groupMembers").add(groupMemberRelation);
+//   // .set(chatUpdateWith, {merge: true});
+// });
 
 // ---- when a group collection is updated,
 // what happens to groupMembers collection ----

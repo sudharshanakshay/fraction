@@ -81,6 +81,14 @@ class DashboardRepo extends ChangeNotifier {
             notifyListeners();
           }
         });
+      } else {
+        if (kDebugMode) {
+          print('else at dashboar_model.dart');
+          print("groupsRepoState : $groupsRepoState");
+          print("groupsRepoState!.appState : ${groupsRepoState!.appState}");
+          print(
+              "groupsRepoState!.currentUserGroup : ${groupsRepoState!.currentUserGroup}");
+        }
       }
     } catch (e) {
       if (kDebugMode) {
