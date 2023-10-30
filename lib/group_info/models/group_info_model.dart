@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/utils/constants.dart';
 
@@ -61,7 +61,6 @@ class GroupInfoRepo extends ChangeNotifier {
               Map<String, dynamic> groupMembers = value['groupMembers'];
 
               groupMembers.forEach((key, value) {
-                print(value);
                 FirebaseFirestore.instance
                     .collection('group')
                     .doc(groupsRepoState!.currentUserGroup)
@@ -79,14 +78,16 @@ class GroupInfoRepo extends ChangeNotifier {
         for (var element in data.docs) {
           if (element.exists) {
             try {
-              print('try in group_info_model');
               _groupMembers.add(GroupInfoRepoModel(
                   memberExpense: element.data()['memberExpense'].toString(),
                   memberName: element.data()['memberName']));
               notifyListeners();
             } catch (e) {
-              print('catch');
-              print(e);
+              if (kDebugMode) {
+                print('catch');
+                print(e);
+              }
+
               _groupMembers.add(GroupInfoRepoModel(
                   memberExpense: element.data()['memberExpense'].toString(),
                   memberName: 'name'));
@@ -99,15 +100,43 @@ class GroupInfoRepo extends ChangeNotifier {
   }
 
   Future<void> recalculateMemberExpenses() async {
-    print('recalculate ..');
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    if (kDebugMode) {
+      print('recalculate ..');
+    }
     if (groupsRepoState != null && groupsRepoState!.appState != null) {
-      print('init success');
-      print(groupsRepoState!.currentUserGroup);
-      print(groupsRepoState!
-          .groupsAndExpenseInstances[groupsRepoState!.currentUserGroup]
-          ?.toDate()
-          .toString());
-      FirebaseFirestore.instance
+      firebaseFirestore
+          .collection('group')
+          .doc(groupsRepoState!.currentUserGroup)
+          .get()
+          .then((value) {
+        var groupMembersDetail = value['groupMembers'] as Map<String, dynamic>;
+
+        groupMembersDetail.forEach((key, value) {
+          final data = {'groupMembers.$key.totalExpense': 0};
+          firebaseFirestore
+              .collection('group')
+              .doc(groupsRepoState!.currentUserGroup)
+              .update(data);
+          final memberEmailR = key.replaceAll('#', '.');
+          firebaseFirestore
+              .collection('group')
+              .doc(groupsRepoState!.currentUserGroup)
+              .collection('members')
+              .doc(memberEmailR)
+              .update({'memberExpense': 0});
+        });
+
+        // groupMembers.forEach((key, value) {
+
+        // firebaseFirestore
+        // .collection('group')
+        // .doc(groupsRepoState!.currentUserGroup)
+
+        // });
+      });
+
+      firebaseFirestore
           .collection('expense')
           .doc(groupsRepoState!.currentUserGroup)
           // .doc(
@@ -133,7 +162,7 @@ class GroupInfoRepo extends ChangeNotifier {
           }
         }
         int totalGroupExpense = 0;
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+
         memberExpenses.forEach((key, value) {
           totalGroupExpense += value;
 
@@ -156,8 +185,6 @@ class GroupInfoRepo extends ChangeNotifier {
             .collection('group')
             .doc(groupsRepoState!.currentUserGroup)
             .update({'totalExpense': totalGroupExpense});
-
-        print(totalGroupExpense);
       });
     }
   }
@@ -173,7 +200,6 @@ class GroupInfoRepo extends ChangeNotifier {
   //   Map<String, int> memberExpenses = {};
 
   //   for (var element in groupExpenseDetails.docs) {
-  //     // print(element.data());
   //     try {
   //       memberExpenses[element['emailAddress']] =
   //           memberExpenses[element['emailAddress']]! + element['cost'] as int;
@@ -184,10 +210,8 @@ class GroupInfoRepo extends ChangeNotifier {
   //       memberExpenses.addAll(data);
   //     }
   //     // if (memberExpenses[element['emailAddress']]) {}
-  //     // print(memberExpenses['hello'].bitLength)
   //   }
   //   if (kDebugMode) {
-  //     print(memberExpenses);
   //   }
   //   int totalGroupExpense = 0;
   //   memberExpenses.forEach((key, value) {
@@ -199,7 +223,6 @@ class GroupInfoRepo extends ChangeNotifier {
   //   _groupDatabaseRef.updateGroupTotalExpense(
   //       groupName: currentGroupName, newExpenseSum: totalGroupExpense);
 
-  //   print(totalGroupExpense);
   // }
 
   Future<void> clearOff({required DateTime nextClearOffDate}) async {
@@ -231,8 +254,6 @@ class GroupInfoRepo extends ChangeNotifier {
         'nextClearOffTimeStamp': nextClearOffDate
       };
 
-      // print(data);
-
       firebaseFirestore
           .collection('group')
           .doc(groupsRepoState!.currentUserGroup)
@@ -262,7 +283,6 @@ class GroupInfoRepo extends ChangeNotifier {
           .then((value) {
         for (var element in value.docs) {
           // element.reference.delete();
-          // print(element.data());
           if (element.data()['role'] == Constants().admin) {
             // call firestore function to clean up!
             // & delete doc from groupMembers.
