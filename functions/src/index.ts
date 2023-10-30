@@ -7,6 +7,7 @@ import {
 import {setGlobalOptions} from "firebase-functions/v2";
 import {initializeApp} from "firebase-admin/app";
 import {FieldValue, getFirestore} from "firebase-admin/firestore";
+import {onCall} from "firebase-functions/v2/https";
 
 setGlobalOptions({maxInstances: 10});
 
@@ -162,3 +163,9 @@ onDocumentCreated("group/{groupName}", (event)=>{
 
 // when an expense has been updated
 // 1.
+
+exports.groupClearUpOnDeleteByAdmin = onCall((request)=>{
+  const groupNameToDelete = request.data.groupName;
+
+  db.doc("group/"+groupNameToDelete).delete();
+});

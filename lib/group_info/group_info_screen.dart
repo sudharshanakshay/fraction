@@ -151,17 +151,13 @@ class _GroupInfoState extends State<GroupInfo> {
                         onTap: () async {
                           await confirmExitGroup().then((value) async {
                             if (value != Constants().cancel && value != null) {
-                              // _userServices
-                              //     .exitGroup(
-                              //         currentUserEmail:
-                              //             appState.currentUserEmail,
-                              //         currentUserGroup:
-                              //             appState.currentUserGroup,
-                              //         appState: appState)
                               if (_groupInfoRepoRef != null) {
-                                _groupInfoRepoRef!.exitGroup();
+                                _groupInfoRepoRef!
+                                    .exitGroup()
+                                    // pop 2 material screen.
+                                    .whenComplete(() => Navigator.pop(context))
+                                    .whenComplete(() => Navigator.pop(context));
                               }
-                              // .whenComplete(() => Navigator.pop(context));
                             }
                           });
                         },

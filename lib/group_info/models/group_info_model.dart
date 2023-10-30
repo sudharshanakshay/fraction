@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/utils/constants.dart';
@@ -272,7 +273,7 @@ class GroupInfoRepo extends ChangeNotifier {
     }
   }
 
-  exitGroup() {
+  Future<void> exitGroup() async {
     if (groupsRepoState != null && groupsRepoState!.appState != null) {
       FirebaseFirestore.instance
           .collection('groupMembers')
@@ -289,6 +290,9 @@ class GroupInfoRepo extends ChangeNotifier {
             element.reference
                 .delete()
                 .whenComplete(() => groupsRepoState?.updateState());
+            FirebaseFunctions.instance
+                .httpsCallable("groupClearUpOnDeleteByAdmin")
+                .call({"text": groupsRepoState!.currentUserGroup});
           } else {
             element.reference.delete();
           }
