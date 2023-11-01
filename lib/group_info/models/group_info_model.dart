@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fraction/group_info/services/group_info_service.dart';
 import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/utils/constants.dart';
 
@@ -13,6 +14,8 @@ class GroupInfoRepoModel {
 
 class GroupInfoRepo extends ChangeNotifier {
   GroupsRepo? groupsRepoState;
+
+  late GroupsInfoServices _groupsInfoServices;
 
   final List<GroupInfoRepoModel> _groupMembers = [];
   List<GroupInfoRepoModel> get groupMembers => _groupMembers;
@@ -34,6 +37,10 @@ class GroupInfoRepo extends ChangeNotifier {
     if (!_disposed) {
       super.notifyListeners();
     }
+  }
+
+  GroupInfoRepo() {
+    _groupsInfoServices = GroupsInfoServices();
   }
 
   udpate({required GroupsRepo newGroupsState}) {
@@ -225,6 +232,31 @@ class GroupInfoRepo extends ChangeNotifier {
   //       groupName: currentGroupName, newExpenseSum: totalGroupExpense);
 
   // }
+
+  Future<void> inviteMember(
+      {required String to, required String? currentUserGroup}) async {
+    if (groupsRepoState != null &&
+        groupsRepoState!.appState != null &&
+        currentUserGroup != null) {
+      const title = 'you are invited to join the group';
+      if (kDebugMode) {
+        print('invite user to group');
+        print(currentUserGroup);
+      }
+
+      _groupsInfoServices.addNotification(
+          from: groupsRepoState!.appState!.currentUserEmail,
+          to: to,
+          title: title,
+          message: currentUserGroup);
+    } else {
+      if (kDebugMode) {
+        print('error inviting: $to');
+        print(groupsRepoState!.appState!.currentUserEmail);
+        print(currentUserGroup);
+      }
+    }
+  }
 
   Future<void> clearOff({required DateTime nextClearOffDate}) async {
     if (groupsRepoState != null && groupsRepoState!.currentUserGroup != '') {

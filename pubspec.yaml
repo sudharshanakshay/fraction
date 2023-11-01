@@ -76,7 +76,7 @@ flutter:
     # - assets/icons/moreMembersIcon.svg
     - assets/icons/SettingsIcon.svg
     - assets/icons/profileIcon.svg
-    - assets/icons/logo.png
+    - assets/icons/logo1.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

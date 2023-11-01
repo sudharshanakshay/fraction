@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/dashboard_model.dart';
@@ -6,6 +7,8 @@ import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/drawer/app_drawer.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
 import 'package:fraction/groups/models/groups_model.dart';
+import 'package:fraction/notification/models/notification.dart';
+import 'package:fraction/notification/notification_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -43,18 +46,37 @@ class _GroupsScreenState extends State<GroupsScreen> {
           title: Text(widget.title),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           actions: [
-            // kDebugMode
-            //     ? IconButton(
-            //         onPressed: () {
-
-            //         },
-            //         icon: const Icon(Icons.chat))
-            //     : Container(),
-            IconButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, '/notification');
-                },
-                icon: const Icon(Icons.notifications_active_outlined)),
+            Consumer<GroupsRepo>(
+              builder: (context, groupsRepoState, child) => IconButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MultiProvider(
+                          providers: [
+                            ChangeNotifierProvider.value(
+                                value: groupsRepoState),
+                            ChangeNotifierProxyProvider<ApplicationState,
+                                NotificationRepo?>(
+                              create: (context) {
+                                return NotificationRepo();
+                              },
+                              update:
+                                  (context, value, NotificationRepo? previous) {
+                                return previous
+                                  ?..update(
+                                      newCurrentUserEmail:
+                                          value.currentUserEmail);
+                              },
+                            ),
+                          ],
+                          child: const NotificationScreen(),
+                        ),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.notifications_active_outlined)),
+            ),
           ],
         ),
         drawer: const AppDrawer(),
@@ -64,8 +86,11 @@ class _GroupsScreenState extends State<GroupsScreen> {
               // ---- (ui, home screen, expense grouplist) ----
               Consumer<GroupsRepo?>(
                 builder: (context, groupsRepoState, child) {
-                  print('buildTimes++');
-                  print(buildTimes++);
+                  if (kDebugMode) {
+                    print('buildTimes++');
+                    print(buildTimes++);
+                  }
+
                   if (groupsRepoState != null) {
                     return ListView.builder(
                       shrinkWrap: true,

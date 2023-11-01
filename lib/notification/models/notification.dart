@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+// import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/notification/services/notification_service.dart';
-import 'package:fraction/utils/values.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:path/path.dart';
 
 class NotificationRepoModel {
   String _title = '';
@@ -30,45 +30,46 @@ class NotificationRepo with ChangeNotifier {
 
   late NotificationService _notificationService;
 
+  var currentUserEmail = '';
+
   NotificationRepo() {
     _notificationService = NotificationService();
-    checkForAvailableNotifications();
+  }
+
+  update({String? newCurrentUserEmail}) {
+    if (newCurrentUserEmail != null) {
+      currentUserEmail = newCurrentUserEmail;
+      // currentUserGroup = groupRepoState.currentUserGroup;
+      checkForAvailableNotifications();
+      if (kDebugMode) {
+        print("update called on notification repo");
+      }
+    }
   }
 
   checkForAvailableNotifications() async {
-    final prefs = await SharedPreferences.getInstance();
-    final currentUerEmail = prefs.getString('currentUserEmail');
-    _notificationService
-        .getNotiifcations(currentUserEmail: currentUerEmail ?? '')
-        .listen((event) {
-      _data.clear();
-      for (DocumentSnapshot notification in event.docs) {
-        if (notification.exists) {
-          final notificationBody = notification.data() as Map<String, dynamic>;
-          print(' ---- notificaion ---- ');
-          print(notification.data());
-          _data.add(NotificationRepoModel(
-              title: notificationBody['body']['title'],
-              message: notificationBody['body']['message'],
-              type: notificationBody['body']['type'],
-              // type: 'type',
-              docId: notification.id));
-          notifyListeners();
+    if (currentUserEmail != '') {
+      _notificationService
+          .getNotiifcations(currentUserEmail: currentUserEmail)
+          .listen((event) {
+        _data.clear();
+        for (DocumentSnapshot notification in event.docs) {
+          if (notification.exists) {
+            final notificationBody =
+                notification.data() as Map<String, dynamic>;
+            print(' ---- notificaion ---- ');
+            print(notification.data());
+            _data.add(NotificationRepoModel(
+                title: notificationBody['body']['title'],
+                message: notificationBody['body']['message'],
+                type: notificationBody['body']['type'],
+                // type: 'type',
+                docId: notification.id));
+            notifyListeners();
+          }
         }
-      }
-    });
-  }
-
-  Future<void> inviteMember({required String to}) async {
-    final prefs = await SharedPreferences.getInstance();
-    final currentUerEmail = prefs.getString('currentUserEmail');
-    final currentUserGroup = prefs.getString(currentUserGroupName);
-    const title = 'you are invited to join the group';
-    _notificationService.addNotification(
-        from: currentUerEmail ?? '',
-        to: to,
-        title: title,
-        message: currentUserGroup ?? '');
+      });
+    }
   }
 
   dismissNotification({required String docId}) {

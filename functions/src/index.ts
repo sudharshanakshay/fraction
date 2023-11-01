@@ -6,14 +6,19 @@ import {
 } from "firebase-functions/v2/firestore";
 import {setGlobalOptions} from "firebase-functions/v2";
 import {initializeApp} from "firebase-admin/app";
-import {FieldValue, getFirestore} from "firebase-admin/firestore";
+import {FieldValue, getFirestore}
+  from "firebase-admin/firestore";
 import {onCall} from "firebase-functions/v2/https";
+import {getDatabase, ref, query, equalTo}
+  from "firebase/database";
+
 
 setGlobalOptions({maxInstances: 10});
 
 initializeApp();
 
 const db = getFirestore();
+
 
 // when an expense is modified
 // 1. make changes to "members" sub-collection in "group" collection
@@ -165,7 +170,16 @@ onDocumentWritten("expense/{groupName}/{groupInstance}/{expenseDocId}",
 // 1.
 
 exports.groupClearUpOnDeleteByAdmin = onCall((request)=>{
+  const database = getDatabase();
   const groupNameToDelete = request.data.groupName;
 
   db.doc("group/"+groupNameToDelete).delete();
+  // db.collection("group").where("groupId")
+
+
+  const allUserGroup = query(ref(database, "groupMembers/groupId"),
+    equalTo(groupNameToDelete)).toJSON();
+
+
+  console.log(allUserGroup);
 });

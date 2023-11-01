@@ -4,7 +4,6 @@ import 'package:fraction/auth/sign_in_screen.dart';
 import 'package:fraction/groups/components/create_group.screen.dart';
 import 'package:fraction/expenses/expenses_screen.dart';
 import 'package:fraction/group_info/group_info_screen.dart';
-import 'package:fraction/notification/notification_screen.dart';
 import 'package:fraction/profile/profile_screen.dart';
 import 'package:fraction/settings/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +35,8 @@ var appRoutes = {
   '/groupInfo': (context) => Consumer<ApplicationState>(
       builder: (context, appState, _) =>
           appState.loggedIn ? const GroupInfo() : const SignInScreen()),
-  '/notification': (context) => Consumer<ApplicationState>(
-      builder: (context, appState, _) => appState.loggedIn
-          ? const NotificationScreen()
-          : const SignInScreen()),
+  // '/notification': (context) => Consumer<ApplicationState>(
+  //     builder: (context, appState, _) => appState.loggedIn
+  //         ? const NotificationScreen()
+  //         : const SignInScreen()),
 };

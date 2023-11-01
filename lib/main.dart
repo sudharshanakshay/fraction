@@ -48,11 +48,6 @@ class MyApp extends StatelessWidget {
                   update: (_, appState, groupRepoState) {
                     return groupRepoState?..updateState(newAppState: appState);
                   },
-
-                  // ChangeNotifierProvider(
-                  //     // lazy: false,
-                  //     create: (_) =>
-                  //         GroupsModel(appStateFromProxyProvider: appState),
                   child: const GroupsScreen(
                     title: 'Fraction',
                   ),

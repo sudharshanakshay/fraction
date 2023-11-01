@@ -102,9 +102,19 @@ class GroupDatabase extends DatabaseUtils {
               .collection('members')
               .doc(currentUserEmail)
               .set({
-            'memberName': currentUserEmail,
-            'memberEmail': currentUserName,
+            'memberName': currentUserName,
+            'memberEmail': currentUserEmail,
             'memberExpense': 0
+          }).then((value) {
+            final groupMemberRelation = {
+              "groupId": groupNameToAdd,
+              "userId": currentUserEmail,
+              "role": "member",
+            };
+
+            _firebaseFirestoreRef
+                .collection("groupMembers")
+                .add(groupMemberRelation);
           });
 
           // push one doc to sub-collection 'members' in 'group' collection.

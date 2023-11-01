@@ -4,7 +4,7 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/group_info/components/members_detail_component.dart';
 import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/groups/models/groups_model.dart';
-import 'package:fraction/notification/models/notification.dart';
+// import 'package:fraction/notification/models/notification.dart';
 // import 'package:fraction/groups/services/groups_service.dart';
 // import 'package:fraction/profile/services/user_service.dart';
 import 'package:fraction/utils/constants.dart';
@@ -27,7 +27,6 @@ class _GroupInfoState extends State<GroupInfo> {
   late TextEditingController _memberEmailController;
   bool inviteToggle = true;
 
-  late NotificationRepo _notificationRepoRef;
   late GroupInfoRepo? _groupInfoRepoRef;
   late GroupsRepo? _groupsRepo;
 
@@ -35,8 +34,8 @@ class _GroupInfoState extends State<GroupInfo> {
   void initState() {
     // _groupServices = GroupServices();
     // _userServices = UserServices();
-    _notificationRepoRef =
-        Provider.of<NotificationRepo>(context, listen: false);
+    // _notificationRepoRef =
+    //     Provider.of<NotificationRepo>(context, listen: false);
     _groupInfoRepoRef = Provider.of<GroupInfoRepo?>(context, listen: false);
     _groupsRepo = Provider.of<GroupsRepo?>(context, listen: false);
     _memberEmailController = TextEditingController();
@@ -208,8 +207,10 @@ class _GroupInfoState extends State<GroupInfo> {
         ),
         FilledButton(
             onPressed: () async {
-              _notificationRepoRef
-                  .inviteMember(to: _memberEmailController.text)
+              _groupInfoRepoRef
+                  ?.inviteMember(
+                      to: _memberEmailController.text,
+                      currentUserGroup: _groupsRepo?.currentUserGroup)
                   .whenComplete(() {
                 _memberEmailController.clear();
                 setState(() {
