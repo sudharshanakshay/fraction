@@ -12,12 +12,11 @@ class ApplicationState extends ChangeNotifier {
   final String _settingsUseRandomDashboardColorName = 's-drc';
 
   late FirebaseFirestore _firebaseFirestoreRef;
-  late String _userCollectionName;
-  late String _groupCollectionName;
+  final String _userCollectionName = 'user';
+  final String _groupCollectionName = 'group';
 
   ApplicationState() {
     _firebaseFirestoreRef = FirebaseFirestore.instance;
-    // _groupCollectionName = DatabaseUtils().groupCollectionName;
     init();
   }
 
