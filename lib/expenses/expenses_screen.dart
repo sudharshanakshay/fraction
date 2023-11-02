@@ -27,7 +27,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
 
   @override
   void initState() {
-    // _expenseService = ExpenseService();
     _descriptionTextController = TextEditingController();
     _costTextController = TextEditingController();
     _formKey = GlobalKey<FormState>();
@@ -50,26 +49,16 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
     return null;
   }
 
-  // final String _settingsIconPath = 'assets/icons/SettingsIcon.svg';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          // leading: IconButton(
-          //   icon: const Icon(Icons.navigate_before),
-          //   onPressed: () {
-          //     Navigator.pop(context);
-          //   },
-          // ),
           title: Text(
               Tools().sliptElements(
                   element: _groupsRepo?.currentUserGroup ?? 'Fraction')[0],
               style: const TextStyle(fontSize: 20)),
-
-          // Group Info, navigation has been moved to dashboard component.
         ),
-        // drawer: const FractionAppDrawer(),
         body: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -142,25 +131,6 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                                                 Text('adding expense ...'));
                                         ScaffoldMessenger.of(context)
                                             .showSnackBar(snakBar);
-                                        // if (appState.groupAndExpenseInstances[
-                                        //     appState.currentUserGroup] !=
-                                        // null) {
-                                        // _expenseService
-                                        // .addExpense(
-                                        //   description:
-                                        //       _descriptionTextController.text,
-                                        //   cost: _costTextController.text,
-                                        //   currentUserName: appState.currentUserName,
-                                        //   currentUserEmail:
-                                        //       appState.currentUserEmail,
-                                        //   currentUserGroup:
-                                        //       appState.currentUserGroup,
-                                        //   currentExpenseInstance:
-                                        //       appState.currentExpenseInstance,
-                                        // )
-
-                                        // .whenComplete(() => Navigator.pop(context));
-                                        // }
 
                                         if (_expenseRepo != null) {
                                           _expenseRepo!
@@ -195,29 +165,12 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
             ),
           ),
         ),
-        // : Column(
-        //     crossAxisAlignment: CrossAxisAlignment.center,
-        //     children: [
-        //       const Row(),
-        //       const SizedBox(
-        //         height: 10,
-        //       ),
-        //       const Text('no group found _'),
-        //       TextButton(
-        //           onPressed: () {
-        //             Navigator.pushNamed(context, '/createGroup');
-        //           },
-        //           child: const Text('Tap here to create group')),
-        //     ],
-        //   ),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () {
             setState(() {
               toggleAddExpense = !toggleAddExpense;
             });
-            // showAddExpenseDialog();
-            // Navigator.pushNamed(context, '/addExpense');
           },
         ));
   }

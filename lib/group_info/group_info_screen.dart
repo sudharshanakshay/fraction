@@ -4,9 +4,6 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/group_info/components/members_detail_component.dart';
 import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/groups/models/groups_model.dart';
-// import 'package:fraction/notification/models/notification.dart';
-// import 'package:fraction/groups/services/groups_service.dart';
-// import 'package:fraction/profile/services/user_service.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:fraction/utils/tools.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +17,6 @@ class GroupInfo extends StatefulWidget {
 }
 
 class _GroupInfoState extends State<GroupInfo> {
-  // late GroupServices _groupServices;
-  // late UserServices _userServices;
   final String clearOffIconPath = 'assets/icons/ClearOffIcon.svg';
   late DateTime next30day;
   late TextEditingController _memberEmailController;
@@ -32,10 +27,6 @@ class _GroupInfoState extends State<GroupInfo> {
 
   @override
   void initState() {
-    // _groupServices = GroupServices();
-    // _userServices = UserServices();
-    // _notificationRepoRef =
-    //     Provider.of<NotificationRepo>(context, listen: false);
     _groupInfoRepoRef = Provider.of<GroupInfoRepo?>(context, listen: false);
     _groupsRepo = Provider.of<GroupsRepo?>(context, listen: false);
     _memberEmailController = TextEditingController();
@@ -65,21 +56,8 @@ class _GroupInfoState extends State<GroupInfo> {
                 itemBuilder: (context) => [
                       PopupMenuItem(
                           child: const Text('Recalculate expenses'),
-                          onTap: () => {
-                                // FirebaseFirestore.instance
-                                //     .collection('expense')
-                                //     .doc(
-                                //         'Buss pass one day%sudharshan6acharya@gmail.com%2023-08-18%07:22:04.459744')
-                                //     .collection('2023-08-18 07:22:04.459')
-                                //     .get()
-                                //     .then((value) {
-                                //   print(value.docs.length);
-                                //   for (var element in value.docs) {
-                                //     print(element);
-                                //   }
-                                // })
-                                _groupInfoRepoRef?.recalculateMemberExpenses()
-                              }),
+                          onTap: () =>
+                              {_groupInfoRepoRef?.recalculateMemberExpenses()}),
                     ]),
           ],
         ),
@@ -100,12 +78,9 @@ class _GroupInfoState extends State<GroupInfo> {
                           groupMembers: groupInfoRepoState.groupMembers,
                         );
                       } else {
-                        return Text("data null");
+                        return const Text("data null");
                       }
                     }),
-                    // MemberExpenseDetail(
-                    //   appState: appState,
-                    // ),
                     inviteToggle ? inviteMemberToggle() : inviteMemberView(),
                   ],
                 ),
@@ -129,12 +104,6 @@ class _GroupInfoState extends State<GroupInfo> {
                                   value != null) {
                                 _groupInfoRepoRef?.clearOff(
                                     nextClearOffDate: value as DateTime);
-                                // _groupServices.clearOff(
-                                //     nextClearOffDate: value as DateTime,
-                                //     currentUserGroup:
-                                //         appState.currentUserGroup);
-                                // .whenComplete(() => appState
-                                //     .refreshGroupNamesAndExpenseInstances());
                               }
                             });
                           }),
@@ -346,63 +315,3 @@ class _GroupInfoState extends State<GroupInfo> {
             ));
   }
 }
-
-// class MemberExpenseDetail extends StatelessWidget {
-//   const MemberExpenseDetail({
-//     super.key,
-//     required this.appState,
-//   });
-
-//   final ApplicationState appState;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return StreamBuilder<List>(
-//         stream: FirebaseFirestore.instance
-//             .collection('group')
-//             .doc(appState.currentUserGroup)
-//             .snapshots()
-//             .asyncExpand((doc) {
-//           try {
-//             List memberDetails = [];
-//             if (doc.exists && doc.data()!.isNotEmpty) {
-//               var groupMemberDetails =
-//                   doc.data()!['groupMembers'] as Map<String, dynamic>;
-//               groupMemberDetails.forEach((key, value) {
-//                 memberDetails.add(value);
-//               });
-//             }
-//             return Stream.value(memberDetails);
-//           } catch (e) {
-//             return const Stream.empty();
-//           }
-//         }),
-//         builder: (context, snapshot) {
-//           if (snapshot.hasData) {
-//             return SingleChildScrollView(
-//               child: Column(
-//                 children: [
-//                   Padding(
-//                     padding: const EdgeInsets.symmetric(vertical: 8.0),
-//                     child: GridView.builder(
-//                       shrinkWrap: true,
-//                       physics: const NeverScrollableScrollPhysics(),
-//                       itemCount: snapshot.data!.length,
-//                       itemBuilder: (BuildContext context, int index) {
-//                         return AccountPallet(
-//                             streamSnapshot: snapshot, index: index);
-//                       },
-//                       gridDelegate:
-//                           const SliverGridDelegateWithFixedCrossAxisCount(
-//                               crossAxisCount: 2, childAspectRatio: (1 / .4)),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             );
-//           } else {
-//             return Container();
-//           }
-//         });
-//   }
-// }

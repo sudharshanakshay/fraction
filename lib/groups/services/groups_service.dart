@@ -1,24 +1,31 @@
 import 'dart:async';
 // import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fraction/app_state.dart';
 // import 'package:fraction/data/api/expense/expense.api.dart';
-import 'package:fraction/data/api/group/group.api.dart';
-import 'package:fraction/data/api/notification/notification.api.dart';
+// import 'package:fraction/data/api/group/group.api.dart';
+// import 'package:fraction/data/api/notification/notification.api.dart';
 import 'package:fraction/data/api/user/user.api.dart';
+import 'package:fraction/notification/services/notification_service.dart';
 import 'package:fraction/utils/constants.dart';
 
 class GroupServices {
-  late GroupDatabase _groupDatabaseRef;
+  // late GroupDatabase _groupDatabaseRef;
   late UserDatabase _userDatabaseRef;
   // late ExpenseDatabase _expenseDatabase;
-  late NotificationDatabase _notificationDatabaseRef;
+  // late NotificationDatabase _notificationDatabaseRef;
+  late FirebaseFirestore _firebaseFirestore;
+  late NotificationService _notificationService;
+
+  final String _groupCollectionName = 'group';
 
   GroupServices() {
-    _groupDatabaseRef = GroupDatabase();
+    // _groupDatabaseRef = GroupDatabase();
     _userDatabaseRef = UserDatabase();
+    _firebaseFirestore = FirebaseFirestore.instance;
     // _expenseDatabase = ExpenseDatabase();
-    _notificationDatabaseRef = NotificationDatabase();
+    // _notificationDatabaseRef = NotificationDatabase();
   }
 
   Future<String> createGroup(
@@ -28,27 +35,59 @@ class GroupServices {
       required nextClearOffTimeStamp,
       ApplicationState? applicationState}) async {
     try {
-      return _groupDatabaseRef
-          .createGroup(
-              groupName: inputGroupName,
-              adminName: currentUserName,
-              adminEmail: currentUserEmail,
-              nextClearOffTimeStamp: nextClearOffTimeStamp)
+      final adminEmailR = currentUserEmail.replaceAll('.', '#');
+      final data = {
+        'createdOn': DateTime.now(),
+        'createdBy': currentUserEmail,
+        'expenseInstance': DateTime.now(),
+        'nextClearOffTimeStamp': nextClearOffTimeStamp,
+        'groupName': inputGroupName,
+        'totalExpense': 0,
+        'groupMembers': {
+          adminEmailR: {
+            'memberName': currentUserName,
+            'memberEmail': currentUserEmail,
+            'totalExpense': 0
+          }
+        },
+        'lastUpdatedTime': DateTime.now(),
+        'lastUpdatedDesc': 'new Group',
+      };
 
-          // this function is taken care by firebase trigger functions
+      final String groupNameWithIdentity =
+          '$inputGroupName%$currentUserEmail%${DateTime.now().toString().replaceAll(RegExp(r'[\s]'), '%')}';
 
-          // .then((String groupNameCreatedWithIdentity)
-          // {
-          // _userDatabaseRef
-          //     .insertGroupNameToProfile(
-          //         currentUserEmail: currentUserEmail,
-          //         groupNameToAdd: groupNameCreatedWithIdentity)
-          .then((String groupNameCreatedWithIdentity) {
-        // if (applicationState != null) {
-        //   applicationState.refreshGroupNamesAndExpenseInstances();
-        // }
-        // });
-        return groupNameCreatedWithIdentity;
+      if (kDebugMode) {
+        print('group info: $data');
+      }
+
+      return _firebaseFirestore
+          .collection(_groupCollectionName)
+          .doc(groupNameWithIdentity)
+          .set(data)
+          .then((value) {
+        // push one doc to sub-collection 'members' in 'group' collection.
+        _firebaseFirestore
+            .collection(_groupCollectionName)
+            .doc(groupNameWithIdentity)
+            .collection('members')
+            .doc(currentUserEmail)
+            .set({
+          'memberName': currentUserName,
+          'memberEmail': currentUserEmail,
+          'memberExpense': 0
+        }).then((value) {
+          final groupMemberRelation = {
+            "groupId": groupNameWithIdentity,
+            "userId": currentUserEmail,
+            "role": "admin",
+          };
+
+          _firebaseFirestore
+              .collection("groupMembers")
+              .add(groupMemberRelation);
+        });
+        return groupNameWithIdentity;
       });
     } catch (e) {
       if (kDebugMode) {
@@ -66,22 +105,67 @@ class GroupServices {
       ApplicationState? applicationState}) async {
     try {
       if (groupName.isNotEmpty) {
-        _groupDatabaseRef
-            .addMeToGroup(
-                groupNameToAdd: groupName.trim(),
-                currentUserEmail: currentUserEmail.trim(),
-                currentUserName: currentUserName.trim())
-            .whenComplete(() {
-          _userDatabaseRef
-              .insertGroupNameToProfile(
-                  currentUserEmail: currentUserEmail,
-                  groupNameToAdd: groupName.trim())
-              .whenComplete(() {
-            if (applicationState != null) {
-              // applicationState.refreshGroupNamesAndExpenseInstances();
-              _notificationDatabaseRef.deleteNotification(docId: docId);
+        final currentUserEmailR = currentUserEmail.replaceAll('.', '#');
+
+        _firebaseFirestore.collection(_groupCollectionName).get().then((value) {
+          for (var groupDoc in value.docs) {
+            if (groupDoc.id == groupName) {
+              final data = {
+                'groupMembers': {
+                  currentUserEmailR: {
+                    'memberEmail': currentUserEmail,
+                    'memberName': currentUserName,
+                    'totalExpense': 0
+                  }
+                }
+              };
+              _firebaseFirestore
+                  .collection(_groupCollectionName)
+                  .doc(groupName)
+                  .collection('members')
+                  .doc(currentUserEmail)
+                  .set({
+                'memberName': currentUserName,
+                'memberEmail': currentUserEmail,
+                'memberExpense': 0
+              }).then((value) {
+                final groupMemberRelation = {
+                  "groupId": groupName,
+                  "userId": currentUserEmail,
+                  "role": "member",
+                };
+
+                _firebaseFirestore
+                    .collection("groupMembers")
+                    .add(groupMemberRelation);
+              });
+
+              // push one doc to sub-collection 'members' in 'group' collection.
+              _firebaseFirestore
+                  .collection(_groupCollectionName)
+                  .doc(groupName)
+                  .set(data, SetOptions(merge: true))
+                  .whenComplete(() {
+                if (kDebugMode) {
+                  print('group added');
+                }
+                _userDatabaseRef
+                    .insertGroupNameToProfile(
+                        currentUserEmail: currentUserEmail,
+                        groupNameToAdd: groupName.trim())
+                    .whenComplete(() {
+                  if (applicationState != null) {
+                    // applicationState.refreshGroupNamesAndExpenseInstances();
+                    _notificationService.deleteNotification(docId: docId);
+                  }
+                });
+              });
+            } else {
+              if (kDebugMode) {
+                // print('group name doesnt exists');
+              }
             }
-          });
+          }
         });
       }
     } catch (e) {
@@ -90,114 +174,6 @@ class GroupServices {
       }
     }
   }
-
-  Stream getGroupDetials({required currentUserGroup}) {
-    try {
-      return _groupDatabaseRef.getGroupDetials(groupName: currentUserGroup);
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-      return const Stream.empty();
-    }
-  }
-
-  Stream getMyTotalExpense(
-      {required String currentUserEmail, required String currentUserGroup}) {
-    try {
-      return _groupDatabaseRef.getMyTotalExpense(
-          currentUserEmail: currentUserEmail, groupName: currentUserGroup);
-    } catch (e) {
-      return const Stream.empty();
-    }
-  }
-
-  StreamController broadCastMyTotalExpense({
-    required String currentUserGroup,
-    required String currentUserEmail,
-  }) {
-    StreamController streamController = StreamController.broadcast();
-    try {
-      streamController.addStream(_groupDatabaseRef.getMyTotalExpense(
-          currentUserEmail: currentUserEmail, groupName: currentUserGroup));
-    } catch (e) {
-      print(e);
-    }
-
-    return streamController;
-  }
-
-  Future<List?> getMemberDetails({required String currentUserGroup}) {
-    try {
-      return _groupDatabaseRef.getMemberDetails(
-          currentUserGroup: currentUserGroup);
-    } catch (e) {
-      return Future.value();
-    }
-  }
-
-  // Future<void> clearOff(
-  //     {required DateTime nextClearOffDate,
-  //     required String currentUserGroup}) async {
-  //   try {
-  //     _groupDatabaseRef
-  //         .clearOff(
-  //             groupName: currentUserGroup, nextClearOffDate: nextClearOffDate)
-  //         .whenComplete(() async {
-  //       // await super.initGroupAndExpenseInstances().whenComplete(() {
-  //       //   if (kDebugMode) {
-  //       //     // print(super.currentExpenseInstance.toDate().toString());
-  //       //   }
-  //       // });
-  //     });
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e);
-  //     }
-  //   }
-  // }
-
-  // ---- not application, since this data has been moved to 'members' collection. ----
-
-  // Future<void> refreshMemberExpenses(
-  //     {required String currentGroupName,
-  //     required Timestamp currentExpenseInstance}) async {
-  //   QuerySnapshot groupExpenseDetails =
-  //       await _expenseDatabase.getExpenseCollection(
-  //           currentGroupName: currentGroupName,
-  //           currentExpenseInstance: currentExpenseInstance.toDate().toString());
-
-  //   Map<String, int> memberExpenses = {};
-
-  //   for (var element in groupExpenseDetails.docs) {
-  //     // print(element.data());
-  //     try {
-  //       memberExpenses[element['emailAddress']] =
-  //           memberExpenses[element['emailAddress']]! + element['cost'] as int;
-  //     } catch (e) {
-  //       final data = {
-  //         element['emailAddress'] as String: element['cost'] as int
-  //       };
-  //       memberExpenses.addAll(data);
-  //     }
-  //     // if (memberExpenses[element['emailAddress']]) {}
-  //     // print(memberExpenses['hello'].bitLength)
-  //   }
-  //   if (kDebugMode) {
-  //     print(memberExpenses);
-  //   }
-  //   int totalGroupExpense = 0;
-  //   memberExpenses.forEach((key, value) {
-  //     totalGroupExpense += value;
-  //     _groupDatabaseRef.updateGroupMemberExpense(
-  //         groupName: currentGroupName, memberEmail: key, newExpenseSum: value);
-  //   });
-
-  //   _groupDatabaseRef.updateGroupTotalExpense(
-  //       groupName: currentGroupName, newExpenseSum: totalGroupExpense);
-
-  //   print(totalGroupExpense);
-  // }
 
   onError(e) {
     if (kDebugMode) {

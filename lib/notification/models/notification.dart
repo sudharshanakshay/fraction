@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-// import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/notification/services/notification_service.dart';
-// import 'package:path/path.dart';
 
 class NotificationRepoModel {
   String _title = '';
@@ -39,7 +37,6 @@ class NotificationRepo with ChangeNotifier {
   update({String? newCurrentUserEmail}) {
     if (newCurrentUserEmail != null) {
       currentUserEmail = newCurrentUserEmail;
-      // currentUserGroup = groupRepoState.currentUserGroup;
       checkForAvailableNotifications();
       if (kDebugMode) {
         print("update called on notification repo");
@@ -63,7 +60,6 @@ class NotificationRepo with ChangeNotifier {
                 title: notificationBody['body']['title'],
                 message: notificationBody['body']['message'],
                 type: notificationBody['body']['type'],
-                // type: 'type',
                 docId: notification.id));
             notifyListeners();
           }

@@ -32,28 +32,6 @@ class _ExpenseViewState extends State<ExpenseView> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ApplicationState>(builder: (context, appState, _) {
-      // if (appState.groupAndExpenseInstances[appState.currentUserGroup] ==
-      //     null) {
-      // if (appState.groupAndExpenseInstances[appState.currentUserGroup] ==
-      //     null) {
-      // ---- time to initialize expense group instances ----
-      // return const Text('fetching data _');
-      // return const ExpenseListItemShadow();
-      // } else {
-      // ---- once the initialize of expense group instances is done ----
-
-      // return StreamBuilder(
-      //     stream: _expenseService.getExpenseCollection(
-      //         currentUserGroup: appState.currentUserGroup,
-      //         currentExpenseInstance: appState.currentExpenseInstance),
-      //     builder: (context, snapshot) {
-      //       if (!snapshot.hasData) {
-      //         return const ExpenseListItemShadow();
-      //       } else if (snapshot.data!.docs.isEmpty) {
-      //         return const ListTile(
-      //           title: Text('no expense to display _ '),
-      //         );
-      //       }
       _expenseTime = '';
       return Consumer<ExpenseRepo?>(builder: (context, expenses, child) {
         if (expenses != null) {
@@ -72,9 +50,6 @@ class _ExpenseViewState extends State<ExpenseView> {
               // itemCount: snapshot.data?.docs.length,
               itemBuilder: (BuildContext context, int index) {
                 if (_expenseTime !=
-                    // DateFormat.MMMMEEEEd()
-                    //     .format(
-                    //         snapshot.data!.docs[index]['timeStamp'].toDate())
                     DateFormat.MMMMEEEEd()
                         .format(expenses.expenseList[index].timeStamp)
                         .toString()) {
@@ -106,8 +81,6 @@ class _ExpenseViewState extends State<ExpenseView> {
                           currentUserEmail: appState.currentUserEmail,
                           expenseDocId: expenses.expenseList[index].docId,
                           currentUserName: expenses.expenseList[index].userName,
-                          // expenseServiceState: _expenseService,
-                          // expenseDoc: snapshot.data!.docs[index],
                           appState: appState,
                           cost: expenses.expenseList[index].cost,
                           description: expenses.expenseList[index].description,
@@ -127,9 +100,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                   currentUserEmail: appState.currentUserEmail,
                   expenseDocId: expenses.expenseList[index].docId,
                   currentUserName: expenses.expenseList[index].userName,
-                  // expenseServiceState: _expenseService,
                   expenseRepoState: expenses,
-                  // expenseDoc: snapshot.data!.docs[index],
                   appState: appState,
                   cost: expenses.expenseList[index].cost,
                   description: expenses.expenseList[index].description,
@@ -139,7 +110,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                 );
               });
         } else {
-          return Text(' data is null');
+          return const Text(' data is null');
         }
       });
       // });

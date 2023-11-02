@@ -20,10 +20,6 @@ class GroupInfoRepo extends ChangeNotifier {
   final List<GroupInfoRepoModel> _groupMembers = [];
   List<GroupInfoRepoModel> get groupMembers => _groupMembers;
 
-  // GroupInfoRepo() {
-  //   _currentGroupDbRef = ;
-  // }
-
   bool _disposed = false;
 
   @override
@@ -99,7 +95,6 @@ class GroupInfoRepo extends ChangeNotifier {
               _groupMembers.add(GroupInfoRepoModel(
                   memberExpense: element.data()['memberExpense'].toString(),
                   memberName: 'name'));
-              // element.reference.delete();
             }
           }
         }
@@ -134,22 +129,11 @@ class GroupInfoRepo extends ChangeNotifier {
               .doc(memberEmailR)
               .update({'memberExpense': 0});
         });
-
-        // groupMembers.forEach((key, value) {
-
-        // firebaseFirestore
-        // .collection('group')
-        // .doc(groupsRepoState!.currentUserGroup)
-
-        // });
       });
 
       firebaseFirestore
           .collection('expense')
           .doc(groupsRepoState!.currentUserGroup)
-          // .doc(
-          //     'Buss pass one day%sudharshan6acharya@gmail.com%2023-08-18%07:22:04.459744')
-          // .collection('2023-08-18 07:22:04.459')
           .collection(groupsRepoState!
               .groupsAndExpenseInstances[groupsRepoState!.currentUserGroup]!
               .toDate()
@@ -163,8 +147,9 @@ class GroupInfoRepo extends ChangeNotifier {
                 memberExpenses[element['emailAddress']]! + element['cost']
                     as int;
           } catch (e) {
+            // null check, if null add the memberEmail & corresponding cost.
             final data = {
-              element['emailAddress'] as String: element['cost'] as int
+              element['emailAddress'] as String: int.parse(element['cost'])
             };
             memberExpenses.addAll(data);
           }
@@ -196,42 +181,6 @@ class GroupInfoRepo extends ChangeNotifier {
       });
     }
   }
-
-  // Future<void> refreshMemberExpenses(
-  //     {required String currentGroupName,
-  //     required Timestamp currentExpenseInstance}) async {
-  //   QuerySnapshot groupExpenseDetails =
-  //       await _expenseDatabase.getExpenseCollection(
-  //           currentGroupName: currentGroupName,
-  //           currentExpenseInstance: currentExpenseInstance.toDate().toString());
-
-  //   Map<String, int> memberExpenses = {};
-
-  //   for (var element in groupExpenseDetails.docs) {
-  //     try {
-  //       memberExpenses[element['emailAddress']] =
-  //           memberExpenses[element['emailAddress']]! + element['cost'] as int;
-  //     } catch (e) {
-  //       final data = {
-  //         element['emailAddress'] as String: element['cost'] as int
-  //       };
-  //       memberExpenses.addAll(data);
-  //     }
-  //     // if (memberExpenses[element['emailAddress']]) {}
-  //   }
-  //   if (kDebugMode) {
-  //   }
-  //   int totalGroupExpense = 0;
-  //   memberExpenses.forEach((key, value) {
-  //     totalGroupExpense += value;
-  //     _groupDatabaseRef.updateGroupMemberExpense(
-  //         groupName: currentGroupName, memberEmail: key, newExpenseSum: value);
-  //   });
-
-  //   _groupDatabaseRef.updateGroupTotalExpense(
-  //       groupName: currentGroupName, newExpenseSum: totalGroupExpense);
-
-  // }
 
   Future<void> inviteMember(
       {required String to, required String? currentUserGroup}) async {

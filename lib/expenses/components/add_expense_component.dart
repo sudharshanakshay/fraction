@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-// import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
-// import 'package:fraction/expenses/services/expenses_service.dart';
 import 'package:provider/provider.dart';
 
 class AddExpense extends StatefulWidget {
@@ -12,14 +10,12 @@ class AddExpense extends StatefulWidget {
 }
 
 class _AddExpenseState extends State<AddExpense> {
-  // late ExpenseService _expenseService;
   late TextEditingController _descriptionTextController;
   late TextEditingController _costTextController;
   late GlobalKey<FormState> _formKey;
 
   @override
   void initState() {
-    // _expenseService = ExpenseService();
     _descriptionTextController = TextEditingController();
     _costTextController = TextEditingController();
     _formKey = GlobalKey<FormState>();
@@ -110,25 +106,6 @@ class _AddExpenseState extends State<AddExpense> {
                           const snakBar =
                               SnackBar(content: Text('adding expense ...'));
                           ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                          // if (appState.groupAndExpenseInstances[
-                          //     appState.currentUserGroup] !=
-                          // null) {
-                          // _expenseService
-                          // .addExpense(
-                          //   description:
-                          //       _descriptionTextController.text,
-                          //   cost: _costTextController.text,
-                          //   currentUserName: appState.currentUserName,
-                          //   currentUserEmail:
-                          //       appState.currentUserEmail,
-                          //   currentUserGroup:
-                          //       appState.currentUserGroup,
-                          //   currentExpenseInstance:
-                          //       appState.currentExpenseInstance,
-                          // )
-
-                          // .whenComplete(() => Navigator.pop(context));
-                          // }
                           expenseRepoState
                               .addExpense(
                                   description: _descriptionTextController.text,

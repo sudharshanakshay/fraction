@@ -1,17 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:fraction/data/api/notification/notification.api.dart';
 
 class NotificationService {
-  late NotificationDatabase _notificationDatabaseRef;
+  late FirebaseFirestore _firebaseFirestore;
+  final String _notificationCollectionName = 'notification';
 
   NotificationService() {
-    _notificationDatabaseRef = NotificationDatabase();
+    _firebaseFirestore = FirebaseFirestore.instance;
   }
 
   Stream getNotiifcations({required String currentUserEmail}) {
     try {
-      return _notificationDatabaseRef.getNotiifcations(
-          currentUserEmail: currentUserEmail);
+      return _firebaseFirestore
+          .collection(_notificationCollectionName)
+          .where('to', isEqualTo: currentUserEmail)
+          .snapshots();
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -23,7 +26,10 @@ class NotificationService {
 
   Future<void> deleteNotification({required String docId}) async {
     try {
-      _notificationDatabaseRef.deleteNotification(docId: docId);
+      _firebaseFirestore
+          .collection(_notificationCollectionName)
+          .doc(docId)
+          .delete();
     } catch (e) {
       if (kDebugMode) {
         print(e);

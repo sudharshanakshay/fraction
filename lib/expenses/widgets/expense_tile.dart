@@ -7,11 +7,9 @@ import 'package:intl/intl.dart';
 class ExpenseListTile extends StatefulWidget {
   const ExpenseListTile(
       {super.key,
-      // required this.expenseDoc,
       required this.expenseDocId,
       required this.currentUserName,
       required this.currentUserEmail,
-      // required this.expenseServiceState,
       required this.expenseRepoState,
       required this.appState,
       required this.emailAddress,
@@ -20,11 +18,9 @@ class ExpenseListTile extends StatefulWidget {
       required this.tags,
       required this.timeStamp});
 
-  // final QueryDocumentSnapshot expenseDoc;
   final String expenseDocId;
   final String currentUserName;
   final String currentUserEmail;
-  // final ExpenseService expenseServiceState;
   final ExpenseRepo expenseRepoState;
   final ApplicationState appState;
   final String emailAddress;
@@ -95,14 +91,11 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                   },
                   // leading: const Icon(Icons.person),
                   title: Text(widget.description, style: titleListTileStyle),
-                  // '${widget.streamSnapshot.data?.docs[widget.index]['description']}'),
-                  //isThreeLine: true,
+
                   subtitle: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       Text(widget.currentUserName, style: subListTileStyle),
-                      // widget.streamSnapshot.data?.docs[widget.index]['userName']),
-                      // const Text(','),
                       const Flexible(
                         child: FractionallySizedBox(
                           widthFactor: 0.04,
@@ -112,9 +105,6 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                         DateFormat.jm().format(widget.timeStamp),
                         style: subListTileStyle,
                       ),
-                      // Text(DateFormat.yMMMd().format(widget
-                      //     .streamSnapshot.data?.docs[widget.index]['timeStamp']
-                      //     .toDate())),
                     ],
                   ),
 
@@ -187,20 +177,7 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
                       const snakBar =
                           SnackBar(content: Text('updating expense ...'));
                       ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                      // widget.expenseServiceState
-                      //     .updateExpense(
-                      //         docId: widget.expenseDocId,
-                      //         updatedDescription:
-                      //             _descriptionTextController.text,
-                      //         updatedCost: _costTextController.text,
-                      //         previousCost: int.parse(widget.cost),
-                      //         currentUserEmail:
-                      //             widget.appState.currentUserEmail,
-                      //         currentUserGroup:
-                      //             widget.appState.currentUserGroup,
-                      //         currentExpenseInstance:
-                      //             widget.appState.currentExpenseInstance)
-                      //     .whenComplete(() => Navigator.pop(context));
+
                       widget.expenseRepoState
                           .updateExpense(
                               docId: widget.expenseDocId,
@@ -216,22 +193,10 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                // IconButton(onPressed: () {}, icon: const Icon(Icons.delete)),
                 TextButton(
                   onPressed: () async {
                     await confirmDeleteExpense().then((msg) {
                       if (msg == 'OK') {
-                        // widget.expenseServiceState
-                        //     .deleteExpense(
-                        //         expenseDocId: widget.expenseDocId,
-                        //         emailAddress: widget.emailAddress,
-                        //         currentUserEmail:
-                        //             widget.appState.currentUserEmail,
-                        //         currentUserGroup:
-                        //             widget.appState.currentUserGroup,
-                        //         currentExpenseInstance:
-                        //             widget.appState.currentExpenseInstance)
-                        //     .whenComplete(() => Navigator.pop(context));
                         widget.expenseRepoState
                             .deleteExpense(docId: widget.expenseDocId)
                             .whenComplete(() => Navigator.pop(context));

@@ -118,9 +118,6 @@ class _GroupsScreenState extends State<GroupsScreen> {
                             onTap: () {
                               groupsRepoState.currentUserGroup = groupsRepoState
                                   .expenseGroupList[index].groupId;
-                              // appState.setCurrentUserGroup(
-                              //     currentUserGroup: groupsRepoState
-                              //         .expenseGroupList[index].groupId);
 
                               Navigator.push(
                                   context,
@@ -133,11 +130,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                           ChangeNotifierProxyProvider<
                                               ApplicationState, ExpenseRepo?>(
                                             lazy: false,
-                                            create: (_) => ExpenseRepo(
-                                                // appState: appState,
-                                                // groupsRepoState:
-                                                //     groupsRepoState
-                                                ),
+                                            create: (_) => ExpenseRepo(),
                                             update: (context, appState,
                                                     expenseRepo) =>
                                                 expenseRepo
@@ -168,7 +161,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                       },
                     );
                   }
-                  return Text('data is null');
+                  return const Text('data is null');
                 },
               ),
               const SizedBox(

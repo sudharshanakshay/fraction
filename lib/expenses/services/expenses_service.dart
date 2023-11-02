@@ -1,39 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fraction/data/api/expense/expense.api.dart';
-// import 'package:fraction/data/api/group/group.api.dart';
+import 'package:flutter/foundation.dart';
 
 class ExpenseService {
-  late ExpenseDatabase _expenseDatabaseRef;
-  // late GroupDatabase _groupDatabase;
+  final String _expenseCollectionName = 'expense';
+  late FirebaseFirestore _firebaseFirestore;
 
   ExpenseService() {
-    _expenseDatabaseRef = ExpenseDatabase();
-    // _groupDatabase = GroupDatabase();
+    _firebaseFirestore = FirebaseFirestore.instance;
   }
 
   Stream<QuerySnapshot> getExpenseCollection(
       {required String currentUserGroup,
       required Timestamp currentExpenseInstance}) {
     try {
-      return _expenseDatabaseRef.expenseCollectionStream(
-          currentGroupName: currentUserGroup,
-          currentExpenseInstance: currentExpenseInstance.toDate().toString());
+      return _firebaseFirestore
+          .collection('expense')
+          .doc(currentUserGroup)
+          .collection(currentExpenseInstance.toDate().toString())
+          .orderBy('timeStamp', descending: true)
+          .snapshots()
+          .handleError((e) {
+        throw (e);
+      });
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       return const Stream.empty();
     }
   }
-
-  // Stream<QuerySnapshot> getMyExpenses(
-  //     {required currentUserEmail, required currentUserGroup}) {
-  //   try {
-  //     return _expenseDatabaseRef.getMyExpenses(
-  //         currentGroupName: currentUserGroup,
-  //         currentUserEmail: currentUserEmail);
-  //   } catch (e) {
-  //     return const Stream.empty();
-  //   }
-  // }
 
   Future addExpense(
       {required String description,
@@ -42,30 +37,19 @@ class ExpenseService {
       required String currentUserGroup,
       required String currentUserEmail,
       required Timestamp currentExpenseInstance}) async {
-    final timeStamp = DateTime.now();
-    _expenseDatabaseRef.addExpense(
-        currentUserName: currentUserName,
-        currentGroupName: currentUserGroup,
-        currentUserEmail: currentUserEmail,
-        description: description,
-        cost: int.parse(cost),
-        currentExpenseInstance: currentExpenseInstance.toDate().toString(),
-        timeStamp: timeStamp);
-    // this is functionality is implimented by firestore trigger.
-
-    //     .then((DocumentReference documentReference) {
-    //   _groupDatabase
-    //       .incrementOrDecrementGroupMemberExpense(
-    //         memberEmail: currentUserEmail,
-    //         groupName: currentUserGroup,
-    //         expenseDiff: int.parse(cost),
-    //       )
-    //       .onError((error, stackTrace) => _expenseDatabaseRef.deleteMyExpense(
-    //           currentUserEmail: currentUserEmail,
-    //           currentGroupName: currentUserGroup,
-    //           currentExpenseInstance: currentExpenseInstance,
-    //           docId: documentReference));
-    // }).onError((error, stackTrace) => null);
+    final data = {
+      'description': description,
+      'cost': cost as int,
+      'tags': [],
+      'userName': currentUserName,
+      'emailAddress': currentUserEmail,
+      'timeStamp': DateTime.now()
+    };
+    return _firebaseFirestore
+        .collection(_expenseCollectionName)
+        .doc(currentUserGroup)
+        .collection(currentExpenseInstance.toDate().toString())
+        .add(data);
   }
 
   Future updateExpense({
@@ -78,24 +62,17 @@ class ExpenseService {
     required int previousCost,
   }) async {
     try {
-      _expenseDatabaseRef.updateExpense(
-        currentGroupName: currentUserGroup,
-        docId: docId,
-        updatedCost: int.parse(updatedCost),
-        updatedDescription: updatedDescription,
-        currentExpenseInstance: currentExpenseInstance.toDate().toString(),
-      );
-
-      // this is functionality is implimented by firestore trigger.
-
-      //   .whenComplete(() {
-      // if (int.parse(updatedCost) - previousCost != 0) {
-      //   _groupDatabase.incrementOrDecrementGroupMemberExpense(
-      //       groupName: currentUserGroup,
-      //       memberEmail: currentUserEmail,
-      //       expenseDiff: int.parse(updatedCost) - previousCost);
-      // }
-      // });
+      final data = {
+        'description': updatedDescription,
+        'cost': updatedCost,
+        'tags': FieldValue.arrayUnion(['updated'])
+      };
+      _firebaseFirestore
+          .collection(_expenseCollectionName)
+          .doc(currentUserGroup)
+          .collection(currentExpenseInstance.toDate().toString())
+          .doc(docId)
+          .update(data);
     } catch (e) {}
   }
 
@@ -107,18 +84,20 @@ class ExpenseService {
     required Timestamp currentExpenseInstance,
   }) async {
     if (currentUserEmail == emailAddress) {
-      _expenseDatabaseRef.deleteMyExpense(
-          currentUserEmail: currentUserEmail,
-          currentGroupName: currentUserGroup,
-          docId: expenseDocId,
-          currentExpenseInstance: currentExpenseInstance.toDate().toString());
-      // this functionality is now implimented by trigger function.
-      //     .whenComplete(() {
-      //   _groupDatabase.incrementOrDecrementGroupMemberExpense(
-      //       groupName: currentUserGroup,
-      //       memberEmail: currentUserEmail,
-      //       expenseDiff: -expenseDoc['cost']);
-      // });
+      return _firebaseFirestore
+          .collection(_expenseCollectionName)
+          .doc(currentUserGroup)
+          .collection(currentExpenseInstance.toDate().toString())
+          .doc(expenseDocId)
+          .delete()
+          .then(
+        (doc) {
+          if (kDebugMode) {
+            print("Document deleted");
+          }
+        },
+        onError: (e) => print("Error deleting document $e"),
+      );
     }
   }
 }

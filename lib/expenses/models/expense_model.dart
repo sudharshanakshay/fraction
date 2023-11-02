@@ -37,16 +37,7 @@ class ExpenseRepo extends ChangeNotifier {
   bool _hasOneExpense = true;
   bool get hasOneExpense => _hasOneExpense;
 
-  // Timestamp? _currentExpenseInstance;
-
   static int count = 0;
-
-  // ExpenseRepo({required this.appState, required this.groupsRepoState}) {
-  //   // st current expense instance.
-  //   _currentExpenseInstance =
-  //       groupsRepoState.groupsAndExpenseInstances[appState.currentUserGroup];
-  //   initExpenseInstances();
-  // }
 
   bool _disposed = false;
 
@@ -78,8 +69,10 @@ class ExpenseRepo extends ChangeNotifier {
 
   initExpenseInstances() {
     try {
-      count++;
-      print("update: " + count.toString());
+      if (kDebugMode) {
+        count++;
+        print("update: " + count.toString());
+      }
 
       if (groupsRepoState != null &&
           groupsRepoState!.currentExpenseInstance != null) {

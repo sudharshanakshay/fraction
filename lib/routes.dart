@@ -35,8 +35,4 @@ var appRoutes = {
   '/groupInfo': (context) => Consumer<ApplicationState>(
       builder: (context, appState, _) =>
           appState.loggedIn ? const GroupInfo() : const SignInScreen()),
-  // '/notification': (context) => Consumer<ApplicationState>(
-  //     builder: (context, appState, _) => appState.loggedIn
-  //         ? const NotificationScreen()
-  //         : const SignInScreen()),
 };

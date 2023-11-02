@@ -27,7 +27,6 @@ class _DashboardState extends State<Dashboard> {
                 builder: (context, groupsRepoState, child) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: GestureDetector(
-                      // onTap: () => Navigator.pushNamed(context, '/groupInfo'),
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -35,8 +34,6 @@ class _DashboardState extends State<Dashboard> {
                             providers: [
                               ChangeNotifierProvider.value(
                                   value: groupsRepoState),
-                              // ChangeNotifierProvider.value(
-                              //     value: Provider.of<GroupsRepo>(context)),
                               ChangeNotifierProxyProvider<GroupsRepo,
                                   GroupInfoRepo?>(
                                 create: (context) => GroupInfoRepo(),
@@ -87,7 +84,7 @@ class _DashboardState extends State<Dashboard> {
             },
           );
         } else {
-          return Text('null data');
+          return const Text('null data');
         }
       },
     );
@@ -167,41 +164,4 @@ class _DashboardState extends State<Dashboard> {
       ],
     );
   }
-
-  // Future<String?> showMemberDetails({required List? memberDetailList}) {
-  //   return showDialog<String>(
-  //       context: context,
-  //       builder: (context) {
-  //         return AlertDialog(
-  //             scrollable: true,
-  //             content: SizedBox(
-  //               height: 400,
-  //               width: 400,
-  //               child: memberDetailList != null && memberDetailList.isNotEmpty
-  //                   ? ListView.builder(
-  //                       itemCount: memberDetailList.length,
-  //                       itemBuilder: (context, int index) {
-  //                         return Container(
-  //                           decoration: BoxDecoration(
-  //                             border: Border(
-  //                                 left: BorderSide(
-  //                               width: 2,
-  //                               color: Colors.blue.shade100,
-  //                             )),
-  //                             // borderRadius: BorderRadius.circular(12),
-  //                           ),
-  //                           child: ListTile(
-  //                             title: Text(
-  //                                 '${memberDetailList[index]['memberName']}'),
-  //                             subtitle: Text(
-  //                               '${memberDetailList[index]['totalExpense']}',
-  //                               style: const TextStyle(fontSize: 20),
-  //                             ),
-  //                           ),
-  //                         );
-  //                       })
-  //                   : const Text('Group Member does not exists_'),
-  //             ));
-  //       });
-  // }
 }
