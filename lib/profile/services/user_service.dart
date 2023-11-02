@@ -41,7 +41,6 @@ class UserServices {
       _userDatabaseRef.exitGroup(
           currentUserEmail: currentUserEmail,
           currentUserGroup: currentUserGroup);
-      // .whenComplete(() => appState.initCurrentUserGroup(bypassState: true));
     } catch (e) {
       if (kDebugMode) {
         print(e);
