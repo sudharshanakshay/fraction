@@ -109,7 +109,7 @@ class _GroupsScreenState extends State<GroupsScreen> {
                                     .expenseGroupList[index].lastUpdatedDesc,
                                 style: subListTileStyle),
                             trailing: Text(
-                                DateFormat.yMd()
+                                DateFormat("MMM, d")
                                     .format(groupsRepoState
                                         .expenseGroupList[index]
                                         .lastUpdatedTime)
