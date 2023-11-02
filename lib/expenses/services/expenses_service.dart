@@ -39,7 +39,7 @@ class ExpenseService {
       required Timestamp currentExpenseInstance}) async {
     final data = {
       'description': description,
-      'cost': cost as int,
+      'cost': int.parse(cost),
       'tags': [],
       'userName': currentUserName,
       'emailAddress': currentUserEmail,

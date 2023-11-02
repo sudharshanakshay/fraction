@@ -6,13 +6,13 @@ import 'package:fraction/app_state.dart';
 // import 'package:fraction/data/api/expense/expense.api.dart';
 // import 'package:fraction/data/api/group/group.api.dart';
 // import 'package:fraction/data/api/notification/notification.api.dart';
-import 'package:fraction/data/api/user/user.api.dart';
+// import 'package:fraction/data/api/user/user.api.dart';
 import 'package:fraction/notification/services/notification_service.dart';
 import 'package:fraction/utils/constants.dart';
 
 class GroupServices {
   // late GroupDatabase _groupDatabaseRef;
-  late UserDatabase _userDatabaseRef;
+  // late UserDatabase _userDatabaseRef;
   // late ExpenseDatabase _expenseDatabase;
   // late NotificationDatabase _notificationDatabaseRef;
   late FirebaseFirestore _firebaseFirestore;
@@ -22,7 +22,7 @@ class GroupServices {
 
   GroupServices() {
     // _groupDatabaseRef = GroupDatabase();
-    _userDatabaseRef = UserDatabase();
+    // _userDatabaseRef = UserDatabase();
     _firebaseFirestore = FirebaseFirestore.instance;
     // _expenseDatabase = ExpenseDatabase();
     // _notificationDatabaseRef = NotificationDatabase();
@@ -149,16 +149,17 @@ class GroupServices {
                 if (kDebugMode) {
                   print('group added');
                 }
-                _userDatabaseRef
-                    .insertGroupNameToProfile(
-                        currentUserEmail: currentUserEmail,
-                        groupNameToAdd: groupName.trim())
-                    .whenComplete(() {
-                  if (applicationState != null) {
-                    // applicationState.refreshGroupNamesAndExpenseInstances();
-                    _notificationService.deleteNotification(docId: docId);
-                  }
-                });
+                _notificationService.deleteNotification(docId: docId);
+                // _userDatabaseRef
+                //     .insertGroupNameToProfile(
+                //         currentUserEmail: currentUserEmail,
+                //         groupNameToAdd: groupName.trim())
+                //     .whenComplete(() {
+                //   if (applicationState != null) {
+                //     // applicationState.refreshGroupNamesAndExpenseInstances();
+
+                //   }
+                // });
               });
             } else {
               if (kDebugMode) {

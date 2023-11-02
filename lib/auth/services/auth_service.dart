@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:fraction/data/api/user/user.api.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthServices {
+  late FirebaseFirestore _firebaseFirestore;
+  final String _userCollectionName = 'user';
+
+  AuthServices() {
+    _firebaseFirestore = FirebaseFirestore.instance;
+  }
   // ------------- option, sign-in / register with google federated  -------------
 
   Future<UserCredential> signInWithGoogle() async {
@@ -35,10 +41,19 @@ class AuthServices {
         password: inputUserPassword,
       )
           .whenComplete(() async {
-        await UserDatabase().createUser(
-            currentUserEmail: inputUserEmail,
-            currentUserName: inputUserName,
-            preferedColor: 'red');
+        _firebaseFirestore
+            .collection(_userCollectionName)
+            .doc(inputUserEmail)
+            .set(<String, dynamic>{
+          'userName': inputUserName,
+          'emailAddress': inputUserEmail,
+          'color': '',
+          'groupNames': []
+        });
+        // await UserDatabase().createUser(
+        //     currentUserEmail: inputUserEmail,
+        //     currentUserName: inputUserName,
+        //     preferedColor: 'red');
       });
 
       // await UserServices().createUserProfile(preferedColor: 'red');

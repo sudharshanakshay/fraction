@@ -1,50 +1,50 @@
-import 'package:flutter/foundation.dart';
-import 'package:fraction/app_state.dart';
-import 'package:fraction/data/api/user/user.api.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:fraction/app_state.dart';
+// import 'package:fraction/data/api/user/user.api.dart';
 
 class UserServices {
-  late UserDatabase _userDatabaseRef;
+  // late UserDatabase _userDatabaseRef;
 
   UserServices() {
-    _userDatabaseRef = UserDatabase();
+    // _userDatabaseRef = UserDatabase();
   }
 
-  Stream groupStream({required String currentUserEmail}) {
-    try {
-      return _userDatabaseRef.userSubscribedGroupsStream(
-          currentUserEmail: currentUserEmail);
-    } catch (e) {
-      return const Stream.empty();
-    }
-  }
+  // Stream groupStream({required String currentUserEmail}) {
+  //   try {
+  //     return _userDatabaseRef.userSubscribedGroupsStream(
+  //         currentUserEmail: currentUserEmail);
+  //   } catch (e) {
+  //     return const Stream.empty();
+  //   }
+  // }
 
-  Future<void> createUserProfile(
-      {required String currentUserName,
-      required String currentUserEmail,
-      required preferedColor}) async {
-    try {
-      _userDatabaseRef.createUser(
-          currentUserEmail: currentUserEmail,
-          currentUserName: currentUserName,
-          preferedColor: preferedColor);
-    } catch (e) {
-      // To-Do
-      // display error to UI
-    }
-  }
+  // Future<void> createUserProfile(
+  //     {required String currentUserName,
+  //     required String currentUserEmail,
+  //     required preferedColor}) async {
+  //   try {
+  //     _userDatabaseRef.createUser(
+  //         currentUserEmail: currentUserEmail,
+  //         currentUserName: currentUserName,
+  //         preferedColor: preferedColor);
+  //   } catch (e) {
+  //     // To-Do
+  //     // display error to UI
+  //   }
+  // }
 
-  Future<void> exitGroup(
-      {required String currentUserEmail,
-      required String currentUserGroup,
-      required ApplicationState appState}) async {
-    try {
-      _userDatabaseRef.exitGroup(
-          currentUserEmail: currentUserEmail,
-          currentUserGroup: currentUserGroup);
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
-  }
+  // Future<void> exitGroup(
+  //     {required String currentUserEmail,
+  //     required String currentUserGroup,
+  //     required ApplicationState appState}) async {
+  //   try {
+  //     _userDatabaseRef.exitGroup(
+  //         currentUserEmail: currentUserEmail,
+  //         currentUserGroup: currentUserGroup);
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e);
+  //     }
+  //   }
+  // }
 }
