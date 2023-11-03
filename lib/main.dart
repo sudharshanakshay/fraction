@@ -1,14 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:fraction/repository/notification.repo.dart';
-import 'package:fraction/screens/auth_layout/register.dart';
-import 'package:fraction/screens/home_layout/add_expense_view/add_expense.dart';
-import 'package:fraction/screens/home_layout/create_group_view/create_group.dart';
-import 'package:fraction/screens/home_layout/group_info_view/group_info_view.dart';
-import 'package:fraction/screens/home_layout/home_layout.dart';
-import 'package:fraction/screens/home_layout/notification_view/notification_view.dart';
-import 'package:fraction/screens/profile_layout/profile_layout.dart';
-import 'package:fraction/screens/auth_layout/sign_in.dart';
+import 'package:fraction/groups/groups_screen.dart';
+import 'package:fraction/groups/models/groups_model.dart';
+import 'package:fraction/notification/models/notification.dart';
+import 'package:fraction/auth/sign_in_screen.dart';
+import 'package:fraction/routes.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
 
@@ -44,43 +40,19 @@ class MyApp extends StatelessWidget {
         ),
         // home: const CreateGroupLayout(),
         home: Consumer<ApplicationState>(
-            builder: (context, appState, _) => !appState.loggedIn
-                ? const SignInPage()
-                : const MyHomePage(
+          builder: (context, appState, _) => !appState.loggedIn
+              ? const SignInScreen()
+              : ChangeNotifierProxyProvider<ApplicationState, GroupsRepo?>(
+                  lazy: false,
+                  create: (_) => GroupsRepo(),
+                  update: (_, appState, groupRepoState) {
+                    return groupRepoState?..updateState(newAppState: appState);
+                  },
+                  child: const GroupsScreen(
                     title: 'Fraction',
-                  )),
-        routes: {
-          '/logIn': (context) => Consumer<ApplicationState>(
-                builder: (context, value, child) => value.loggedIn
-                    ? const MyHomePage(title: 'Fraction')
-                    : const SignInPage(),
-              ),
-          '/register': (context) => Consumer<ApplicationState>(
-                builder: (context, value, child) => value.loggedIn
-                    ? const MyHomePage(title: 'Fraction')
-                    : const RegisterPage(),
-              ),
-          '/home': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) => appState.loggedIn
-                  ? const MyHomePage(title: 'Fraction')
-                  : const SignInPage()),
-          '/profile': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) =>
-                  appState.loggedIn ? const Profile() : const SignInPage()),
-          '/addExpense': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) => appState.loggedIn
-                  ? const AddExpenseLayout()
-                  : const SignInPage()),
-          '/createGroup': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) => appState.loggedIn
-                  ? const CreateGroupView()
-                  : const SignInPage()),
-          '/groupInfo': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) =>
-                  appState.loggedIn ? const GroupInfo() : const SignInPage()),
-          '/notification': (context) => Consumer<ApplicationState>(
-              builder: (context, appState, _) =>
-                  appState.loggedIn ? NotificationView() : const SignInPage()),
-        });
+                  ),
+                ),
+        ),
+        routes: appRoutes);
   }
 }
