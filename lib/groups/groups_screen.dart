@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/dashboard_model.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
@@ -22,6 +23,9 @@ class GroupsScreen extends StatefulWidget {
 }
 
 class _GroupsScreenState extends State<GroupsScreen> {
+  final String profileIconPath = 'assets/icons/profileIcon.svg';
+  final String settingsIconPath = 'assets/icons/SettingsIcon.svg';
+
   @override
   void initState() {
     super.initState();
@@ -43,6 +47,13 @@ class _GroupsScreenState extends State<GroupsScreen> {
     return Consumer<ApplicationState>(
       builder: (context, appState, child) => Scaffold(
         appBar: AppBar(
+          // leading: IconButton(
+          // icon: const Icon(Icons.),
+          // icon: SvgPicture.asset('settingsIconPath'),
+          // onPressed: () {
+          // Navigator.pushNamed(context, '/settings');
+          // },
+          // ),
           title: Text(widget.title),
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           actions: [
