@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/feedbackform/feedbackform_screen.dart';
 import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -32,6 +33,14 @@ class _SettingsScreen extends State<SettingsScreen> {
             ListTile(
               title: const Text('Profile'),
               onTap: () => Navigator.pushNamed(context, '/profile'),
+            ),
+            ListTile(
+              title: const Text('Feedback'),
+              onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FeedbackFormScreen(),
+                  )),
             ),
             ListTile(
               title: const Text('Use random dashboard color'),
