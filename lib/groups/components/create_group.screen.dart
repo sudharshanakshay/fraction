@@ -56,10 +56,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     setClearOffDateController(dateToSet: selectedDate);
     DateTime lastDate = DateTime(today.year + 1);
 
+    const placeholderTextStyle = TextStyle(color: Colors.grey);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Fracton'),
+        title: const Text('Create Expense Group'),
       ),
       body: Consumer<ApplicationState>(
         builder: (context, appState, _) {
@@ -78,26 +80,53 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     height: 8,
                   ),
 
-                  const Text(
-                    // ---- (ui, heading for create group)----
-                    'Create Expense Group',
-                    style: TextStyle(fontSize: 20),
-                  ),
+                  // const Text(
+                  //   // ---- (ui, heading for create group)----
+                  //   'Create Expense Group',
+                  //   style: TextStyle(fontSize: 20),
+                  // ),
 
                   const SizedBox(
                     // ---- (ui, top margin of 18) ----
                     height: 18,
                   ),
 
-                  FractionallySizedBox(
-                    // ---- (ui, user input for group name ) ----
-                    widthFactor: 0.74,
-                    child: TextFormField(
-                      controller: _groupNameController,
-                      validator: (value) => validateGroupName(value),
-                      decoration:
-                          const InputDecoration(label: Text('Group Name')),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                        width: 32.0,
+                      ),
+                      CircleAvatar(
+                        minRadius: 32.0,
+                        child: IconButton(
+                          icon: const Icon(Icons.camera_alt_outlined),
+                          onPressed: () {},
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 12.0,
+                      ),
+                      Flexible(
+                        child: FractionallySizedBox(
+                          // ---- (ui, user input for group name ) ----
+                          widthFactor: 1,
+                          child: TextFormField(
+                            controller: _groupNameController,
+                            validator: (value) => validateGroupName(value),
+                            decoration: const InputDecoration(
+                              label: Text('Group name (required)'),
+                              labelStyle: placeholderTextStyle,
+                              border: InputBorder.none,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(
+                    height: 12.0,
                   ),
 
                   Row(
@@ -115,6 +144,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                           readOnly: true,
                           decoration: const InputDecoration(
                               label: Text('Clear off date'),
+                              labelStyle: placeholderTextStyle,
                               // hintText: 'yyyy-mm-dd',
                               hintStyle: TextStyle(color: Colors.grey)),
                         ),

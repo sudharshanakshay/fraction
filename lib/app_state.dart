@@ -111,7 +111,7 @@ class ApplicationState extends ChangeNotifier {
 
         if (prefs.getBool(_settingsUseRandomDashboardColorName) != null) {
           _toggleRandomDashboardColor =
-              prefs.getBool(_settingsUseRandomDashboardColorName) ?? false;
+              prefs.getBool(_settingsUseRandomDashboardColorName) ?? true;
         }
       } else {
         _loggedIn = false;
@@ -191,7 +191,7 @@ class ApplicationState extends ChangeNotifier {
   Future<void> refreshRandomDashboardColor() async {
     final prefs = await SharedPreferences.getInstance();
     _toggleRandomDashboardColor =
-        prefs.getBool(_settingsUseRandomDashboardColorName) ?? false;
+        prefs.getBool(_settingsUseRandomDashboardColorName) ?? true;
   }
 
   // ------------- option, sign-out -------------
