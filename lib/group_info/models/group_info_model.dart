@@ -148,9 +148,16 @@ class GroupInfoRepo extends ChangeNotifier {
                     as int;
           } catch (e) {
             // null check, if null add the memberEmail & corresponding cost.
-            final data = {
-              element['emailAddress'] as String: int.parse(element['cost'])
-            };
+            int cost;
+            try {
+              // if the string is cost of type 'String' (when it has '-')
+              cost = int.parse(element['cost']);
+            } catch (e) {
+              cost = element['cost'] as int;
+            }
+
+            final data = {element['emailAddress'] as String: cost};
+
             memberExpenses.addAll(data);
           }
         }
