@@ -33,10 +33,13 @@ Color getRandomColor() {
 }
 
 const randomColors_shade200 = [
-  //Color(0xFF80CBC4), // teal
-  Color(0xFFA5D6A7), // green
-  Color(0xFFFFE082), // amber
-  Color(0xFFCE93D8), // purple
-  Color(0xFF90CAF9), // blue
-  Color(0xFFEF9A9A), // red
+  Color(0xFF80CBC4), // teal //ok
+  Color(0xFFFFE082), // amber //ok
+  Color(0xFFCE93D8), // purple //ok
+  Color(0xFFF48FB1), //pink //ok
+  Color(0xFF9FA8DA), //indigo //ok
+  // Color(0xFFA5D6A7), //green //ok //reserved for success
+  // Color(0xFFFFF59D), //yellow //too light
+  Color(0xFFFFCC80), //orange //ok
+  // Color(0xFFEF9A9A), //red //ok //reserved for not-success
 ];
