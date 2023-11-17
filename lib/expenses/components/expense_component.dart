@@ -86,7 +86,7 @@ class _ExpenseViewState extends State<ExpenseView> {
                           description: expenses.expenseList[index].description,
                           emailAddress:
                               expenses.expenseList[index].emailAddress,
-                          tags: [],
+                          tags: expenses.expenseList[index].tags,
                           timeStamp: expenses.expenseList[index].timeStamp,
                           expenseRepoState: expenses,
                         ),

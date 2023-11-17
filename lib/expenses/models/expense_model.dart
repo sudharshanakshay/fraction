@@ -12,6 +12,7 @@ class ExpenseRepoModel {
   DateTime timeStamp;
   String userName;
   String emailAddress;
+  late List<String> tags;
 
   ExpenseRepoModel(
       {required this.docId,
@@ -19,7 +20,10 @@ class ExpenseRepoModel {
       required this.cost,
       required this.timeStamp,
       required this.emailAddress,
-      required this.userName});
+      required this.userName,
+      required List dynamicTypeTags}) {
+    tags = dynamicTypeTags.cast<String>();
+  }
 }
 
 class ExpenseRepo extends ChangeNotifier {
@@ -87,12 +91,14 @@ class ExpenseRepo extends ChangeNotifier {
             if (element.exists) {
               final data = element.data() as Map<String, dynamic>;
               _expensesList.add(ExpenseRepoModel(
-                  docId: element.id,
-                  description: data["description"],
-                  cost: data["cost"].toString(),
-                  timeStamp: data["timeStamp"].toDate(),
-                  emailAddress: data["emailAddress"],
-                  userName: data["userName"]));
+                docId: element.id,
+                description: data["description"],
+                cost: data["cost"].toString(),
+                timeStamp: data["timeStamp"].toDate(),
+                emailAddress: data["emailAddress"],
+                userName: data["userName"],
+                dynamicTypeTags: data["tags"],
+              ));
               notifyListeners();
             }
           }
