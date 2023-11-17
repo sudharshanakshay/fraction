@@ -82,7 +82,10 @@ class GroupsRepo extends ChangeNotifier {
                     expenseGroup = GroupsRepoModel(
                         groupName: groupEvent.data()!['groupName'],
                         groupId: element.data()["groupId"],
-                        lastUpdatedDesc: groupEvent.data()!["lastUpdatedDesc"],
+                        lastUpdatedDesc: groupEvent
+                            .data()!["lastUpdatedDesc"]
+                            .toString()
+                            .replaceAll(RegExp('[\n \s]{1,}'), ' '),
                         lastUpdatedTime: DateTime.fromMillisecondsSinceEpoch(
                             groupEvent.data()!["lastUpdatedTime"]));
                     // _expenseGroupsList.add();

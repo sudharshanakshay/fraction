@@ -116,9 +116,11 @@ class _GroupsScreenState extends State<GroupsScreen> {
                               style: titleListTileStyle,
                             ),
                             subtitle: Text(
-                                groupsRepoState
-                                    .expenseGroupList[index].lastUpdatedDesc,
-                                style: subListTileStyle),
+                              groupsRepoState
+                                  .expenseGroupList[index].lastUpdatedDesc,
+                              style: subListTileStyle,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                             trailing: Text(
                                 DateFormat("MMM, d")
                                     .format(groupsRepoState
