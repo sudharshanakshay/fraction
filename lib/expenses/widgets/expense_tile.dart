@@ -148,6 +148,8 @@ class _ExpenseListTileState extends State<ExpenseListTile> {
           children: [
             TextField(
                 controller: _descriptionTextController,
+                keyboardType: TextInputType.multiline,
+                maxLines: null,
                 decoration: const InputDecoration(
                   label: Text('Item Name'),
                 )),
