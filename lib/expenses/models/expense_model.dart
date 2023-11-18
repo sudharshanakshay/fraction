@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/services/expenses_service.dart';
 import 'package:fraction/groups/models/groups_model.dart';
@@ -75,7 +74,7 @@ class ExpenseRepo extends ChangeNotifier {
     try {
       if (kDebugMode) {
         count++;
-        print("update: " + count.toString());
+        print("update: $count");
       }
 
       if (groupsRepoState != null &&
@@ -140,7 +139,7 @@ class ExpenseRepo extends ChangeNotifier {
         groupsRepoState!.currentUserGroup != '') {
       final data = {
         'description': updatedDescription,
-        'cost': int.parse(updatedCost),
+        'cost': double.parse(updatedCost),
         'tags': FieldValue.arrayUnion(['updated'])
       };
       FirebaseFirestore.instance

@@ -39,7 +39,7 @@ class ExpenseService {
       required Timestamp currentExpenseInstance}) async {
     final data = {
       'description': description,
-      'cost': int.parse(cost),
+      'cost': double.parse(cost),
       'tags': [],
       'userName': currentUserName,
       'emailAddress': currentUserEmail,
@@ -52,29 +52,31 @@ class ExpenseService {
         .add(data);
   }
 
-  Future updateExpense({
-    required String currentUserEmail,
-    required String currentUserGroup,
-    required Timestamp currentExpenseInstance,
-    required String docId,
-    required String updatedDescription,
-    required String updatedCost,
-    required int previousCost,
-  }) async {
-    try {
-      final data = {
-        'description': updatedDescription,
-        'cost': updatedCost,
-        'tags': FieldValue.arrayUnion(['updated'])
-      };
-      _firebaseFirestore
-          .collection(_expenseCollectionName)
-          .doc(currentUserGroup)
-          .collection(currentExpenseInstance.toDate().toString())
-          .doc(docId)
-          .update(data);
-    } catch (e) {}
-  }
+  // Future updateExpense({
+  //   required String currentUserEmail,
+  //   required String currentUserGroup,
+  //   required Timestamp currentExpenseInstance,
+  //   required String docId,
+  //   required String updatedDescription,
+  //   required String updatedCost,
+  //   required String previousCost,
+  // }) async {
+  //   try {
+  //     final data = {
+  //       'description': updatedDescription,
+  //       'cost': double.parse(updatedCost),
+  //       'tags': FieldValue.arrayUnion(['updated'])
+  //     };
+  //     _firebaseFirestore
+  //         .collection(_expenseCollectionName)
+  //         .doc(currentUserGroup)
+  //         .collection(currentExpenseInstance.toDate().toString())
+  //         .doc(docId)
+  //         .update(data);
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   Future deleteExpense({
     required String expenseDocId,
