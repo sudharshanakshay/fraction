@@ -48,6 +48,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   cloud_functions: ^4.5.2
   firebase_storage: ^11.4.1
+  intl: ^0.18.0
 
 dev_dependencies:
   flutter_test:

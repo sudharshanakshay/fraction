@@ -18,8 +18,11 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   late TextEditingController _clearOffDateController;
   late GlobalKey<FormState> _formKey;
 
+  late bool _isCreateBtnDissabled;
+
   @override
   void initState() {
+    _isCreateBtnDissabled = false;
     _groupServices = GroupServices();
     _groupNameController = TextEditingController();
     _clearOffDateController = TextEditingController();
@@ -145,22 +148,29 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
                   FilledButton(
                       // ---- (ui, create group button) ----
+
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
                           // appState.refreshGroupNamesAndExpenseInstances();
-                          _groupServices
-                              .createGroup(
-                                  inputGroupName: _groupNameController.text,
-                                  nextClearOffTimeStamp: selectedDate,
-                                  currentUserName: appState.currentUserName,
-                                  currentUserEmail: appState.currentUserEmail,
-                                  applicationState: appState)
-                              .then((String result) {
-                            if (result != Constants().failed) {
-                              // appState.setCurrentUserGroup(
-                              //     currentUserGroup: result);
-                              Navigator.pop(context);
-                            }
+                          if (!_isCreateBtnDissabled) {
+                            _groupServices
+                                .createGroup(
+                                    inputGroupName: _groupNameController.text,
+                                    nextClearOffTimeStamp: selectedDate,
+                                    currentUserName: appState.currentUserName,
+                                    currentUserEmail: appState.currentUserEmail,
+                                    applicationState: appState)
+                                .then((String result) {
+                              if (result != Constants().failed) {
+                                // appState.setCurrentUserGroup(
+                                //     currentUserGroup: result);
+                                Navigator.pop(context);
+                              }
+                            });
+                          }
+
+                          setState(() {
+                            _isCreateBtnDissabled = true;
                           });
                         }
                       },
