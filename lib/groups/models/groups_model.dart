@@ -85,7 +85,9 @@ class GroupsRepo extends ChangeNotifier {
                         lastUpdatedDesc: groupEvent
                             .data()!["lastUpdatedDesc"]
                             .toString()
-                            .replaceAll(RegExp('[\n \s]{1,}'), ' '),
+                            // RegExp('[\n ]{1,}') -> there is white-space
+                            // after '\n' in regex expression
+                            .replaceAll(RegExp('[\n ]{1,}'), ' '),
                         lastUpdatedTime: DateTime.fromMillisecondsSinceEpoch(
                             groupEvent.data()!["lastUpdatedTime"]));
                     // _expenseGroupsList.add();
