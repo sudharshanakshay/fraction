@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fraction/expenses/components/dashboard_component.dart';
 import 'package:fraction/expenses/components/expense_component.dart';
-import 'package:fraction/expenses/components/add_expense_component.dart';
 import 'package:fraction/expenses/models/expense_model.dart';
 import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/utils/tools.dart';
@@ -20,7 +19,15 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
   late TextEditingController _descriptionTextController;
   late TextEditingController _costTextController;
   late GlobalKey<FormState> _formKey;
-  bool toggleAddExpense = false;
+  bool _showAddExpense = false;
+
+  void toggleAddExpense() {
+    setState(() {
+      _descriptionTextController.clear();
+      _costTextController.clear();
+      _showAddExpense = !_showAddExpense;
+    });
+  }
 
   late ExpenseRepo? _expenseRepo;
   late GroupsRepo? _groupsRepo;
@@ -67,7 +74,7 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
               mainAxisSize: MainAxisSize.max,
               children: [
                 const Dashboard(),
-                toggleAddExpense
+                _showAddExpense
                     ? Form(
                         key: _formKey,
                         child: SingleChildScrollView(
@@ -77,8 +84,8 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                               children: <Widget>[
                                 AppBar(
                                   leading: IconButton(
-                                    icon: const Icon(Icons.close),
-                                    onPressed: () => Navigator.pop(context),
+                                    icon: const Icon(Icons.arrow_drop_up),
+                                    onPressed: () => toggleAddExpense(),
                                   ),
                                   // leading: const Icon(Icons.close),
                                   title: const Text('Add Expense'),
@@ -140,12 +147,11 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
                                                           .text,
                                                   cost:
                                                       _costTextController.text)
-                                              .whenComplete(() =>
-                                                  // Navigator.pop(context)
-                                                  setState(() {
-                                                    toggleAddExpense =
-                                                        !toggleAddExpense;
-                                                  }));
+                                              .whenComplete(
+                                            () {
+                                              toggleAddExpense();
+                                            },
+                                          );
                                         }
                                       }
                                     },
@@ -169,17 +175,9 @@ class _ExpenseScreenState extends State<ExpenseScreen> {
           child: const Icon(Icons.add),
           onPressed: () {
             setState(() {
-              toggleAddExpense = !toggleAddExpense;
+              _showAddExpense = !_showAddExpense;
             });
           },
         ));
-  }
-
-  Future showAddExpenseDialog() {
-    return showDialog(
-        context: context,
-        builder: (_) {
-          return const Dialog.fullscreen(child: AddExpense());
-        });
   }
 }

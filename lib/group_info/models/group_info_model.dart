@@ -140,28 +140,35 @@ class GroupInfoRepo extends ChangeNotifier {
               .toString())
           .get()
           .then((value) {
-        Map<String, int> memberExpenses = {};
+        Map<String, dynamic> memberExpenses = {};
         for (var element in value.docs) {
           try {
             memberExpenses[element['emailAddress']] =
-                memberExpenses[element['emailAddress']]! + element['cost']
-                    as int;
+                memberExpenses[element['emailAddress']]! + element['cost'];
           } catch (e) {
             // null check, if null add the memberEmail & corresponding cost.
-            int cost;
+            double cost;
             try {
-              // if the string is cost of type 'String' (when it has '-')
-              cost = int.parse(element['cost']);
+              // if the string 'cost' of type 'String' (when it has '-')
+              cost = double.parse(element['cost']);
+
+              final data = {element['emailAddress'] as String: cost};
+
+              memberExpenses.addAll(data);
             } catch (e) {
-              cost = element['cost'] as int;
+              final data = {element['emailAddress'] as String: element['cost']};
+
+              memberExpenses.addAll(data);
+
+              // if (kDebugMode) {
+              //   print(e);
+              //   print('hii');
+              //   print(element['cost']);
+              // }
             }
-
-            final data = {element['emailAddress'] as String: cost};
-
-            memberExpenses.addAll(data);
           }
         }
-        int totalGroupExpense = 0;
+        double totalGroupExpense = 0;
 
         memberExpenses.forEach((key, value) {
           totalGroupExpense += value;
