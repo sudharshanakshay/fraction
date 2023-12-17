@@ -61,9 +61,26 @@ class _SignInScreenState extends State<SignInScreen> {
                         const snakBar =
                             SnackBar(content: Text('logging in ...'));
                         ScaffoldMessenger.of(context).showSnackBar(snakBar);
-                        _authServices.emailSignInUser(
-                            _emailStringController.text,
-                            _passwordStringController.text);
+                        _authServices
+                            .emailSignInUser(_emailStringController.text,
+                                _passwordStringController.text)
+                            .then((int result) {
+                          if (result == 0) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                          } else if (result == -2) {
+                            const snakBar = SnackBar(
+                                content: Text(
+                                    'User not registered, Please register'));
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                          } else if (result == -1) {
+                            const snakBar = SnackBar(
+                                content:
+                                    Text('Wrong password, please try again'));
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(snakBar);
+                          }
+                        });
                       }
                     },
                     child: const Text('Log in')),

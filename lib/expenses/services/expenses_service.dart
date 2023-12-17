@@ -37,8 +37,6 @@ class ExpenseService {
       required String currentUserGroup,
       required String currentUserEmail,
       required Timestamp currentExpenseInstance}) async {
-    print('pringing cost frm expense servie');
-    print(cost);
     final data = {
       'description': description,
       'cost': double.parse(cost),

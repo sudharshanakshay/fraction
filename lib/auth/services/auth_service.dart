@@ -70,17 +70,21 @@ class AuthServices {
 
 // ------------- option, sign-in with email & password -------------
 
-  Future<void> emailSignInUser(
+  Future<int> emailSignInUser(
       String inputUserEmail, String inputValueUserPassword) async {
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: inputUserEmail, password: inputValueUserPassword);
+      return 0;
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         debugPrint('No user found for that email.');
+        return -2;
       } else if (e.code == 'wrong-password') {
         debugPrint('Wrong password provided for that user.');
+        return -1;
       }
+      return -3;
     }
   }
 }
