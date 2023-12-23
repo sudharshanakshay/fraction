@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/expenses_history/expenses_history_screen.dart';
 import 'package:fraction/group_info/components/members_detail_component.dart';
 import 'package:fraction/group_info/models/group_info_model.dart';
 import 'package:fraction/groups/models/groups_model.dart';
@@ -71,11 +72,22 @@ class _GroupInfoState extends State<GroupInfo> {
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    TextButton(
+                        onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ChangeNotifierProvider.value(
+                                        value: _groupsRepo,
+                                        child: const ExpensesHistory()),
+                              ),
+                            ),
+                        child: const Text("View History")),
                     Consumer<GroupInfoRepo?>(
                         builder: (context, groupInfoRepoState, child) {
                       if (groupInfoRepoState != null) {
                         return MemberExpenseDetail(
-                          groupMembers: groupInfoRepoState.groupMembers,
+                          groupMembersDetail: groupInfoRepoState.groupMembers,
                         );
                       } else {
                         return const Text("data null");
@@ -248,7 +260,7 @@ class _GroupInfoState extends State<GroupInfo> {
     DateTime today = DateTime.now();
     DateTime selectedDateTime =
         DateTime(today.year, today.month + 1, today.day, today.hour);
-    DateTime lastDate = DateTime(today.year + 1);
+    DateTime lastDate = DateTime(today.year + 1, 12);
 
     // selectDateController.text = initialDate.toString();
 

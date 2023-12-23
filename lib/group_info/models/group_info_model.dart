@@ -225,6 +225,7 @@ class GroupInfoRepo extends ChangeNotifier {
     if (groupsRepoState != null && groupsRepoState!.currentUserGroup != '') {
       FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
       final Map<String, dynamic> groupMembers = {};
+
       firebaseFirestore
           .collection('group')
           .doc(groupsRepoState!.currentUserGroup)
@@ -249,6 +250,13 @@ class GroupInfoRepo extends ChangeNotifier {
         'totalExpense': 0,
         'nextClearOffTimeStamp': nextClearOffDate
       };
+
+      firebaseFirestore
+          .collection('expense')
+          .doc(groupsRepoState!.currentUserGroup)
+          .set({
+        'history': FieldValue.arrayUnion([data['expenseInstance']])
+      }, SetOptions(merge: true));
 
       firebaseFirestore
           .collection('group')

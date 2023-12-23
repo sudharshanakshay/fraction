@@ -1,0 +1,3 @@
+class ExpensesHistoryRepoModel {}
+
+class ExpensesHistoryRepo {}

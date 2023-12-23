@@ -183,3 +183,22 @@ exports.groupClearUpOnDeleteByAdmin = onCall((request)=>{
 
   console.log(allUserGroup);
 });
+
+exports.getExpenseInstances = onCall(async (request)=>{
+  // const database = getDatabase();
+  const currentUserGroup = request.data.currentUserGroup;
+
+  try {
+    const snapshot = await db.collection("expense")
+      .doc(currentUserGroup).listCollections();
+    const currentUserGroupInstances:
+    FirebaseFirestore.CollectionReference<FirebaseFirestore.DocumentData>[] =
+    [];
+    snapshot.forEach((snap) => {
+      currentUserGroupInstances.push(snap);
+    });
+    return {"isError": false, "cugi": currentUserGroupInstances};
+  } catch (error) {
+    return {"isError": true, 'error':error};
+  }
+});

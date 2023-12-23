@@ -3,11 +3,11 @@ import 'package:fraction/group_info/models/group_info_model.dart';
 
 class MemberExpenseDetail extends StatelessWidget {
   const MemberExpenseDetail({
-    required this.groupMembers,
+    required this.groupMembersDetail,
     super.key,
   });
 
-  final List<GroupInfoRepoModel> groupMembers;
+  final List<GroupInfoRepoModel> groupMembersDetail;
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class MemberExpenseDetail extends StatelessWidget {
             child: GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: groupMembers.length,
+              itemCount: groupMembersDetail.length,
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   decoration: BoxDecoration(
@@ -32,9 +32,9 @@ class MemberExpenseDetail extends StatelessWidget {
                     // borderRadius: BorderRadius.circular(12),
                   ),
                   child: ListTile(
-                    title: Text(groupMembers[index].memberName),
+                    title: Text(groupMembersDetail[index].memberName),
                     subtitle: Text(
-                      groupMembers[index].memberExpense,
+                      groupMembersDetail[index].memberExpense,
                       style: const TextStyle(fontSize: 20),
                     ),
                   ),
