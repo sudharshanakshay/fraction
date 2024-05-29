@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fraction/app_state.dart';
+import 'package:fraction/group_info/components/member_expense_breakdown_component.dart';
 import 'package:fraction/group_info/components/members_detail_component.dart';
 import 'package:fraction/group_info/models/group_info_model.dart';
+import 'package:fraction/group_info/models/member_expense_breakdown_model.dart';
 import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/utils/constants.dart';
 import 'package:fraction/utils/tools.dart';
@@ -70,12 +72,27 @@ class _GroupInfoState extends State<GroupInfo> {
               children: [
                 Column(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const Text('Individual Expense'),
                     Consumer<GroupInfoRepo?>(
                         builder: (context, groupInfoRepoState, child) {
                       if (groupInfoRepoState != null) {
                         return MemberExpenseDetail(
                           groupMembers: groupInfoRepoState.groupMembers,
+                        );
+                      } else {
+                        return const Text("data null");
+                      }
+                    }),
+                    const Text('Clear off Explained'),
+                    Consumer<MemberExpenseBreakdownRepoNotifier>(builder:
+                        (context, memberExpenseBreakdownRepoNotifierState,
+                            child) {
+                      if (memberExpenseBreakdownRepoNotifierState != null) {
+                        return MemberExpenseBreakdownComponent(
+                          groupMembers: memberExpenseBreakdownRepoNotifierState
+                              .memberExpenseBreakdownRepo,
                         );
                       } else {
                         return const Text("data null");

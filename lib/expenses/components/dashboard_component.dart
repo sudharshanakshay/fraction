@@ -3,6 +3,7 @@ import 'package:fraction/app_state.dart';
 import 'package:fraction/expenses/models/dashboard_model.dart';
 import 'package:fraction/group_info/group_info_screen.dart';
 import 'package:fraction/group_info/models/group_info_model.dart';
+import 'package:fraction/group_info/models/member_expense_breakdown_model.dart';
 import 'package:fraction/groups/models/groups_model.dart';
 import 'package:fraction/utils/color.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,15 @@ class _DashboardState extends State<Dashboard> {
                                     groupRepoState
                                       ?..udpate(newGroupsState: newGroupsState),
                               ),
+                              ChangeNotifierProxyProvider<GroupsRepo,
+                                  MemberExpenseBreakdownRepoNotifier?>(
+                                create: (context) =>
+                                    MemberExpenseBreakdownRepoNotifier(),
+                                update: (context, newGroupsState,
+                                        memberExpenseBreakdownRepoState) =>
+                                    memberExpenseBreakdownRepoState
+                                      ?..udpate(newGroupsState: newGroupsState),
+                              )
                             ],
                             builder: (context, child) => const GroupInfo(),
                           ),
